@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.NOTIFICATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+
+    <permission
+        android:name="id.creatodidak.djaga_swara.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="id.creatodidak.djaga_swara.permission.C2D_MESSAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/icon"
+        android:label="DJAGA SWARA"
+        android:supportsRtl="true"
+        android:theme="@style/DJAGA_SWARA"
+        tools:targetApi="31">
+
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="id.creatodidak.djaga_swara.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/providers_paths" />
+        </provider>
+        <activity
+            android:name=".CekUpdate"
+            android:exported="false" />
+
+        <activity
+            android:name=".Dashboard.Draft"
+            android:exported="false" />
+        <activity
+            android:name=".Dashboard.Sprin"
+            android:exported="false" />
+        <activity
+            android:name=".Dashboard.First"
+            android:exported="false" />
+        <activity
+            android:name=".Login.Blocked"
+            android:exported="false"
+            android:theme="@style/DJAGA_SWARA" />
+        <activity
+            android:name=".Login.SetLoginPin"
+            android:exported="false"
+            android:theme="@style/DJAGA_SWARA" />
+        <activity
+            android:name=".Login.Loginpin"
+            android:exported="false"
+            android:theme="@style/DJAGA_SWARA" />
+        <activity
+            android:name=".Dashboard.Dashboard"
+            android:exported="false"
+            android:theme="@style/DJAGA_SWARA" />
+        <activity
+            android:name=".Login.Login"
+            android:exported="false"
+            android:theme="@style/DJAGA_SWARA" />
+        <activity
+            android:name=".Izin"
+            android:exported="false"
+            android:theme="@style/DJAGA_SWARA" />
+        <activity
+            android:name=".Persetujuan"
+            android:exported="false"
+            android:theme="@style/DJAGA_SWARA" />
+        <activity
+            android:name=".Splash"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

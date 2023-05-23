@@ -1,0 +1,224 @@
+	[
+		{
+			"id": 1,
+			"jabatan": "KAPOLRES",
+			"level": "1",
+			"satker": "polres"
+		},
+		{
+			"id": 2,
+			"jabatan": "WAKAPOLRES",
+			"level": "2",
+			"satker": "polres"
+		},
+		{
+			"id": 3,
+			"jabatan": "KABAG",
+			"level": "3",
+			"satker": "polres"
+		},
+		{
+			"id": 4,
+			"jabatan": "PS. KABAG",
+			"level": "3",
+			"satker": "polres"
+		},
+		{
+			"id": 5,
+			"jabatan": "KASAT",
+			"level": "4",
+			"satker": "polres"
+		},
+		{
+			"id": 6,
+			"jabatan": "PS. KASAT",
+			"level": "4",
+			"satker": "polres"
+		},
+		{
+			"id": 7,
+			"jabatan": "KASI",
+			"level": "5",
+			"satker": "polres"
+		},
+		{
+			"id": 8,
+			"jabatan": "PS. KASI",
+			"level": "5",
+			"satker": "polres"
+		},
+		{
+			"id": 9,
+			"jabatan": "PERWIRA",
+			"level": "6",
+			"satker": "polres"
+		},
+		{
+			"id": 10,
+			"jabatan": "BINTARA",
+			"level": "7",
+			"satker": "polres"
+		},
+		{
+			"id": 11,
+			"jabatan": "KA SPKT",
+			"level": "4",
+			"satker": "polres"
+		},
+		{
+			"id": 36,
+			"jabatan": "PS. KANIT",
+			"level": "6",
+			"satker": "polres"
+		},
+		{
+			"id": 37,
+			"jabatan": "KANIT",
+			"level": "6",
+			"satker": "polres"
+		},
+		{
+			"id": 12,
+			"jabatan": "KAPOLSEK",
+			"level": "1",
+			"satker": "polsek"
+		},
+		{
+			"id": 13,
+			"jabatan": "PS. KAPOLSEK",
+			"level": "1",
+			"satker": "polsek"
+		},
+		{
+			"id": 14,
+			"jabatan": "WAKAPOLSEK",
+			"level": "2",
+			"satker": "polsek"
+		},
+		{
+			"id": 15,
+			"jabatan": "PS. WAKAPOLSEK",
+			"level": "2",
+			"satker": "polsek"
+		},
+		{
+			"id": 16,
+			"jabatan": "KASI",
+			"level": "3",
+			"satker": "polsek"
+		},
+		{
+			"id": 17,
+			"jabatan": "PS. KASI",
+			"level": "3",
+			"satker": "polsek"
+		},
+		{
+			"id": 18,
+			"jabatan": "KANIT",
+			"level": "3",
+			"satker": "polsek"
+		},
+		{
+			"id": 19,
+			"jabatan": "PS. KANIT",
+			"level": "3",
+			"satker": "polsek"
+		},
+		{
+			"id": 20,
+			"jabatan": "PAMIN",
+			"level": "4",
+			"satker": "polsek"
+		},
+		{
+			"id": 21,
+			"jabatan": "PANIT",
+			"level": "4",
+			"satker": "polsek"
+		},
+		{
+			"id": 22,
+			"jabatan": "BAMIN",
+			"level": "5",
+			"satker": "polsek"
+		},
+		{
+			"id": 23,
+			"jabatan": "BANIT",
+			"level": "5",
+			"satker": "polsek"
+		},
+		{
+			"id": 24,
+			"jabatan": "KA SPKT 1",
+			"level": "3",
+			"satker": "polsek"
+		},
+		{
+			"id": 25,
+			"jabatan": "KA SPKT 2",
+			"level": "3",
+			"satker": "polsek"
+		},
+		{
+			"id": 26,
+			"jabatan": "KA SPKT 3",
+			"level": "3",
+			"satker": "polsek"
+		},
+		{
+			"id": 27,
+			"jabatan": "PS. KA SPKT 1",
+			"level": "3",
+			"satker": "polsek"
+		},
+		{
+			"id": 28,
+			"jabatan": "PS. KA SPKT 2",
+			"level": "3",
+			"satker": "polsek"
+		},
+		{
+			"id": 29,
+			"jabatan": "PS. KA SPKT 3",
+			"level": "3",
+			"satker": "polsek"
+		},
+		{
+			"id": 30,
+			"jabatan": "PERWIRA",
+			"level": "4",
+			"satker": "polsek"
+		},
+		{
+			"id": 31,
+			"jabatan": "BINTARA",
+			"level": "5",
+			"satker": "polsek"
+		},
+		{
+			"id": 32,
+			"jabatan": "KAPOLSUBSEKTOR",
+			"level": "1",
+			"satker": "polsubsektor"
+		},
+		{
+			"id": 33,
+			"jabatan": "PS. KAPOLSUBSEKTOR",
+			"level": "2",
+			"satker": "polsubsektor"
+		},
+		{
+			"id": 34,
+			"jabatan": "PERWIRA",
+			"level": "3",
+			"satker": "polsubsektor"
+		},
+		{
+			"id": 35,
+			"jabatan": "BINTARA",
+			"level": "3",
+			"satker": "polsubsektor"
+		}
+	]

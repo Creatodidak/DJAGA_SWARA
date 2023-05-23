@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".Login.Blocked">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            app:srcCompat="@drawable/blocked" />
+
+        <EditText
+            android:id="@+id/kode"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bordered"
+            android:ems="16"
+            android:enabled="false"
+            android:gravity="center"
+            android:inputType="text"
+            android:padding="5dp"
+            android:text="TOKEN"
+            android:textColor="#252424" />
+
+        <Button
+            android:id="@+id/btnSalinkode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:backgroundTint="#03A9F4"
+            android:text="SALIN KODE"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Setelah menyalin kode, silahkan kirimkan ke nomor Whatsapp diatas...\nSetelahnya anda akan diberikan UNBLOCKING KEY untuk dimasukan pada form dibawah"
+            android:textColor="@color/black"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bold"
+            android:gravity="center"
+            android:text="Jika sudah terblokir sebanyak 3 (tiga) kali,\nanda akan diblacklist oleh system!"
+            android:textColor="@color/primary" />
+
+        <EditText
+            android:id="@+id/unblock"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/bordered"
+            android:ems="16"
+            android:gravity="center"
+            android:hint="UNBLOCKING KEY"
+            android:inputType="text"
+            android:padding="5dp"
+            android:textColor="#252424"
+            android:textColorHint="#252424" />
+
+        <Button
+            android:id="@+id/btnUnblocking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:text="BUKA AKUN SAYA"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

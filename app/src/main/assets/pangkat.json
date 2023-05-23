@@ -1,0 +1,106 @@
+[{
+    "id": "1",
+    "lengkap": "KOMISARIS BESAR POLISI",
+    "singkat": "KOMBESPOL"
+},
+    {
+        "id": "2",
+        "lengkap": "AJUN KOMISARIS BESAR POLISI",
+        "singkat": "AKBP"
+    },
+    {
+        "id": "3",
+        "lengkap": "KOMISARIS POLISI",
+        "singkat": "KOMPOL"
+    },
+    {
+        "id": "4",
+        "lengkap": "AJUN KOMISARIS POLISI",
+        "singkat": "AKP"
+    },
+    {
+        "id": "5",
+        "lengkap": "INSPEKTUR POLISI SATU",
+        "singkat": "IPTU"
+    },
+    {
+        "id": "6",
+        "lengkap": "INSPEKTUR POLISI DUA",
+        "singkat": "IPDA"
+    },
+    {
+        "id": "7",
+        "lengkap": "AJUN INSPEKTUR POLISI SATU",
+        "singkat": "AIPTU"
+    },
+    {
+        "id": "8",
+        "lengkap": "AJUN INSPEKTUR POLISI DUA",
+        "singkat": "AIPDA"
+    },
+    {
+        "id": "9",
+        "lengkap": "BRIGADIR POLISI KEPALA",
+        "singkat": "BRIPKA"
+    },
+    {
+        "id": "10",
+        "lengkap": "BRIGADIR POLISI",
+        "singkat": "BRIGPOL"
+    },
+    {
+        "id": "11",
+        "lengkap": "BRIGADIR POLISI SATU",
+        "singkat": "BRIPTU"
+    },
+    {
+        "id": "12",
+        "lengkap": "BRIGADIR POLISI DUA",
+        "singkat": "BRIPDA"
+    },
+    {
+        "id": "13",
+        "lengkap": "PEMBINA",
+        "singkat": "PEMBINA"
+    },
+    {
+        "id": "14",
+        "lengkap": "PENATA TINGKAT SATU",
+        "singkat": "PENTU"
+    },
+    {
+        "id": "15",
+        "lengkap": "PENATA",
+        "singkat": "PENATA"
+    },
+    {
+        "id": "16",
+        "lengkap": "PENATA MUDA TINGKAT SATU",
+        "singkat": "PENDATU"
+    },
+    {
+        "id": "17",
+        "lengkap": "PENATA MUDA",
+        "singkat": "PENDA"
+    },
+    {
+        "id": "18",
+        "lengkap": "PENGATUR TINGKAT SATU",
+        "singkat": "PENGTU"
+    },
+    {
+        "id": "19",
+        "lengkap": "PENGATUR",
+        "singkat": "PENGATUR"
+    },
+    {
+        "id": "20",
+        "lengkap": "PENGATUR MUDA TINGKAT SATU",
+        "singkat": "PENGDATU"
+    },
+    {
+        "id": "21",
+        "lengkap": "PENGATUR MUDA",
+        "singkat": "PENGDA"
+    }
+]
