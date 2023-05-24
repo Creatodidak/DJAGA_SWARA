@@ -129,17 +129,22 @@ public class Loginpin extends AppCompatActivity implements View.OnClickListener 
                 editor.putInt("kesempatan", 0);
                 editor.apply();
 
-                Boolean first = sharedPreferences.getBoolean("firstcheck", false);
+//                Boolean first = sharedPreferences.getBoolean("firstcheck", false);
+//
+//                if (first){
+//                    Intent intent = new Intent(Loginpin.this, Sprin.class);
+//                    startActivity(intent);
+//                    finish();
+//                }else{
+//                    Intent intent = new Intent(Loginpin.this, First.class);
+//                    startActivity(intent);
+//                    finish();
+//                }
 
-                if (first){
-                    Intent intent = new Intent(Loginpin.this, Sprin.class);
-                    startActivity(intent);
-                    finish();
-                }else{
-                    Intent intent = new Intent(Loginpin.this, First.class);
-                    startActivity(intent);
-                    finish();
-                }
+                Intent intent = new Intent(Loginpin.this, Sprin.class);
+                startActivity(intent);
+                finish();
+
             }else{
                 sisa = sisa+1;
 

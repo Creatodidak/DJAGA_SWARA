@@ -125,7 +125,7 @@ public class SetLoginPin extends AppCompatActivity implements View.OnClickListen
             editor.apply();
 
             Toast.makeText(SetLoginPin.this, "PIN berhasil disimpan", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(SetLoginPin.this, First.class);
+            Intent intent = new Intent(SetLoginPin.this, Sprin.class);
             startActivity(intent);
             finish();
         }

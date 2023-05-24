@@ -18,7 +18,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.53"></LinearLayout>
+        app:layout_constraintVertical_bias="0.53"
+        tools:ignore="UselessLeaf"></LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +32,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.53"></LinearLayout>
+        app:layout_constraintVertical_bias="0.53"
+        tools:ignore="UselessLeaf"></LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,7 +52,8 @@
             android:id="@+id/imageView"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            app:srcCompat="@drawable/logosmall" />
+            app:srcCompat="@drawable/logosmall"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/tirex"
@@ -58,7 +61,8 @@
             android:layout_height="75dp"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
-            app:srcCompat="@drawable/trex" />
+            app:srcCompat="@drawable/trex"
+            tools:ignore="ContentDescription" />
 
         <ProgressBar
             android:id="@+id/progressBar3"
@@ -82,7 +86,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/bold"
             android:text="TIK POLRES LANDAK 2023"
-            android:textColor="@color/primary" />
+            android:textColor="@color/primary"
+            tools:ignore="HardcodedText" />
 
     </LinearLayout>
 

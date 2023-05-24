@@ -113,14 +113,7 @@ public class Splash extends AppCompatActivity {
             @Override
             public void run() {
                 Intent intent;
-                boolean persetujuan = sharedPreferences.getBoolean("persetujuan", false);
-
-                if (persetujuan) {
-                    intent = new Intent(Splash.this, CekUpdate.class);
-                } else {
-                    intent = new Intent(Splash.this, Persetujuan.class);
-                }
-
+                intent = new Intent(Splash.this, CekUpdate.class);
                 startActivity(intent);
 
 

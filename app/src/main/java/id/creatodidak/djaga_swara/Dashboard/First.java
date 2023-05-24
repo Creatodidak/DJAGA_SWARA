@@ -13,11 +13,14 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,7 +29,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -147,99 +149,127 @@ public class First extends AppCompatActivity implements View.OnClickListener {
 
         sharedPreferences = getSharedPreferences("session", MODE_PRIVATE);
         String nrp = sharedPreferences.getString("nrp", "");
+        if (isInternetAvailable()) {
+            progressDialog2 = new ProgressDialog(this);
+            progressDialog2.setMessage("Mengambil data...");
+            progressDialog2.setCancelable(false);
+            progressDialog2.setContentView(R.layout.progress_dialog);
+            progressDialog2.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            ImageView iconImageView = progressDialog2.findViewById(R.id.iconImageView);
+            iconImageView.setImageResource(R.drawable.logosmall); // Ganti 'ic_progress' dengan sumber daya ikon yang diinginkan
 
-        progressDialog2 = new ProgressDialog(this);
-        progressDialog2.setMessage("Mengambil data...");
-        progressDialog2.setCancelable(false);
-        progressDialog2.setContentView(R.layout.progress_dialog);
-        progressDialog2.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        ImageView iconImageView = progressDialog2.findViewById(R.id.iconImageView);
-        iconImageView.setImageResource(R.drawable.logosmall); // Ganti 'ic_progress' dengan sumber daya ikon yang diinginkan
+            progressDialog2.show();
 
-        progressDialog2.show();
+            apiService = ApiClient.getClient().create(ApiService.class);
 
-        apiService = ApiClient.getClient().create(ApiService.class);
+            Call<Profile> call = apiService.getProfile(nrp);
+            call.enqueue(new Callback<Profile>() {
+                @Override
+                public void onResponse(Call<Profile> call, @NonNull Response<Profile> response) {
+                    assert response.body() != null;
+                    progressDialog2.dismiss();
+                    eTnrp.setText(decrypt(response.body().getNrp()));
+                    eTnama.setText(decrypt(response.body().getNama()));
+                    eTwa.setText(decrypt(response.body().getWa()));
+                    String selectedPangkat = decrypt(response.body().getPangkat());
+                    setSpinnerSelection(sPpangkat, selectedPangkat, "pangkat");
+                    String selectedSatker = decrypt(response.body().getSatker());
+                    setSpinnerSelection(sPsatker, selectedSatker, "satker");
+                    String selFungsi = decrypt(response.body().getSatfung());
+                    String selJabatan = decrypt(response.body().getJabatan());
 
-        Call<Profile> call = apiService.getProfile(nrp);
-        call.enqueue(new Callback<Profile>() {
-            @Override
-            public void onResponse(Call<Profile> call, @NonNull Response<Profile> response) {
-                assert response.body() != null;
-                progressDialog2.dismiss();
-                eTnrp.setText(decrypt(response.body().getNrp()));
-                eTnama.setText(decrypt(response.body().getNama()));
-                eTwa.setText(decrypt(response.body().getWa()));
-                String selectedPangkat = decrypt(response.body().getPangkat());
-                setSpinnerSelection(sPpangkat, selectedPangkat, "pangkat");
-                String selectedSatker = decrypt(response.body().getSatker());
-                setSpinnerSelection(sPsatker, selectedSatker, "satker");
-                String selFungsi = decrypt(response.body().getSatfung());
-                String selJabatan = decrypt(response.body().getJabatan());
+                    String foto = decrypt(response.body().getFoto());
+                    if (foto.equals("no")){
+                        Glide.with(First.this)
+                                .load(R.drawable.defaultfp)
+                                .circleCrop()
+                                .into(fpset);
+                    }else {
+                        Glide.with(First.this)
+                                .load(foto) // Ganti dengan URL gambar yang sesuai
+                                .circleCrop()
+                                .listener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        Toast.makeText(First.this, "GAGAL MEMUAT FOTO", Toast.LENGTH_SHORT).show();
+                                        Glide.with(First.this)
+                                                .load(R.drawable.defaultfp)
+                                                .circleCrop()
+                                                .into(fpset);
+                                        return true;
+                                    }
 
-                String foto = decrypt(response.body().getFoto());
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                        return false;
+                                    }
+                                })
+                                .into(fpset);
+                    }
+                    assert selectedSatker != null;
+                    if (selectedSatker.contains("POLRES")){
+                        addFungsi("polres");
+                        addJabatan("polres");
+                        setSpinnerSelection(sPfungsi, selFungsi, "fungsi");
+                        setSpinnerSelection(sPjabatan, selJabatan, "jabatan");
+                    }else if (selectedSatker.contains("POLSEK")){
+                        addFungsi("polsek");
+                        addJabatan("polres");
+                        setSpinnerSelection(sPfungsi, selFungsi, "fungsi");
+                        setSpinnerSelection(sPjabatan, selJabatan, "jabatan");
+                    }else if (selectedSatker.contains("POLSUBSEKTOR")){
+                        addFungsi("polsubsektor");
+                        addJabatan("polres");
+                        setSpinnerSelection(sPfungsi, selFungsi, "fungsi");
+                        setSpinnerSelection(sPjabatan, selJabatan, "jabatan");
+                    }
 
-                Glide.with(First.this)
-                        .load(foto) // Ganti dengan URL gambar yang sesuai
-                        .circleCrop()
-                        .listener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                Glide.with(First.this)
-                                        .load(R.drawable.defaultfp)
-                                        .circleCrop()
-                                        .into(fpset);
-                                return true;
-                            }
 
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                return false;
-                            }
-                        })
-                        .into(fpset);
-
-                assert selectedSatker != null;
-                if (selectedSatker.contains("POLRES")){
-                    addFungsi("polres");
-                    addJabatan("polres");
-                    setSpinnerSelection(sPfungsi, selFungsi, "fungsi");
-                    setSpinnerSelection(sPjabatan, selJabatan, "jabatan");
-                }else if (selectedSatker.contains("POLSEK")){
-                    addFungsi("polsek");
-                    addJabatan("polres");
-                    setSpinnerSelection(sPfungsi, selFungsi, "fungsi");
-                    setSpinnerSelection(sPjabatan, selJabatan, "jabatan");
-                }else if (selectedSatker.contains("POLSUBSEKTOR")){
-                    addFungsi("polsubsektor");
-                    addJabatan("polres");
-                    setSpinnerSelection(sPfungsi, selFungsi, "fungsi");
-                    setSpinnerSelection(sPjabatan, selJabatan, "jabatan");
                 }
 
+                @Override
+                public void onFailure(Call<Profile> call, Throwable t) {
+                    progressDialog2.dismiss();
 
-            }
+                    Glide.with(First.this)
+                            .load(R.drawable.defaultfp)
+                            .circleCrop()
+                            .into(fpset);
+                }
+            });
 
-            @Override
-            public void onFailure(Call<Profile> call, Throwable t) {
-                progressDialog2.dismiss();
+            ArrayAdapter<Pangkat> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Pangkats);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            this.sPpangkat.setAdapter(adapter);
 
-                File file = new File(getFilesDir(), "fotoprofil.jpg");
-                Glide.with(First.this)
-                        .load(file)
-                        .circleCrop()
-                        .into(fpset);
-            }
-        });
+            ArrayAdapter<Satker> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Satkers);
+            adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            this.sPsatker.setAdapter(adapter2);
+        }else{
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Maaf");
+            builder.setMessage("Fungsi ini hanya bisa digunakan pada saat internet tersedia");
+            builder.setCancelable(false);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
 
-        ArrayAdapter<Pangkat> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Pangkats);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        this.sPpangkat.setAdapter(adapter);
 
-        ArrayAdapter<Satker> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Satkers);
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        this.sPsatker.setAdapter(adapter2);
+            // Menampilkan dialog
+            builder.show();
+        }
 
     }
+
+    private boolean isInternetAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
 
     private void setSpinnerSelection(Spinner spinner, String selectedItem, String jenis) {
         if (jenis.equals("pangkat")){
@@ -567,11 +597,8 @@ public class First extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onResponse(Call<UpdateFoto> call, Response<UpdateFoto> response) {
                 if (response.isSuccessful()) {
-                    // Simpan foto ke penyimpanan internal
-                    saveImageToStorage(BitmapFactory.decodeFile(currentPhotoPath));
-
-                    // Tampilkan foto yang berhasil diupload
-                    loadImageFromStorage();
+                    recreate();
+                    Toast.makeText(First.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -586,16 +613,18 @@ public class First extends AppCompatActivity implements View.OnClickListener {
     private void saveImageToStorage(Bitmap bitmap) {
         String fileName = "fotoprofil.jpg";
         try {
-            FileOutputStream fos = openFileOutput(fileName, Context.MODE_PRIVATE);
+            FileOutputStream fos = openFileOutput(fileName, Context.MODE_PRIVATE | Context.MODE_APPEND);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.close();
+
+            loadImageFromStorage(fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void loadImageFromStorage() {
-        String fileName = "fotoprofil.jpg";
+
+    private void loadImageFromStorage(String fileName) {
         try {
             File file = new File(getFilesDir(), fileName);
             Glide.with(this)
@@ -606,6 +635,7 @@ public class First extends AppCompatActivity implements View.OnClickListener {
             e.printStackTrace();
         }
     }
+
     private void handleGalleryResult(Intent data) {
         if (data != null && data.getData() != null) {
             Uri selectedImageUri = data.getData();
@@ -617,37 +647,58 @@ public class First extends AppCompatActivity implements View.OnClickListener {
                     int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                     String imagePath = cursor.getString(column_index);
 
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("fotoprofil", imagePath);
-                    editor.apply();
-                    String nrp = sharedPreferences.getString("nrp", "");
+                    // Handle the image file obtained from the gallery
+                    File imageFile = new File(imagePath);
+                    if (imageFile.exists()) {
+                        // Prepare the image file for uploading
+                        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), imageFile);
+                        MultipartBody.Part imagePart = MultipartBody.Part.createFormData("image", imageFile.getName(), requestBody);
 
-                    // Prepare the image file for uploading
-                    File file = new File(imagePath);
-                    RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
-                    MultipartBody.Part imagePart = MultipartBody.Part.createFormData("image", file.getName(), requestBody);
+                        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+                        Glide.with(this)
+                                .asGif()
+                                .load(R.drawable.loadings)
+                                .circleCrop()
+                                .into(fpset);
 
-                    ApiService apiService = ApiClient.getClient().create(ApiService.class);
+                        // Make the upload request
+                        String nrp = sharedPreferences.getString("nrp", "");
+                        Call<UpdateFoto> call = apiService.uploadImage(nrp, imagePart);
+                        call.enqueue(new Callback<UpdateFoto>() {
+                            @Override
+                            public void onResponse(Call<UpdateFoto> call, Response<UpdateFoto> response) {
+                                if (response.isSuccessful()) {
+                                    // Simpan foto ke penyimpanan internal
+                                    recreate();
+                                    Toast.makeText(First.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
 
-                    // Make the upload request
-                    Call<UpdateFoto> call = apiService.uploadImage(nrp, imagePart);
-                    call.enqueue(new Callback<UpdateFoto>() {
-                        @Override
-                        public void onResponse(Call<UpdateFoto> call, Response<UpdateFoto> response) {
-                            Toast.makeText(First.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+                            @Override
+                            public void onFailure(Call<UpdateFoto> call, Throwable t) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(First.this);
+                                builder.setTitle("ERROR");
+                                builder.setMessage(t.getLocalizedMessage());
+                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // Kode yang akan dijalankan ketika tombol "OK" diklik
+                                        // ...
+                                    }
+                                });
+                                builder.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // Kode yang akan dijalankan ketika tombol "Batal" diklik
+                                        // ...
+                                    }
+                                });
 
-                        @Override
-                        public void onFailure(Call<UpdateFoto> call, Throwable t) {
-                            Toast.makeText(First.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                    // Load the image using Glide
-                    Glide.with(this)
-                            .load(selectedImageUri)
-                            .circleCrop()
-                            .into(fpset);
+                                AlertDialog alertDialog = builder.create();
+                                alertDialog.show();
+                            }
+                        });
+                    }
                 }
             } finally {
                 if (cursor != null) {
