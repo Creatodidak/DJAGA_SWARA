@@ -107,7 +107,7 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
                     if (tpsList != null && !tpsList.isEmpty()) {
                         databaseHelper.resetTables2();
                         for (TpsList tps : tpsList) {
-                            databaseHelper.insertSprinDetailData(tps.getIdSprin(), tps.getIdKab(), tps.getIdKec(), tps.getIdDes(), tps.getIdTps(), tps.getNomorTps(), tps.getKetuaKpps(), tps.getHpKpps(), tps.getPresiden(), tps.getDprri(), tps.getDpdri(), tps.getGubernur(), tps.getDprprov(), tps.getBupati(), tps.getDprkab(), tps.getKades(), tps.getDptSementara(), tps.getDptTetap(), tps.getDptFinal(), tps.getKeterangan(), tps.getStatus(), tps.getLokasiKotakSuara(), tps.getNamaDes(), tps.getNamaKec(), tps.getNamaKab(), tps.getCreatedAt(), tps.getUpdatedAt());
+                            databaseHelper.insertSprinDetailData(tps.getId(), tps.getLatitude(), tps.getLongitude(), tps.getIdProv(), tps.getIdSprin(), tps.getIdKab(), tps.getIdKec(), tps.getIdDes(), tps.getIdTps(), tps.getNomorTps(), tps.getKetuaKpps(), tps.getHpKpps(), tps.getDptSementara(), tps.getDptTetap(), tps.getDptFinal(), tps.getKeterangan(), tps.getStatus(), tps.getLokasiKotakSuara(), tps.getCreatedAt(), tps.getUpdatedAt(), tps.getNamaDes(), tps.getNamaKec(), tps.getNamaKab());
                         }
                         // Set up TpsAdapter
                         TpsAdapter adapter = new TpsAdapter(tpsList, Dashboard.this);
@@ -173,19 +173,15 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
 
     @Override
     public void onItemClick(TpsList tpsList) {
-        if (AESHelper.decrypt(tpsList.getStatus()).equals("OPEN")){
-            // Handle item click for TpsAdapter
-        } else {
-            notifikasi("INFO", "Surat Perintah Ini Sudah Tidak Berlaku Lagi!");
-        }
+        Intent intent = new Intent(Dashboard.this, Tugas.class);
+        intent.putExtra("id_tps", tpsList.getIdTps());
+        startActivity(intent);
     }
 
     @Override
     public void onItemClick(TpsListOffline tpsListOfflineOffline) {
-        if (tpsListOfflineOffline.getStatus().equals("OPEN")){
-            // Handle item click for TpsOfflineAdapter
-        } else {
-            notifikasi("INFO", "Surat Perintah Ini Sudah Tidak Berlaku Lagi!");
-        }
+        Intent intent = new Intent(Dashboard.this, Tugas.class);
+        intent.putExtra("id_tps", tpsListOfflineOffline.getIdTps());
+        startActivity(intent);
     }
 }

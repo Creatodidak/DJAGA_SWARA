@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        app:cardCornerRadius="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@android:color/transparent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/judulDraft"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:fontFamily="@font/med"
+                android:gravity="center_vertical"
+                android:text="Judul Draft"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:text="Ketuk untuk melihat data"
+                android:textColor="@color/disabled"
+                android:textSize="8sp"
+                android:textStyle="italic" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:gravity="start|center_vertical">
+
+                <ImageView
+                    android:id="@+id/imageView14"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:background="@android:color/transparent"
+                    android:tint="@color/disabled"
+                    app:srcCompat="@drawable/baseline_schedule_24" />
+
+                <TextView
+                    android:id="@+id/tanggalDraft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:text="Tanggal tersimpan"
+                    android:textColor="@color/disabled"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                android:gravity="center_vertical|end">
+
+                <TextView
+                    android:id="@+id/textView19"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:text="Kirim Data "
+                    android:textColor="@color/primary" />
+
+                <ImageView
+                    android:id="@+id/imageView13"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:background="@android:color/transparent"
+                    android:tint="@color/primary"
+                    app:srcCompat="@drawable/baseline_send_24" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

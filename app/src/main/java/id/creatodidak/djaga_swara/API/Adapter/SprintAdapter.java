@@ -80,11 +80,11 @@ public class SprintAdapter extends RecyclerView.Adapter<SprintAdapter.SprintView
         }
 
         public void bind(SprintList sprint) {
-            judul.setText(AESHelper.decrypt(sprint.getJudul()));
-            status.setText(AESHelper.decrypt(sprint.getStatus()));
+            judul.setText(sprint.getJudul());
+            status.setText(sprint.getStatus());
             tanggal.setText(sprint.getTanggal().toString());
 
-            String jsonString = AESHelper.decrypt(sprint.getType());
+            String jsonString = sprint.getType();
 
             Gson gson = new Gson();
             String[] stringArray = gson.fromJson(jsonString, String[].class);
@@ -95,7 +95,7 @@ public class SprintAdapter extends RecyclerView.Adapter<SprintAdapter.SprintView
             type.setText(joinedString);
 
             DatabaseHelper databaseHelper = new DatabaseHelper(context);
-            databaseHelper.insertSprinListData(AESHelper.decrypt(sprint.getNomor()), AESHelper.decrypt(sprint.getJudul()), AESHelper.decrypt(sprint.getKode()), AESHelper.decrypt(sprint.getTahun()), AESHelper.decrypt(sprint.getPenerbit()), AESHelper.decrypt(sprint.getTandatangan()), AESHelper.decrypt(sprint.getStatus()), AESHelper.decrypt(sprint.getDasar()), AESHelper.decrypt(sprint.getNamaops()), AESHelper.decrypt(sprint.getPerintah()), sprint.getTanggal().toString(), sprint.getTanggalmulai().toString(), sprint.getTanggalberakhir().toString(), AESHelper.decrypt(sprint.getType()), sprint.getCreated_at().toString(), sprint.getUpdated_at().toString());
+            databaseHelper.insertSprinListData(sprint.getNomor(), sprint.getJudul(), sprint.getKode(), sprint.getTahun(), sprint.getPenerbit(), sprint.getTandatangan(), sprint.getStatus(), sprint.getDasar(), sprint.getNamaops(), sprint.getPerintah(), sprint.getTanggal().toString(), sprint.getTanggalmulai().toString(), sprint.getTanggalberakhir().toString(), sprint.getType(), sprint.getCreated_at().toString(), sprint.getUpdated_at().toString());
         }
     }
 

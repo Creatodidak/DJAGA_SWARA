@@ -26,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String createTableQuery3 = "CREATE TABLE IF NOT EXISTS sprinlist (id INTEGER PRIMARY KEY AUTOINCREMENT, nomor TEXT, judul TEXT, kode TEXT, tahun TEXT, penerbit TEXT, tandatangan TEXT, status TEXT, dasar TEXT, namaops TEXT, perintah TEXT, tanggal TEXT, tanggalmulai TEXT, tanggalberakhir TEXT, type TEXT, created_at TEXT, updated_at TEXT)";
         db.execSQL(createTableQuery3);
 
-        String createTableQuery4 = "CREATE TABLE IF NOT EXISTS sprindetail (id INTEGER PRIMARY KEY AUTOINCREMENT, id_sprin TEXT, id_kab TEXT, id_kec TEXT, id_des TEXT, id_tps TEXT, nomor_tps TEXT, ketua_kpps TEXT, hp_kpps TEXT, presiden TEXT, dprri TEXT, dpdri TEXT, gubernur TEXT, dprprov TEXT, bupati TEXT, dprkab TEXT, kades TEXT, dpt_sementara TEXT, dpt_tetap TEXT, dpt_final TEXT, keterangan TEXT, status TEXT, lokasikotaksuara TEXT, nama_des TEXT, nama_kec TEXT, nama_kab TEXT, created_at TEXT, updated_at TEXT)";
+        String createTableQuery4 = "CREATE TABLE IF NOT EXISTS sprindetail (id INTEGER PRIMARY KEY AUTOINCREMENT, latitude TEXT, longitude TEXT, id_prov TEXT, id_sprin TEXT, id_kab TEXT, id_kec TEXT, id_des TEXT, id_tps TEXT, nomor_tps TEXT, ketua_kpps TEXT, hp_kpps TEXT, dpt_sementara TEXT, dpt_tetap TEXT, dpt_final TEXT, keterangan TEXT, status TEXT, lokasikotaksuara TEXT, created_at TEXT, updated_at TEXT, nama_des TEXT, nama_kec TEXT, nama_kab TEXT)";
         db.execSQL(createTableQuery4);
 
     }
@@ -90,11 +90,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Fungsi untuk menyisipkan data ke dalam tabel sprindetail
-    public void insertSprinDetailData(String id_sprin, String id_kab, String id_kec, String id_des, String id_tps, String nomor_tps, String ketua_kpps, String hp_kpps, String presiden, String dprri, String dpdri, String gubernur, String dprprov, String bupati, String dprkab, String kades, String dpt_sementara, String dpt_tetap, String dpt_final, String keterangan, String status, String lokasikotaksuara, String nama_des, String nama_kec, String nama_kab, String created_at, String updated_at) {
+    public void insertSprinDetailData(int id, String latitude, String longitude, String id_prov, String id_sprin, String id_kab, String id_kec, String id_des, String id_tps, String nomor_tps, String ketua_kpps, String hp_kpps, String dpt_sementara, String dpt_tetap, String dpt_final, String keterangan, String status, String lokasikotaksuara, String created_at, String updated_at, String nama_des, String nama_kec, String nama_kab) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-
+        values.put("id", id);
+        values.put("latitude", latitude);
+        values.put("longitude", longitude);
+        values.put("id_prov", id_prov);
         values.put("id_sprin", id_sprin);
         values.put("id_kab", id_kab);
         values.put("id_kec", id_kec);
@@ -103,14 +106,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("nomor_tps", nomor_tps);
         values.put("ketua_kpps", ketua_kpps);
         values.put("hp_kpps", hp_kpps);
-        values.put("presiden", presiden);
-        values.put("dprri", dprri);
-        values.put("dpdri", dpdri);
-        values.put("gubernur", gubernur);
-        values.put("dprprov", dprprov);
-        values.put("bupati", bupati);
-        values.put("dprkab", dprkab);
-        values.put("kades", kades);
         values.put("dpt_sementara", dpt_sementara);
         values.put("dpt_tetap", dpt_tetap);
         values.put("dpt_final", dpt_final);
@@ -173,67 +168,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<TpsListOffline> tpsListOffline = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String[] columns = {
-                "id_sprin",
-                "id_kab",
-                "id_kec",
-                "id_des",
-                "id_tps",
-                "nomor_tps",
-                "ketua_kpps",
-                "hp_kpps",
-                "presiden",
-                "dprri",
-                "dpdri",
-                "gubernur",
-                "dprprov",
-                "bupati",
-                "dprkab",
-                "kades",
-                "dpt_sementara",
-                "dpt_tetap",
-                "dpt_final",
-                "keterangan",
-                "status",
-                "lokasikotaksuara",
-                "nama_des",
-                "nama_kec",
-                "nama_kab",
-                "created_at",
-                "updated_at"
+        String[] columns = {"id", "latitude", "longitude", "id_prov", "id_sprin", "id_kab", "id_kec", "id_des", "id_tps", "nomor_tps", "ketua_kpps", "hp_kpps", "dpt_sementara", "dpt_tetap", "dpt_final", "keterangan", "status", "lokasikotaksuara", "created_at", "updated_at", "nama_des", "nama_kec", "nama_kab"
         };
 
         Cursor cursor = db.query("sprindetail", columns, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
                 TpsListOffline tps = new TpsListOffline();
-                tps.setId_sprin(cursor.getString(cursor.getColumnIndex("id_sprin")));
-                tps.setId_kab(cursor.getString(cursor.getColumnIndex("id_kab")));
-                tps.setId_kec(cursor.getString(cursor.getColumnIndex("id_kec")));
-                tps.setId_des(cursor.getString(cursor.getColumnIndex("id_des")));
-                tps.setId_tps(cursor.getString(cursor.getColumnIndex("id_tps")));
-                tps.setNomor_tps(cursor.getString(cursor.getColumnIndex("nomor_tps")));
-                tps.setKetua_kpps(cursor.getString(cursor.getColumnIndex("ketua_kpps")));
-                tps.setHp_kpps(cursor.getString(cursor.getColumnIndex("hp_kpps")));
-                tps.setPresiden(cursor.getString(cursor.getColumnIndex("presiden")));
-                tps.setDprri(cursor.getString(cursor.getColumnIndex("dprri")));
-                tps.setDpdri(cursor.getString(cursor.getColumnIndex("dpdri")));
-                tps.setGubernur(cursor.getString(cursor.getColumnIndex("gubernur")));
-                tps.setDprprov(cursor.getString(cursor.getColumnIndex("dprprov")));
-                tps.setBupati(cursor.getString(cursor.getColumnIndex("bupati")));
-                tps.setDprkab(cursor.getString(cursor.getColumnIndex("dprkab")));
-                tps.setKades(cursor.getString(cursor.getColumnIndex("kades")));
-                tps.setDpt_sementara(cursor.getString(cursor.getColumnIndex("dpt_sementara")));
-                tps.setDpt_tetap(cursor.getString(cursor.getColumnIndex("dpt_tetap")));
-                tps.setDpt_final(cursor.getString(cursor.getColumnIndex("dpt_final")));
+                tps.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                tps.setLatitude(cursor.getString(cursor.getColumnIndex("latitude")));
+                tps.setLongitude(cursor.getString(cursor.getColumnIndex("longitude")));
+                tps.setIdProv(cursor.getString(cursor.getColumnIndex("id_prov")));
+                tps.setIdSprin(cursor.getString(cursor.getColumnIndex("id_sprin")));
+                tps.setIdKab(cursor.getString(cursor.getColumnIndex("id_kab")));
+                tps.setIdKec(cursor.getString(cursor.getColumnIndex("id_kec")));
+                tps.setIdDes(cursor.getString(cursor.getColumnIndex("id_des")));
+                tps.setIdTps(cursor.getString(cursor.getColumnIndex("id_tps")));
+                tps.setNomorTps(cursor.getString(cursor.getColumnIndex("nomor_tps")));
+                tps.setKetuaKpps(cursor.getString(cursor.getColumnIndex("ketua_kpps")));
+                tps.setHpKpps(cursor.getString(cursor.getColumnIndex("hp_kpps")));
+                tps.setDptSementara(cursor.getString(cursor.getColumnIndex("dpt_sementara")));
+                tps.setDptTetap(cursor.getString(cursor.getColumnIndex("dpt_tetap")));
+                tps.setDptFinal(cursor.getString(cursor.getColumnIndex("dpt_final")));
                 tps.setKeterangan(cursor.getString(cursor.getColumnIndex("keterangan")));
                 tps.setStatus(cursor.getString(cursor.getColumnIndex("status")));
-                tps.setLokasikotaksuara(cursor.getString(cursor.getColumnIndex("lokasikotaksuara")));
+                tps.setLokasiKotakSuara(cursor.getString(cursor.getColumnIndex("lokasikotaksuara")));
                 tps.setNamaDes(cursor.getString(cursor.getColumnIndex("nama_des")));
                 tps.setNamaKec(cursor.getString(cursor.getColumnIndex("nama_kec")));
                 tps.setNamaKab(cursor.getString(cursor.getColumnIndex("nama_kab")));
-                tps.setCreated_at(cursor.getString(cursor.getColumnIndex("created_at")));
-                tps.setUpdated_at(cursor.getString(cursor.getColumnIndex("updated_at")));
+                tps.setCreatedAt(cursor.getString(cursor.getColumnIndex("created_at")));
+                tps.setUpdatedAt(cursor.getString(cursor.getColumnIndex("updated_at")));
 
                 tpsListOffline.add(tps);
             } while (cursor.moveToNext());
@@ -243,6 +207,50 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
 
         return tpsListOffline;
+    }
+
+    @SuppressLint("Range")
+    public TpsListOffline getSprindetail(String id_tps) {
+        TpsListOffline tps = null;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String[] columns = {"id", "latitude", "longitude", "id_prov", "id_sprin", "id_kab", "id_kec", "id_des", "id_tps", "nomor_tps", "ketua_kpps", "hp_kpps", "dpt_sementara", "dpt_tetap", "dpt_final", "keterangan", "status", "lokasikotaksuara", "created_at", "updated_at", "nama_des", "nama_kec", "nama_kab"};
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("sprindetail", columns, selection, selectionArgs, null, null, null);
+        if (cursor.moveToFirst()) {
+            tps = new TpsListOffline();
+            tps.setId(cursor.getInt(cursor.getColumnIndex("id")));
+            tps.setLatitude(cursor.getString(cursor.getColumnIndex("latitude")));
+            tps.setLongitude(cursor.getString(cursor.getColumnIndex("longitude")));
+            tps.setIdProv(cursor.getString(cursor.getColumnIndex("id_prov")));
+            tps.setIdSprin(cursor.getString(cursor.getColumnIndex("id_sprin")));
+            tps.setIdKab(cursor.getString(cursor.getColumnIndex("id_kab")));
+            tps.setIdKec(cursor.getString(cursor.getColumnIndex("id_kec")));
+            tps.setIdDes(cursor.getString(cursor.getColumnIndex("id_des")));
+            tps.setIdTps(cursor.getString(cursor.getColumnIndex("id_tps")));
+            tps.setNomorTps(cursor.getString(cursor.getColumnIndex("nomor_tps")));
+            tps.setKetuaKpps(cursor.getString(cursor.getColumnIndex("ketua_kpps")));
+            tps.setHpKpps(cursor.getString(cursor.getColumnIndex("hp_kpps")));
+            tps.setDptSementara(cursor.getString(cursor.getColumnIndex("dpt_sementara")));
+            tps.setDptTetap(cursor.getString(cursor.getColumnIndex("dpt_tetap")));
+            tps.setDptFinal(cursor.getString(cursor.getColumnIndex("dpt_final")));
+            tps.setKeterangan(cursor.getString(cursor.getColumnIndex("keterangan")));
+            tps.setStatus(cursor.getString(cursor.getColumnIndex("status")));
+            tps.setLokasiKotakSuara(cursor.getString(cursor.getColumnIndex("lokasikotaksuara")));
+            tps.setNamaDes(cursor.getString(cursor.getColumnIndex("nama_des")));
+            tps.setNamaKec(cursor.getString(cursor.getColumnIndex("nama_kec")));
+            tps.setNamaKab(cursor.getString(cursor.getColumnIndex("nama_kab")));
+            tps.setCreatedAt(cursor.getString(cursor.getColumnIndex("created_at")));
+            tps.setUpdatedAt(cursor.getString(cursor.getColumnIndex("updated_at")));
+        }
+
+        cursor.close();
+        db.close();
+
+        return tps;
     }
 
 

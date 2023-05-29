@@ -38,9 +38,10 @@ public class TpsOfflineAdapter extends RecyclerView.Adapter<TpsOfflineAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         TpsListOffline tps = tpsList.get(position);
-        holder.txtNamaDes.setText(tps.getNamaDes());
-        holder.txtNamaKab.setText(tps.getNamaKab());
-        holder.txtNamaKec.setText(tps.getNamaKec());
+        holder.txtNamatps.setText("TPS "+tps.getNomorTps());
+        holder.txtIdtps.setText("ID: "+tps.getIdTps());
+        holder.txtLokasitps.setText(tps.getNamaKab()+", KEC. "+tps.getNamaKec()+", DESA "+tps.getNamaDes());
+        holder.txtStatustps.setText(tps.getStatus());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,14 +58,15 @@ public class TpsOfflineAdapter extends RecyclerView.Adapter<TpsOfflineAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtNamaDes, txtNamaKec, txtNamaKab;
+        TextView txtIdtps, txtLokasitps, txtNamatps, txtStatustps;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtNamaDes = itemView.findViewById(R.id.idtps);
-            txtNamaKec = itemView.findViewById(R.id.lokasitps);
-            txtNamaKab = itemView.findViewById(R.id.namatps);
+            txtIdtps = itemView.findViewById(R.id.idtps);
+            txtLokasitps = itemView.findViewById(R.id.lokasitps);
+            txtStatustps = itemView.findViewById(R.id.statustps);
+            txtNamatps = itemView.findViewById(R.id.namatps);
         }
     }
 

@@ -154,7 +154,7 @@ public class Sprin extends AppCompatActivity implements SprintAdapter.OnItemClic
     @Override
     public void onItemClick(SprintList sprint) {
 
-        if (AESHelper.decrypt(sprint.getStatus()).equals("OPEN")){
+        if (sprint.getStatus().equals("OPEN")){
             Intent intent = new Intent(Sprin.this, Dashboard.class);
             intent.putExtra("sprint_id", String.valueOf(sprint.getId()));
             startActivity(intent);

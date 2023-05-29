@@ -1,32 +1,48 @@
 package id.creatodidak.djaga_swara.API.Models;
 
 import com.google.gson.annotations.SerializedName;
+
 public class TpsListOffline {
+    @SerializedName("id")
     private int id;
-    private String id_sprin;
-    private String id_kab;
-    private String id_kec;
-    private String id_des;
-    private String id_tps;
-    private String nomor_tps;
-    private String ketua_kpps;
-    private String hp_kpps;
-    private String presiden;
-    private String dprri;
-    private String dpdri;
-    private String gubernur;
-    private String dprprov;
-    private String bupati;
-    private String dprkab;
-    private String kades;
-    private String dpt_sementara;
-    private String dpt_tetap;
-    private String dpt_final;
+    @SerializedName("latitude")
+    private String latitude;
+    @SerializedName("longitude")
+    private String longitude;
+    @SerializedName("id_prov")
+    private String idProv;
+    @SerializedName("id_sprin")
+    private String idSprin;
+    @SerializedName("id_kab")
+    private String idKab;
+    @SerializedName("id_kec")
+    private String idKec;
+    @SerializedName("id_des")
+    private String idDes;
+    @SerializedName("id_tps")
+    private String idTps;
+    @SerializedName("nomor_tps")
+    private String nomorTps;
+    @SerializedName("ketua_kpps")
+    private String ketuaKpps;
+    @SerializedName("hp_kpps")
+    private String hpKpps;
+    @SerializedName("dpt_sementara")
+    private String dptSementara;
+    @SerializedName("dpt_tetap")
+    private String dptTetap;
+    @SerializedName("dpt_final")
+    private String dptFinal;
+    @SerializedName("keterangan")
     private String keterangan;
+    @SerializedName("status")
     private String status;
-    private String lokasikotaksuara;
-    private String created_at;
-    private String updated_at;
+    @SerializedName("lokasikotaksuara")
+    private String lokasiKotakSuara;
+    @SerializedName("created_at")
+    private String createdAt;
+    @SerializedName("updated_at")
+    private String updatedAt;
     @SerializedName("nama_des")
     private String namaDes;
     @SerializedName("nama_kec")
@@ -34,48 +50,9 @@ public class TpsListOffline {
     @SerializedName("nama_kab")
     private String namaKab;
 
+    // Constructor
     public TpsListOffline() {
-        // konstruktor tanpa parameter
     }
-
-//    public TpsListOffline(int id, String id_sprin, String id_kab, String id_kec, String id_des, String id_tps,
-//                          String nomor_tps, String ketua_kpps, String hp_kpps, String presiden, String dprri,
-//                          String dpdri, String gubernur, String dprprov, String bupati, String dprkab,
-//                          String kades, String dpt_sementara, String dpt_tetap, String dpt_final,
-//                          String keterangan, String status, String lokasikotaksuara, String namaDes, String namaKec, String namaKab, String created_at,
-//                          String updated_at) {
-//        this.id = id;
-//        this.id_sprin = id_sprin;
-//        this.id_kab = id_kab;
-//        this.id_kec = id_kec;
-//        this.id_des = id_des;
-//        this.id_tps = id_tps;
-//        this.nomor_tps = nomor_tps;
-//        this.ketua_kpps = ketua_kpps;
-//        this.hp_kpps = hp_kpps;
-//        this.presiden = presiden;
-//        this.dprri = dprri;
-//        this.dpdri = dpdri;
-//        this.gubernur = gubernur;
-//        this.dprprov = dprprov;
-//        this.bupati = bupati;
-//        this.dprkab = dprkab;
-//        this.kades = kades;
-//        this.dpt_sementara = dpt_sementara;
-//        this.dpt_tetap = dpt_tetap;
-//        this.dpt_final = dpt_final;
-//        this.keterangan = keterangan;
-//        this.status = status;
-//        this.lokasikotaksuara = lokasikotaksuara;
-//        this.namaDes = namaDes;
-//        this.namaKec = namaKec;
-//        this.namaKab = namaKab;
-//        this.created_at = created_at;
-//        this.updated_at = updated_at;
-//    }
-
-
-    // Getters and setters for all the fields
 
     public int getId() {
         return id;
@@ -85,156 +62,116 @@ public class TpsListOffline {
         this.id = id;
     }
 
-    public String getId_sprin() {
-        return id_sprin;
+    public String getLatitude() {
+        return latitude;
     }
 
-    public void setId_sprin(String id_sprin) {
-        this.id_sprin = id_sprin;
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
     }
 
-    public String getId_kab() {
-        return id_kab;
+    public String getLongitude() {
+        return longitude;
     }
 
-    public void setId_kab(String id_kab) {
-        this.id_kab = id_kab;
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 
-    public String getId_kec() {
-        return id_kec;
+    public String getIdProv() {
+        return idProv;
     }
 
-    public void setId_kec(String id_kec) {
-        this.id_kec = id_kec;
+    public void setIdProv(String idProv) {
+        this.idProv = idProv;
     }
 
-    public String getId_des() {
-        return id_des;
+    public String getIdSprin() {
+        return idSprin;
     }
 
-    public void setId_des(String id_des) {
-        this.id_des = id_des;
+    public void setIdSprin(String idSprin) {
+        this.idSprin = idSprin;
     }
 
-    public String getId_tps() {
-        return id_tps;
+    public String getIdKab() {
+        return idKab;
     }
 
-    public void setId_tps(String id_tps) {
-        this.id_tps = id_tps;
+    public void setIdKab(String idKab) {
+        this.idKab = idKab;
     }
 
-    public String getNomor_tps() {
-        return nomor_tps;
+    public String getIdKec() {
+        return idKec;
     }
 
-    public void setNomor_tps(String nomor_tps) {
-        this.nomor_tps = nomor_tps;
+    public void setIdKec(String idKec) {
+        this.idKec = idKec;
     }
 
-    public String getKetua_kpps() {
-        return ketua_kpps;
+    public String getIdDes() {
+        return idDes;
     }
 
-    public void setKetua_kpps(String ketua_kpps) {
-        this.ketua_kpps = ketua_kpps;
+    public void setIdDes(String idDes) {
+        this.idDes = idDes;
     }
 
-    public String getHp_kpps() {
-        return hp_kpps;
+    public String getIdTps() {
+        return idTps;
     }
 
-    public void setHp_kpps(String hp_kpps) {
-        this.hp_kpps = hp_kpps;
+    public void setIdTps(String idTps) {
+        this.idTps = idTps;
     }
 
-    public String getPresiden() {
-        return presiden;
+    public String getNomorTps() {
+        return nomorTps;
     }
 
-    public void setPresiden(String presiden) {
-        this.presiden = presiden;
+    public void setNomorTps(String nomorTps) {
+        this.nomorTps = nomorTps;
     }
 
-    public String getDprri() {
-        return dprri;
+    public String getKetuaKpps() {
+        return ketuaKpps;
     }
 
-    public void setDprri(String dprri) {
-        this.dprri = dprri;
+    public void setKetuaKpps(String ketuaKpps) {
+        this.ketuaKpps = ketuaKpps;
     }
 
-    public String getDpdri() {
-        return dpdri;
+    public String getHpKpps() {
+        return hpKpps;
     }
 
-    public void setDpdri(String dpdri) {
-        this.dpdri = dpdri;
+    public void setHpKpps(String hpKpps) {
+        this.hpKpps = hpKpps;
     }
 
-    public String getGubernur() {
-        return gubernur;
+    public String getDptSementara() {
+        return dptSementara;
     }
 
-    public void setGubernur(String gubernur) {
-        this.gubernur = gubernur;
+    public void setDptSementara(String dptSementara) {
+        this.dptSementara = dptSementara;
     }
 
-    public String getDprprov() {
-        return dprprov;
+    public String getDptTetap() {
+        return dptTetap;
     }
 
-    public void setDprprov(String dprprov) {
-        this.dprprov = dprprov;
+    public void setDptTetap(String dptTetap) {
+        this.dptTetap = dptTetap;
     }
 
-    public String getBupati() {
-        return bupati;
+    public String getDptFinal() {
+        return dptFinal;
     }
 
-    public void setBupati(String bupati) {
-        this.bupati = bupati;
-    }
-
-    public String getDprkab() {
-        return dprkab;
-    }
-
-    public void setDprkab(String dprkab) {
-        this.dprkab = dprkab;
-    }
-
-    public String getKades() {
-        return kades;
-    }
-
-    public void setKades(String kades) {
-        this.kades = kades;
-    }
-
-    public String getDpt_sementara() {
-        return dpt_sementara;
-    }
-
-    public void setDpt_sementara(String dpt_sementara) {
-        this.dpt_sementara = dpt_sementara;
-    }
-
-    public String getDpt_tetap() {
-        return dpt_tetap;
-    }
-
-    public void setDpt_tetap(String dpt_tetap) {
-        this.dpt_tetap = dpt_tetap;
-    }
-
-    public String getDpt_final() {
-        return dpt_final;
-    }
-
-    public void setDpt_final(String dpt_final) {
-        this.dpt_final = dpt_final;
+    public void setDptFinal(String dptFinal) {
+        this.dptFinal = dptFinal;
     }
 
     public String getKeterangan() {
@@ -253,12 +190,28 @@ public class TpsListOffline {
         this.status = status;
     }
 
-    public String getLokasikotaksuara() {
-        return lokasikotaksuara;
+    public String getLokasiKotakSuara() {
+        return lokasiKotakSuara;
     }
 
-    public void setLokasikotaksuara(String lokasikotaksuara) {
-        this.lokasikotaksuara = lokasikotaksuara;
+    public void setLokasiKotakSuara(String lokasiKotakSuara) {
+        this.lokasiKotakSuara = lokasiKotakSuara;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public String getNamaDes() {
@@ -283,21 +236,5 @@ public class TpsListOffline {
 
     public void setNamaKab(String namaKab) {
         this.namaKab = namaKab;
-    }
-
-    public String getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
-    }
-
-    public String getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(String updated_at) {
-        this.updated_at = updated_at;
     }
 }

@@ -5,6 +5,12 @@ import com.google.gson.annotations.SerializedName;
 public class TpsList {
     @SerializedName("id")
     private int id;
+    @SerializedName("latitude")
+    private String latitude;
+    @SerializedName("longitude")
+    private String longitude;
+    @SerializedName("id_prov")
+    private String idProv;
     @SerializedName("id_sprin")
     private String idSprin;
     @SerializedName("id_kab")
@@ -21,22 +27,6 @@ public class TpsList {
     private String ketuaKpps;
     @SerializedName("hp_kpps")
     private String hpKpps;
-    @SerializedName("presiden")
-    private String presiden;
-    @SerializedName("dprri")
-    private String dprri;
-    @SerializedName("dpdri")
-    private String dpdri;
-    @SerializedName("gubernur")
-    private String gubernur;
-    @SerializedName("dprprov")
-    private String dprprov;
-    @SerializedName("bupati")
-    private String bupati;
-    @SerializedName("dprkab")
-    private String dprkab;
-    @SerializedName("kades")
-    private String kades;
     @SerializedName("dpt_sementara")
     private String dptSementara;
     @SerializedName("dpt_tetap")
@@ -64,13 +54,36 @@ public class TpsList {
     public TpsList() {
     }
 
-    // Getters and Setters
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getIdProv() {
+        return idProv;
+    }
+
+    public void setIdProv(String idProv) {
+        this.idProv = idProv;
     }
 
     public String getIdSprin() {
@@ -135,70 +148,6 @@ public class TpsList {
 
     public void setHpKpps(String hpKpps) {
         this.hpKpps = hpKpps;
-    }
-
-    public String getPresiden() {
-        return presiden;
-    }
-
-    public void setPresiden(String presiden) {
-        this.presiden = presiden;
-    }
-
-    public String getDprri() {
-        return dprri;
-    }
-
-    public void setDprri(String dprri) {
-        this.dprri = dprri;
-    }
-
-    public String getDpdri() {
-        return dpdri;
-    }
-
-    public void setDpdri(String dpdri) {
-        this.dpdri = dpdri;
-    }
-
-    public String getGubernur() {
-        return gubernur;
-    }
-
-    public void setGubernur(String gubernur) {
-        this.gubernur = gubernur;
-    }
-
-    public String getDprprov() {
-        return dprprov;
-    }
-
-    public void setDprprov(String dprprov) {
-        this.dprprov = dprprov;
-    }
-
-    public String getBupati() {
-        return bupati;
-    }
-
-    public void setBupati(String bupati) {
-        this.bupati = bupati;
-    }
-
-    public String getDprkab() {
-        return dprkab;
-    }
-
-    public void setDprkab(String dprkab) {
-        this.dprkab = dprkab;
-    }
-
-    public String getKades() {
-        return kades;
-    }
-
-    public void setKades(String kades) {
-        this.kades = kades;
     }
 
     public String getDptSementara() {
