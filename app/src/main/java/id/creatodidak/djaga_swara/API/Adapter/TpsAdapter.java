@@ -12,8 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import id.creatodidak.djaga_swara.API.Models.TpsList;
-import id.creatodidak.djaga_swara.Helper.AESHelper;
-import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
 import id.creatodidak.djaga_swara.R;
 
 public class TpsAdapter extends RecyclerView.Adapter<TpsAdapter.ViewHolder> {
@@ -44,13 +42,11 @@ public class TpsAdapter extends RecyclerView.Adapter<TpsAdapter.ViewHolder> {
         holder.txtIdtps.setText("ID: "+tps.getIdTps());
         holder.txtLokasitps.setText(tps.getNamaKab()+", KEC. "+tps.getNamaKec()+", DESA "+tps.getNamaDes());
         holder.txtStatustps.setText(tps.getStatus());
-
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onItemClickListener != null) {
                     onItemClickListener.onItemClick(tps);
-
                 }
             }
         });
@@ -63,6 +59,8 @@ public class TpsAdapter extends RecyclerView.Adapter<TpsAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView txtIdtps, txtLokasitps, txtNamatps, txtStatustps;
+
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtIdtps = itemView.findViewById(R.id.idtps);

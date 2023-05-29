@@ -46,7 +46,7 @@
                         android:fontFamily="@font/bold"
                         android:gravity="center"
                         android:text="TPS 99"
-                        android:textSize="16sp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -106,7 +106,7 @@
                     android:gravity="center_vertical|end"
                     android:text="ID: 12343543523454235"
                     android:textColor="#B5ACAC"
-                    android:textSize="10sp" />
+                    android:textSize="6sp" />
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

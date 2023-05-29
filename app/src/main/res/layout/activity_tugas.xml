@@ -45,7 +45,7 @@
                 android:background="@android:color/transparent"
                 android:fontFamily="@font/bold"
                 android:text="TPS XX"
-                android:textSize="24sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tslistLOC"
@@ -221,7 +221,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="LOKASI TPS" />
+                    android:fontFamily="@font/bold"
+                    android:text="LOKASI TPS"
+                    android:textSize="8sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -254,7 +256,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="LAP CEK TPS" />
+                    android:fontFamily="@font/bold"
+                    android:text="LAP CEK TPS"
+                    android:textSize="8sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -287,7 +291,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="DPT TPS" />
+                    android:fontFamily="@font/bold"
+                    android:text="DPT TPS"
+                    android:textSize="8sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -320,7 +326,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="LAP PAM TPS" />
+                    android:fontFamily="@font/bold"
+                    android:text="LAP PAM TPS"
+                    android:textSize="8sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -353,7 +361,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="LAP HASIL SUARA" />
+                    android:fontFamily="@font/bold"
+                    android:text="LAP HASIL SUARA"
+                    android:textSize="8sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -386,7 +396,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="DOK. FORM. C1" />
+                    android:fontFamily="@font/bold"
+                    android:text="DOK. FORM. C1"
+                    android:textSize="8sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -419,7 +431,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="LAP PENGAWALAN" />
+                    android:fontFamily="@font/bold"
+                    android:text="LAP PENGAWALAN"
+                    android:textSize="8sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -452,8 +466,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
+                    android:fontFamily="@font/bold"
                     android:gravity="center"
-                    android:text="LAP PENYERAHAN\nKOTAK SUARA" />
+                    android:text="LAP PENYERAHAN\nKOTAK SUARA"
+                    android:textSize="8sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -485,7 +501,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="HUB. KETUA KPPS" />
+                    android:fontFamily="@font/bold"
+                    android:text="HUB. KETUA KPPS"
+                    android:textSize="8sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

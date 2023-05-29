@@ -3,12 +3,8 @@ package id.creatodidak.djaga_swara.API.Interface;
 import java.util.List;
 
 import id.creatodidak.djaga_swara.API.Models.Alluser;
-import id.creatodidak.djaga_swara.API.Models.AppKeyResponse;
 import id.creatodidak.djaga_swara.API.Models.Profile;
-import id.creatodidak.djaga_swara.API.Models.Sprint;
 import id.creatodidak.djaga_swara.API.Models.SprintList;
-import id.creatodidak.djaga_swara.API.Models.TPS;
-import id.creatodidak.djaga_swara.API.Models.TokenResponse;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
 import id.creatodidak.djaga_swara.API.Models.UpdResponse;
 import id.creatodidak.djaga_swara.API.Models.UpdateApp;
@@ -23,7 +19,6 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 public interface ApiService {
     @GET("user")
@@ -70,5 +65,13 @@ public interface ApiService {
     Call<UpdateFoto> uploadImage(
             @Part("nrp") String nrp,
             @Part MultipartBody.Part image);
+
+    @Multipart
+    @POST("/android/updatetpsloc")
+    Call<UpdResponse> updateloc(
+            @Part("id_tps") String id_tps,
+            @Part("latitude") String latitude,
+            @Part("longitude") String longitude
+    );
 }
 

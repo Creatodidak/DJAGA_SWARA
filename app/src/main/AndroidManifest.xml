@@ -38,6 +38,9 @@
         android:theme="@style/DJAGA_SWARA"
         tools:targetApi="31">
         <activity
+            android:name=".Dashboard.TugasForm.Lokasi"
+            android:exported="false" />
+        <activity
             android:name=".Dashboard.Tugas"
             android:exported="false" />
         <activity

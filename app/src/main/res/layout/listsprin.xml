@@ -51,7 +51,7 @@
                     android:text="Pengaman Pemilu 2024 di wilayah hukum polres landak"
                     android:textAllCaps="true"
                     android:textColor="@color/primary"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -76,7 +76,7 @@
                         android:lineSpacingExtra="0sp"
                         android:text="OPEN"
                         android:textColor="#302E2E"
-                        android:textSize="10sp" />
+                        android:textSize="8sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -102,7 +102,7 @@
                         android:lineSpacingExtra="0sp"
                         android:text="TANGGAL"
                         android:textColor="#302E2E"
-                        android:textSize="10sp" />
+                        android:textSize="8sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -130,7 +130,7 @@
                         android:lineSpacingExtra="0sp"
                         android:text="TANGGAL"
                         android:textColor="#302E2E"
-                        android:textSize="10sp" />
+                        android:textSize="8sp" />
                 </LinearLayout>
 
             </LinearLayout>

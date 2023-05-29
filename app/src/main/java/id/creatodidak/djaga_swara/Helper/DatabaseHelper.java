@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import id.creatodidak.djaga_swara.API.Models.SprintListOffline;
-import id.creatodidak.djaga_swara.API.Models.TpsListOffline;
+import id.creatodidak.djaga_swara.API.Models.TpsList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "djagaswara.db";
@@ -164,8 +164,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public List<TpsListOffline> getSprinDetailData() {
-        List<TpsListOffline> tpsListOffline = new ArrayList<>();
+    public List<TpsList> getSprinDetailData() {
+        List<TpsList> tpsList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
         String[] columns = {"id", "latitude", "longitude", "id_prov", "id_sprin", "id_kab", "id_kec", "id_des", "id_tps", "nomor_tps", "ketua_kpps", "hp_kpps", "dpt_sementara", "dpt_tetap", "dpt_final", "keterangan", "status", "lokasikotaksuara", "created_at", "updated_at", "nama_des", "nama_kec", "nama_kab"
@@ -174,7 +174,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query("sprindetail", columns, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
-                TpsListOffline tps = new TpsListOffline();
+                TpsList tps = new TpsList();
                 tps.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 tps.setLatitude(cursor.getString(cursor.getColumnIndex("latitude")));
                 tps.setLongitude(cursor.getString(cursor.getColumnIndex("longitude")));
@@ -199,19 +199,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 tps.setCreatedAt(cursor.getString(cursor.getColumnIndex("created_at")));
                 tps.setUpdatedAt(cursor.getString(cursor.getColumnIndex("updated_at")));
 
-                tpsListOffline.add(tps);
+                tpsList.add(tps);
             } while (cursor.moveToNext());
         }
 
         cursor.close();
         db.close();
 
-        return tpsListOffline;
+        return tpsList;
     }
 
     @SuppressLint("Range")
-    public TpsListOffline getSprindetail(String id_tps) {
-        TpsListOffline tps = null;
+    public TpsList getSprindetail(String id_tps) {
+        TpsList tps = null;
         SQLiteDatabase db = this.getReadableDatabase();
 
         String[] columns = {"id", "latitude", "longitude", "id_prov", "id_sprin", "id_kab", "id_kec", "id_des", "id_tps", "nomor_tps", "ketua_kpps", "hp_kpps", "dpt_sementara", "dpt_tetap", "dpt_final", "keterangan", "status", "lokasikotaksuara", "created_at", "updated_at", "nama_des", "nama_kec", "nama_kab"};
@@ -221,7 +221,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.query("sprindetail", columns, selection, selectionArgs, null, null, null);
         if (cursor.moveToFirst()) {
-            tps = new TpsListOffline();
+            tps = new TpsList();
             tps.setId(cursor.getInt(cursor.getColumnIndex("id")));
             tps.setLatitude(cursor.getString(cursor.getColumnIndex("latitude")));
             tps.setLongitude(cursor.getString(cursor.getColumnIndex("longitude")));
