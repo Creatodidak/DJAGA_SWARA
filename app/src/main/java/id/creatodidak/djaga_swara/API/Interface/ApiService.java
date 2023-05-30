@@ -11,6 +11,7 @@ import id.creatodidak.djaga_swara.API.Models.UpdateApp;
 import id.creatodidak.djaga_swara.API.Models.UpdateFoto;
 import id.creatodidak.djaga_swara.API.Models.ValidationLoginResponse;
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -66,12 +67,20 @@ public interface ApiService {
             @Part("nrp") String nrp,
             @Part MultipartBody.Part image);
 
-    @Multipart
-    @POST("/android/updatetpsloc")
+    @FormUrlEncoded
+    @POST("android/updatetpsloc")
     Call<UpdResponse> updateloc(
-            @Part("id_tps") String id_tps,
-            @Part("latitude") String latitude,
-            @Part("longitude") String longitude
+            @Field("id_tps") String id_tps,
+            @Field("latitude") String latitude,
+            @Field("longitude") String longitude
     );
+
+    @Multipart
+    @POST("android/uploadfoto")
+    Call<UpdResponse> uploadFoto(@Part("id_tps") String id_tps,
+                                 @Part("cat") String cat,
+                                 @Part("situasi") String situasi,
+                                 @Part("prediksi") String prediksi,
+                                 @Part MultipartBody.Part image);
 }
 

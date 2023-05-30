@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import id.creatodidak.djaga_swara.API.Models.SprintListOffline;
+import id.creatodidak.djaga_swara.API.Models.TpsActivity;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -29,16 +30,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String createTableQuery4 = "CREATE TABLE IF NOT EXISTS sprindetail (id INTEGER PRIMARY KEY AUTOINCREMENT, latitude TEXT, longitude TEXT, id_prov TEXT, id_sprin TEXT, id_kab TEXT, id_kec TEXT, id_des TEXT, id_tps TEXT, nomor_tps TEXT, ketua_kpps TEXT, hp_kpps TEXT, dpt_sementara TEXT, dpt_tetap TEXT, dpt_final TEXT, keterangan TEXT, status TEXT, lokasikotaksuara TEXT, created_at TEXT, updated_at TEXT, nama_des TEXT, nama_kec TEXT, nama_kab TEXT)";
         db.execSQL(createTableQuery4);
 
+        String createTableQuery1 = "CREATE TABLE IF NOT EXISTS tpsactivity (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT, lokasi TEXT, cektps TEXT, dpt TEXT, lappam TEXT, laphasil TEXT, formc1 TEXT, lapwal TEXT, lapserah TEXT)";
+        db.execSQL(createTableQuery1);
+
+        String createCekTps = "CREATE TABLE IF NOT EXISTS cektps (id BIGINTEGER PRIMARY KEY AUTOINCREMENT , id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL)";
+        db.execSQL(createCekTps);
+
+        String createFormc1 = "CREATE TABLE IF NOT EXISTS formc1 (id BIGINTEGER PRIMARY KEY AUTOINCREMENT , id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL)";
+        db.execSQL(createFormc1);
+
+        String createLappam = "CREATE TABLE IF NOT EXISTS lappam (id BIGINTEGER PRIMARY KEY AUTOINCREMENT , id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL)";
+        db.execSQL(createLappam);
+
+        String createLapwal = "CREATE TABLE IF NOT EXISTS lapwal (id BIGINTEGER PRIMARY KEY AUTOINCREMENT , id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL)";
+        db.execSQL(createLapwal);
+
+        String createLapserah = "CREATE TABLE IF NOT EXISTS lapserah (id BIGINTEGER PRIMARY KEY AUTOINCREMENT , id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL)";
+        db.execSQL(createLapserah);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String dropTableQuery3 = "DROP TABLE IF EXISTS sprinlist";
-        db.execSQL(dropTableQuery3);
+        // Drop existing tables if they exist
+        db.execSQL("DROP TABLE IF EXISTS sprinlist");
+        db.execSQL("DROP TABLE IF EXISTS sprindetail");
+        db.execSQL("DROP TABLE IF EXISTS tpsactivity");
+        db.execSQL("DROP TABLE IF EXISTS cektps");
+        db.execSQL("DROP TABLE IF EXISTS formc1");
+        db.execSQL("DROP TABLE IF EXISTS lappam");
+        db.execSQL("DROP TABLE IF EXISTS lapwal");
+        db.execSQL("DROP TABLE IF EXISTS lapserah");
 
-        String dropTableQuery4 = "DROP TABLE IF EXISTS sprindetail";
-        db.execSQL(dropTableQuery4);
-
+        // Recreate the tables
         onCreate(db);
     }
 
@@ -62,6 +85,74 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM sqlite_sequence WHERE name='sprindetail'");
 
         db.close();
+    }
+
+    public void resetTpsActivityTable() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM tpsactivity");
+        db.execSQL("VACUUM");
+    }
+
+    public void resetCekTpsTable() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM cektps");
+        db.execSQL("VACUUM");
+    }
+
+    public void resetFormc1Table() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM formc1");
+        db.execSQL("VACUUM");
+    }
+
+    public void resetLappamTable() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM lappam");
+        db.execSQL("VACUUM");
+    }
+
+    public void resetLapwalTable() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM lapwal");
+        db.execSQL("VACUUM");
+    }
+
+    public void resetLapserahTable() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM lapserah");
+        db.execSQL("VACUUM");
+    }
+
+    public void newtpsactivity(String id_tps) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("id_tps", id_tps);
+        values.put("lokasi", "NO");
+        values.put("cektps", "NO");
+        values.put("dpt", "NO");
+        values.put("lappam", "NO");
+        values.put("laphasil", "NO");
+        values.put("formc1", "NO");
+        values.put("lapwal", "NO");
+        values.put("lapserah", "NO");
+        db.insert("tpsactivity", null, values);
+        db.close();
+    }
+
+    public boolean updateTpsActivity(String id_tps, String kolom, String isi) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(kolom, isi);
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        int rowsAffected = db.update("tpsactivity", values, selection, selectionArgs);
+        db.close();
+
+        return rowsAffected > 0;
     }
 
     // Fungsi untuk menyisipkan data ke dalam tabel sprinlist
@@ -208,6 +299,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return tpsList;
     }
+
+    @SuppressLint("Range")
+    public TpsActivity getTpsActivity(String id_tps){
+        TpsActivity tpsActivity = null;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String[] columns = {"id_tps", "lokasi", "cektps", "dpt", "lappam", "laphasil", "formc1", "lapwal", "lapserah"};
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("tpsactivity", columns, selection, selectionArgs, null, null, null);
+        if (cursor.moveToFirst()) {
+            tpsActivity = new TpsActivity();
+
+            tpsActivity.setTpsId(cursor.getString(cursor.getColumnIndex("id_tps")));
+            tpsActivity.setLokasi(cursor.getString(cursor.getColumnIndex("lokasi")));
+            tpsActivity.setCekTps(cursor.getString(cursor.getColumnIndex("cektps")));
+            tpsActivity.setDpt(cursor.getString(cursor.getColumnIndex("dpt")));
+            tpsActivity.setLappam(cursor.getString(cursor.getColumnIndex("lappam")));
+            tpsActivity.setLaphasil(cursor.getString(cursor.getColumnIndex("laphasil")));
+            tpsActivity.setFormc1(cursor.getString(cursor.getColumnIndex("formc1")));
+            tpsActivity.setLapwal(cursor.getString(cursor.getColumnIndex("lapwal")));
+            tpsActivity.setLapserah(cursor.getString(cursor.getColumnIndex("lapserah")));
+        }
+        cursor.close();
+        db.close();
+
+        return tpsActivity;
+    }
+
 
     @SuppressLint("Range")
     public TpsList getSprindetail(String id_tps) {

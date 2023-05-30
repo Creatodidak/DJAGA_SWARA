@@ -2,6 +2,7 @@ package id.creatodidak.djaga_swara.Dashboard.TugasForm;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,6 +28,8 @@ import id.creatodidak.djaga_swara.API.Interface.ApiService;
 import id.creatodidak.djaga_swara.API.Models.UpdResponse;
 import id.creatodidak.djaga_swara.Dashboard.Dashboard;
 import id.creatodidak.djaga_swara.Dashboard.Sprin;
+import id.creatodidak.djaga_swara.Dashboard.Tugas;
+import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
 import id.creatodidak.djaga_swara.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,10 +44,13 @@ public class Lokasi extends AppCompatActivity implements LocationListener {
     String id_tps;
     TextView tvlng, tvlat, tvid;
     private boolean isInternetAvailable;
-
+    ProgressDialog progressDialog;
     Button btn;
 
     ApiService apiService;
+
+    DatabaseHelper databaseHelper;
+    Boolean cek;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +63,7 @@ public class Lokasi extends AppCompatActivity implements LocationListener {
         id_tps = getIntent().getStringExtra("id_tps");
         btn = findViewById(R.id.btnset);
         tvid.setText("ID: "+id_tps);
-
+        databaseHelper = new DatabaseHelper(Lokasi.this);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,18 +74,32 @@ public class Lokasi extends AppCompatActivity implements LocationListener {
                 if (isInternetAvailable) {
                     setlokasi();
                 } else {
-                    updatedb();
+                    updatedb("YES, LOCAL");
                 }
             }
         });
         refresh();
     }
 
-    private void updatedb() {
+    private void updatedb(String msg) {
+        showprogress("Menyimpan data di local");
+        cek = databaseHelper.updateTpsActivity(id_tps, "lokasi",msg);
+
+        if(cek){
+            progressDialog.dismiss();
+            if (msg.equals("YES, ALL")){
+                notifikasi("Berhasil", "Lokasi berhasil diupdate, Lokasi telah di upload ke server", true);
+            }else{
+                notifikasi("Berhasil", "Lokasi berhasil diupdate, namun tidak diupload ke server", true);
+            }
+        }else{
+            progressDialog.dismiss();
+            notifikasi("Gagal", "Lokasi gagal diupdate, hubungi Posko!", true);
+        }
     }
 
     private void setlokasi() {
-        notifikasi("Tunggu...", "Mengupload data ke database!", false);
+        showprogress("Menyimpan data ke server...");
         apiService = ApiClient.getClient().create(ApiService.class);
 
         Call<UpdResponse> call = apiService.updateloc(id_tps, String.valueOf(latitude), String.valueOf(longitude));
@@ -89,21 +109,31 @@ public class Lokasi extends AppCompatActivity implements LocationListener {
             @Override
             public void onResponse(retrofit2.Call<UpdResponse> call, Response<UpdResponse> response) {
                 if (response.body() != null){
+                    progressDialog.dismiss();
                     if (response.body().getMsg().equals("ok")){
-                        notifikasi("Berhasil", "Lokasi berhasil diupdate", true);
-                        Toast.makeText(Lokasi.this, "Berhasil Update Lokasi!", Toast.LENGTH_SHORT).show();
+                        updatedb("YES, ALL");
                     }else{
-                        
+                        updatedb("YES, LOCAL");
                     }
+                }else{
+                    updatedb("YES, LOCAL");
                 }
             }
 
             @Override
             public void onFailure(retrofit2.Call<UpdResponse> call, Throwable t) {
-
+                progressDialog.dismiss();
+                updatedb("YES, LOCAL");
             }
         });
        
+    }
+
+    private void showprogress(String msg) {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(msg);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
     }
 
     public double getLatitude() {
@@ -183,9 +213,6 @@ public class Lokasi extends AppCompatActivity implements LocationListener {
                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                public void onClick(DialogInterface dialog, int which) {
                                    dialog.dismiss();
-                                   Intent intent = new Intent(Lokasi.this, Dashboard.class);
-                                   intent.putExtra("id_tps", id_tps);
-                                   startActivity(intent);
                                    finish();
                                }
                            })

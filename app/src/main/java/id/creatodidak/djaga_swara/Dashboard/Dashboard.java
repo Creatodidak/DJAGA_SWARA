@@ -103,6 +103,8 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
                         if (tpsList2.isEmpty()) {
                             for (TpsList tps : tpsList) {
                                 databaseHelper.insertSprinDetailData(tps.getId(), tps.getLatitude(), tps.getLongitude(), tps.getIdProv(), tps.getIdSprin(), tps.getIdKab(), tps.getIdKec(), tps.getIdDes(), tps.getIdTps(), tps.getNomorTps(), tps.getKetuaKpps(), tps.getHpKpps(), tps.getDptSementara(), tps.getDptTetap(), tps.getDptFinal(), tps.getKeterangan(), tps.getStatus(), tps.getLokasiKotakSuara(), tps.getCreatedAt(), tps.getUpdatedAt(), tps.getNamaDes(), tps.getNamaKec(), tps.getNamaKab());
+
+                                databaseHelper.newtpsactivity(tps.getIdTps());
                             }
                             loadDataFromLocalDatabase();
                         } else {
@@ -110,6 +112,8 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
                                 databaseHelper.resetTables2();
                                 for (TpsList tps : tpsList) {
                                     databaseHelper.insertSprinDetailData(tps.getId(), tps.getLatitude(), tps.getLongitude(), tps.getIdProv(), tps.getIdSprin(), tps.getIdKab(), tps.getIdKec(), tps.getIdDes(), tps.getIdTps(), tps.getNomorTps(), tps.getKetuaKpps(), tps.getHpKpps(), tps.getDptSementara(), tps.getDptTetap(), tps.getDptFinal(), tps.getKeterangan(), tps.getStatus(), tps.getLokasiKotakSuara(), tps.getCreatedAt(), tps.getUpdatedAt(), tps.getNamaDes(), tps.getNamaKec(), tps.getNamaKab());
+
+                                    databaseHelper.newtpsactivity(tps.getIdTps());
                                 }
                             }
                             loadDataFromLocalDatabase();
