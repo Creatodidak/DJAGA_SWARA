@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -15,9 +16,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@android:color/transparent"
+            android:gravity="end"
             android:orientation="vertical">
 
             <TextView
@@ -27,18 +29,23 @@
                 android:background="@android:color/transparent"
                 android:fontFamily="@font/med"
                 android:gravity="center_vertical"
-                android:text="Judul Draft"
-                android:textSize="16sp" />
+                android:textAllCaps="true"
+                android:textSize="14sp" />
 
-            <TextView
-                android:id="@+id/textView13"
+            <ImageView
+                android:id="@+id/fotoDraft"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:text="Ketuk untuk melihat data"
-                android:textColor="@color/disabled"
-                android:textSize="8sp"
-                android:textStyle="italic" />
+                android:layout_height="200dp"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/defaultfp" />
+
+            <LinearLayout
+                android:id="@+id/datadraft"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -52,25 +59,26 @@
                     android:layout_height="15dp"
                     android:background="@android:color/transparent"
                     android:tint="@color/disabled"
-                    app:srcCompat="@drawable/baseline_schedule_24" />
+                    app:srcCompat="@drawable/baseline_schedule_24"
+                    tools:ignore="UseAppTint" />
 
                 <TextView
                     android:id="@+id/tanggalDraft"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:text="Tanggal tersimpan"
                     android:textColor="@color/disabled"
                     android:textSize="10sp" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/kirimdata"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
-                android:background="@android:color/transparent"
-                android:gravity="center_vertical|end">
+                android:gravity="center_vertical|end"
+                android:padding="5dp">
 
                 <TextView
                     android:id="@+id/textView19"
@@ -86,7 +94,8 @@
                     android:layout_height="15dp"
                     android:background="@android:color/transparent"
                     android:tint="@color/primary"
-                    app:srcCompat="@drawable/baseline_send_24" />
+                    app:srcCompat="@drawable/baseline_send_24"
+                    tools:ignore="UseAppTint" />
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

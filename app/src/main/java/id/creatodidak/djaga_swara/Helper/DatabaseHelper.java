@@ -6,13 +6,22 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Handler;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import id.creatodidak.djaga_swara.API.Models.Draft.CekTps;
+import id.creatodidak.djaga_swara.API.Models.Draft.FormC1;
+import id.creatodidak.djaga_swara.API.Models.Draft.Lappam;
+import id.creatodidak.djaga_swara.API.Models.Draft.Lapserah;
+import id.creatodidak.djaga_swara.API.Models.Draft.Lapwal;
+import id.creatodidak.djaga_swara.API.Models.Draft.Lokasi;
 import id.creatodidak.djaga_swara.API.Models.SprintListOffline;
 import id.creatodidak.djaga_swara.API.Models.TpsActivity;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
+import id.creatodidak.djaga_swara.BuildConfig;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "djagaswara.db";
@@ -21,6 +30,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
+    private Handler handler;
+    private Runnable runnable;
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -33,19 +46,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String createTableQuery1 = "CREATE TABLE IF NOT EXISTS tpsactivity (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT, lokasi TEXT, cektps TEXT, dpt TEXT, lappam TEXT, laphasil TEXT, formc1 TEXT, lapwal TEXT, lapserah TEXT)";
         db.execSQL(createTableQuery1);
 
-        String createCekTps = "CREATE TABLE IF NOT EXISTS cektps (id BIGINTEGER PRIMARY KEY AUTOINCREMENT , id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL)";
+        String createLokasi = "CREATE TABLE IF NOT EXISTS lokasi (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT NOT NULL, latitude TEXT NOT NULL, longitude TEXT NOT NULL, status TEXT, created_at TEXT)";
+        db.execSQL(createLokasi);
+
+        String createCekTps = "CREATE TABLE IF NOT EXISTS cektps (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL, status TEXT, created_at TEXT)";
         db.execSQL(createCekTps);
 
-        String createFormc1 = "CREATE TABLE IF NOT EXISTS formc1 (id BIGINTEGER PRIMARY KEY AUTOINCREMENT , id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL)";
+        String createFormc1 = "CREATE TABLE IF NOT EXISTS formc1 (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL, status TEXT, created_at TEXT)";
         db.execSQL(createFormc1);
 
-        String createLappam = "CREATE TABLE IF NOT EXISTS lappam (id BIGINTEGER PRIMARY KEY AUTOINCREMENT , id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL)";
+        String createLappam = "CREATE TABLE IF NOT EXISTS lappam (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL, status TEXT, created_at TEXT)";
         db.execSQL(createLappam);
 
-        String createLapwal = "CREATE TABLE IF NOT EXISTS lapwal (id BIGINTEGER PRIMARY KEY AUTOINCREMENT , id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL)";
+        String createLapwal = "CREATE TABLE IF NOT EXISTS lapwal (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL, status TEXT, created_at TEXT)";
         db.execSQL(createLapwal);
 
-        String createLapserah = "CREATE TABLE IF NOT EXISTS lapserah (id BIGINTEGER PRIMARY KEY AUTOINCREMENT , id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL)";
+        String createLapserah = "CREATE TABLE IF NOT EXISTS lapserah (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL, status TEXT, created_at TEXT)";
         db.execSQL(createLapserah);
     }
 
@@ -375,6 +391,324 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return tps;
     }
 
+    public boolean addLokasi(String idTps, String latitude, String longitude, String status, String created_at) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id_tps", idTps);
+        values.put("latitude", latitude);
+        values.put("longitude", longitude);
+        values.put("status", status);
+        values.put("created_at", created_at);
+        long result = db.insert("lokasi", null, values);
+        db.close();
+        return result != -1;
+    }
 
+    public boolean addCekTps(String idTps, String foto, String situasi, String prediksi, String status, String created_at) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id_tps", idTps);
+        values.put("foto", foto);
+        values.put("situasi", situasi);
+        values.put("prediksi", prediksi);
+        values.put("status", status);
+        values.put("created_at", created_at);
+        long result = db.insert("cektps", null, values);
+        db.close();
+        return result != -1;
+    }
+
+    public boolean addFormc1(String idTps, String foto, String situasi, String prediksi, String status, String created_at) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id_tps", idTps);
+        values.put("foto", foto);
+        values.put("situasi", situasi);
+        values.put("prediksi", prediksi);
+        values.put("status", status);
+        values.put("created_at", created_at);
+        long result = db.insert("formc1", null, values);
+        db.close();
+        return result != -1;
+    }
+
+    public boolean addLappam(String idTps, String foto, String situasi, String prediksi, String status, String created_at) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id_tps", idTps);
+        values.put("foto", foto);
+        values.put("situasi", situasi);
+        values.put("prediksi", prediksi);
+        values.put("status", status);
+        values.put("created_at", created_at);
+        long result = db.insert("lappam", null, values);
+        db.close();
+        return result != -1;
+    }
+
+    public boolean addLapwal(String idTps, String foto, String situasi, String prediksi, String status, String created_at) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id_tps", idTps);
+        values.put("foto", foto);
+        values.put("situasi", situasi);
+        values.put("prediksi", prediksi);
+        values.put("status", status);
+        values.put("created_at", created_at);
+        long result = db.insert("lapwal", null, values);
+        db.close();
+        return result != -1;
+    }
+
+    public boolean addLapserah(String idTps, String foto, String situasi, String prediksi, String status, String created_at) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id_tps", idTps);
+        values.put("foto", foto);
+        values.put("situasi", situasi);
+        values.put("prediksi", prediksi);
+        values.put("status", status);
+        values.put("created_at", created_at);
+        long result = db.insert("lapserah", null, values);
+        db.close();
+        return result != -1;
+    }
+
+    public List<String> getDraft(String tableName) {
+        List<String> drafts = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(tableName, null, "status = ?", new String[]{"LOCAL"}, null, null, null);
+        if (cursor.moveToFirst()) {
+            int columnCount = cursor.getColumnCount();
+            do {
+                StringBuilder draftBuilder = new StringBuilder();
+                for (int i = 0; i < columnCount; i++) {
+                    String columnName = cursor.getColumnName(i);
+                    String columnValue = cursor.getString(i);
+                    draftBuilder.append(columnName).append(": ").append(columnValue).append("\n");
+                }
+                drafts.add(draftBuilder.toString());
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return drafts;
+    }
+
+    public void startRepeatedNotification(final Context context) {
+        handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                int jlokasi = getDraft("lokasi").size();
+                int jcektps = getDraft("cektps").size();
+                int jlappam = getDraft("lappam").size();
+                int jformc1 = getDraft("formc1").size();
+                int jlapwal = getDraft("lapwal").size();
+                int jlapserah = getDraft("lapserah").size();
+
+                int totalJumlahData = jlokasi + jcektps + jlappam + jformc1 + jlapwal + jlapserah;
+
+                if (totalJumlahData != 0) {
+                    String notificationTitle = "PERIKSA DRAFT ANDA!";
+                    String notificationMessage = "Terdapat " + totalJumlahData + " data yang belum dilaporkan.\nNotifikasi ini akan terus muncul setiap 30 Menit...";
+
+//                    if (!BuildConfig.DEBUG) {
+                        NotificationHelper.showNotification(context, notificationTitle, notificationMessage);
+//                    }
+                }
+
+                handler.postDelayed(this, 30 * 60 * 1000); // Check every 1 minute
+            }
+        };
+
+        handler.postDelayed(runnable, 10 * 1000); // Delay first check for 1 minute
+    }
+
+    public void stopRepeatedNotification() {
+        if (handler != null) {
+            handler.removeCallbacks(runnable);
+            handler = null;
+        }
+    }
+
+    @SuppressLint("Range")
+    public List<Lokasi> getAllLokasi() {
+        List<Lokasi> lokasiList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("lokasi", null, "status = ?", new String[]{"LOCAL"}, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String id_tps = cursor.getString(cursor.getColumnIndex("id_tps"));
+                String latitude = cursor.getString(cursor.getColumnIndex("latitude"));
+                String longitude = cursor.getString(cursor.getColumnIndex("longitude"));
+                String status = cursor.getString(cursor.getColumnIndex("status"));
+                String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+
+                Lokasi lokasi = new Lokasi(id, id_tps, latitude, longitude, status, created_at);
+                lokasiList.add(lokasi);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return lokasiList;
+    }
+
+    @SuppressLint("Range")
+    public List<CekTps> getAllCekTps() {
+        List<CekTps> cekTpsList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("cektps", null, "status = ?", new String[]{"LOCAL"}, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String id_tps = cursor.getString(cursor.getColumnIndex("id_tps"));
+                String foto = cursor.getString(cursor.getColumnIndex("foto"));
+                String situasi = cursor.getString(cursor.getColumnIndex("situasi"));
+                String prediksi = cursor.getString(cursor.getColumnIndex("prediksi"));
+                String status = cursor.getString(cursor.getColumnIndex("status"));
+                String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+
+                CekTps cekTps = new CekTps(id, id_tps, foto, situasi, prediksi, status, created_at);
+                cekTpsList.add(cekTps);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return cekTpsList;
+    }
+
+    @SuppressLint("Range")
+    public List<FormC1> getAllFormC1() {
+        List<FormC1> formC1List = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("formc1", null, "status = ?", new String[]{"LOCAL"}, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String id_tps = cursor.getString(cursor.getColumnIndex("id_tps"));
+                String foto = cursor.getString(cursor.getColumnIndex("foto"));
+                String situasi = cursor.getString(cursor.getColumnIndex("situasi"));
+                String prediksi = cursor.getString(cursor.getColumnIndex("prediksi"));
+                String status = cursor.getString(cursor.getColumnIndex("status"));
+                String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+
+                FormC1 formC1 = new FormC1(id, id_tps, foto, situasi, prediksi, status, created_at);
+                formC1List.add(formC1);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return formC1List;
+    }
+
+    @SuppressLint("Range")
+    public List<Lappam> getAllLappam() {
+        List<Lappam> lappamList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("lappam", null, "status = ?", new String[]{"LOCAL"}, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String id_tps = cursor.getString(cursor.getColumnIndex("id_tps"));
+                String foto = cursor.getString(cursor.getColumnIndex("foto"));
+                String situasi = cursor.getString(cursor.getColumnIndex("situasi"));
+                String prediksi = cursor.getString(cursor.getColumnIndex("prediksi"));
+                String status = cursor.getString(cursor.getColumnIndex("status"));
+                String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+
+                Lappam lappam = new Lappam(id, id_tps, foto, situasi, prediksi, status, created_at);
+                lappamList.add(lappam);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return lappamList;
+    }
+
+    @SuppressLint("Range")
+    public List<Lapwal> getAllLapwal() {
+        List<Lapwal> lapwalList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("lapwal", null, "status = ?", new String[]{"LOCAL"}, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String id_tps = cursor.getString(cursor.getColumnIndex("id_tps"));
+                String foto = cursor.getString(cursor.getColumnIndex("foto"));
+                String situasi = cursor.getString(cursor.getColumnIndex("situasi"));
+                String prediksi = cursor.getString(cursor.getColumnIndex("prediksi"));
+                String status = cursor.getString(cursor.getColumnIndex("status"));
+                String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+
+                Lapwal lapwal = new Lapwal(id, id_tps, foto, situasi, prediksi, status, created_at);
+                lapwalList.add(lapwal);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return lapwalList;
+    }
+
+    @SuppressLint("Range")
+    public List<Lapserah> getAllLapserah() {
+        List<Lapserah> lapserahList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("lapserah", null, "status = ?", new String[]{"LOCAL"}, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String id_tps = cursor.getString(cursor.getColumnIndex("id_tps"));
+                String foto = cursor.getString(cursor.getColumnIndex("foto"));
+                String situasi = cursor.getString(cursor.getColumnIndex("situasi"));
+                String prediksi = cursor.getString(cursor.getColumnIndex("prediksi"));
+                String status = cursor.getString(cursor.getColumnIndex("status"));
+                String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+
+                Lapserah lapserah = new Lapserah(id, id_tps, foto, situasi, prediksi, status, created_at);
+                lapserahList.add(lapserah);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return lapserahList;
+    }
+
+    public boolean updateStatus(String tableName, String idTps) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("status", "SERVER");
+        int rowsAffected = db.update(tableName, values, "id_tps=?", new String[]{idTps});
+        db.close();
+        return rowsAffected > 0;
+    }
 
 }

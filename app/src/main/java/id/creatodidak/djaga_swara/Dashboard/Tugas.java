@@ -14,6 +14,9 @@ import android.widget.Toast;
 import id.creatodidak.djaga_swara.API.Models.TpsActivity;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Cektps;
+import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lappam;
+import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lapwal;
+import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lapserah;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lokasi;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
 import id.creatodidak.djaga_swara.R;
@@ -192,7 +195,14 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
                 Toast.makeText(this, "Fungsi Segera tersedia", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.actlappam:
-                Toast.makeText(this, "Fungsi Segera tersedia", Toast.LENGTH_SHORT).show();
+                if(tpsActivity.getLappam().equals("NO")){
+                    Intent intent = new Intent(Tugas.this, Lappam.class);
+                    intent.putExtra("id_tps", id_tps);
+                    intent.putExtra("judul", "Pengamanan Pemungutan Suara di TPS "+tpslist.getNomorTps()+" DESA "+tpslist.getNamaDes());
+                    startActivity(intent);
+                }else{
+                    notifikasi("INFO", "ANDA SUDAH MENGISI TUGAS INI");
+                }
                 break;
             case R.id.acthasilsuara:
                 Toast.makeText(this, "Fungsi Segera tersedia", Toast.LENGTH_SHORT).show();
@@ -201,10 +211,24 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
                 Toast.makeText(this, "Fungsi Segera tersedia", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.actlapwal:
-                Toast.makeText(this, "Fungsi Segera tersedia", Toast.LENGTH_SHORT).show();
+                if(tpsActivity.getLapwal().equals("NO")){
+                    Intent intent = new Intent(Tugas.this, Lapwal.class);
+                    intent.putExtra("id_tps", id_tps);
+                    intent.putExtra("judul", "Pengawalan Kotak Suara TPS "+tpslist.getNomorTps()+" DESA "+tpslist.getNamaDes()+" dari KPPS ke PPS Desa "+tpslist.getNamaDes());
+                    startActivity(intent);
+                }else{
+                    notifikasi("INFO", "ANDA SUDAH MENGISI TUGAS INI");
+                }
                 break;
             case R.id.actlappenyerahan:
-                Toast.makeText(this, "Fungsi Segera tersedia", Toast.LENGTH_SHORT).show();
+                if(tpsActivity.getLapserah().equals("NO")){
+                    Intent intent = new Intent(Tugas.this, Lapserah.class);
+                    intent.putExtra("id_tps", id_tps);
+                    intent.putExtra("judul", "Penyerahan Kotak Suara TPS "+tpslist.getNomorTps()+" DESA "+tpslist.getNamaDes()+" dari KPPS kepada PPS Desa "+tpslist.getNamaDes());
+                    startActivity(intent);
+                }else{
+                    notifikasi("INFO", "ANDA SUDAH MENGISI TUGAS INI");
+                }
                 break;
             case R.id.actcall:
                 Toast.makeText(this, "Fungsi Segera tersedia", Toast.LENGTH_SHORT).show();

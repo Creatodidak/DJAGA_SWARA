@@ -1,5 +1,15 @@
 package id.creatodidak.djaga_swara.Dashboard.TugasForm;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -21,8 +31,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -33,23 +41,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-
 import com.bumptech.glide.Glide;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -59,7 +56,6 @@ import id.creatodidak.djaga_swara.API.Interface.ApiService;
 import id.creatodidak.djaga_swara.API.Models.UpdResponse;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
 import id.creatodidak.djaga_swara.R;
-import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -67,8 +63,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Cektps extends AppCompatActivity implements View.OnClickListener {
-
+public class Lapserah extends AppCompatActivity implements View.OnClickListener {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int PERMISSIONS_REQUEST_LOCATION = 2;
     private String currentPhotoPath;
@@ -88,11 +83,11 @@ public class Cektps extends AppCompatActivity implements View.OnClickListener {
     Spinner spinner;
     EditText prediksi;
     Uri contentUri;
-    @SuppressLint("MissingInflatedId")
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lappam);
+        setContentView(R.layout.activity_lapserah);
 
         ambilFotoButton = findViewById(R.id.btambilfoto);
         ambilFotoButton.setOnClickListener(this);
@@ -132,9 +127,9 @@ public class Cektps extends AppCompatActivity implements View.OnClickListener {
             getLocation();
         }
 
-        databaseHelper = new DatabaseHelper(Cektps.this);
+        databaseHelper = new DatabaseHelper(Lapserah.this);
 
-        String[] isiSpinner = {"PILIH SITUASI" ,"AMAN, TPS LAYAK DIGUNAKAN", "AMAN, TPS KURANG LAYAK DIGUNAKAN", "RAWAN, TPS LAYAK DIGUNAKAN", "RAWAN, TPS TIDAK LAYAK DIGUNAKAN", "WASPADA, TPS LAYAK DIGUNAKAN", "WASPADA, TPS TIDAK LAYAK DIGUNAKAN", "BAHAYA, TPS TIDAK LAYAK DIGUNAKAN DAN RAWAN KONFLIK"};
+        String[] isiSpinner = {"PILIH KONDISI KOTAK SUARA" ,"KOTAK SUARA DISERAHKAN DALAM KONDISI BAIK, SEGEL TERKUNCI DAN DOKUMEN LENGKAP", "KOTAK SUARA DISERAHKAN DALAM KONDISI KURANG BAIK, SEGEL TERKUNCI DAN DOKUMEN LENGKAP", "KOTAK SUARA DISERAHKAN DALAM KONDISI KURANG BAIK, SEGEL TIDAK TERKUNCI DAN DOKUMEN LENGKAP", "KOTAK SUARA DISERAHKAN DALAM KONDISI KURANG BAIK, SEGEL TIDAK TERKUNCI DAN DOKUMEN TIDAK LENGKAP", "KOTAK SUARA DISERAHKAN DALAM KONDISI RUSAK, NAMUN SEGEL TERKUNCI DAN DOKUMEN LENGKAP", "KOTAK SUARA DISERAHKAN DALAM KONDISI RUSAK, NAMUN SEGEL TERKUNCI DAN DOKUMEN TIDAK LENGKAP", "KOTAK SUARA DISERAHKAN DALAM KONDISI RUSAK, SEGEL TIDAK TERKUNCI DAN DOKUMEN LENGKAP", "KOTAK SUARA DISERAHKAN DALAM KONDISI RUSAK, SEGEL TIDAK TERKUNCI DAN DOKUMEN TIDAK LENGKAP"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, isiSpinner);
         adapter.setDropDownViewResource(R.layout.dropdown);
@@ -151,8 +146,8 @@ public class Cektps extends AppCompatActivity implements View.OnClickListener {
                 // Kode yang akan dijalankan jika tidak ada item yang dipilih
             }
         });
-
     }
+
 
     @Override
     public void onClick(View v) {
@@ -178,7 +173,7 @@ public class Cektps extends AppCompatActivity implements View.OnClickListener {
                         updatedb("YES, LOCAL");
                     }
                 }else{
-                    notifikasi("DATA KOSONG!", "Silahkan isi prediksi gangguan kamtibmas!\nJika tidak ada, isikan dengan NIHIL", true, false);
+                    notifikasi("DATA KOSONG!", "Silahkan isi keterangan tambahan!\nJika tidak ada, isikan dengan NIHIL", true, false);
                 }
             }else{
                 notifikasi("DATA KOSONG!", "PILIH SITUASI TPS!", true, false);
@@ -227,9 +222,9 @@ public class Cektps extends AppCompatActivity implements View.OnClickListener {
 
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String imageFileName = "LAPSERAH_" + timeStamp + "_";
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "Djaga Swara/Cek TPS");
+                Environment.DIRECTORY_PICTURES), "Djaga Swara/Lap Serah");
         if (!storageDir.exists()) {
             storageDir.mkdirs();
         }
@@ -348,16 +343,15 @@ public class Cektps extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void saveBitmapToGallery(Bitmap bitmap) {
-        // Membuat folder Pictures/Djaga Swara/Cek TPS jika belum ada
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "Djaga Swara/Cek TPS");
+                Environment.DIRECTORY_PICTURES), "Djaga Swara/Lap Serah");
         if (!storageDir.exists()) {
             storageDir.mkdirs();
         }
 
         // Membuat file baru dengan nama unik
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + ".jpg";
+        String imageFileName = "LAPSERAH_" + timeStamp + ".jpg";
         File imageFile = new File(storageDir, imageFileName);
 
         try {
@@ -389,7 +383,7 @@ public class Cektps extends AppCompatActivity implements View.OnClickListener {
         MultipartBody.Part image = MultipartBody.Part.createFormData("image", "image.jpg", imageRequestBody);
 
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        Call<UpdResponse> call = apiService.uploadFoto(id_tps, "cektps", situasiSp, prediksi.getText().toString(), image);
+        Call<UpdResponse> call = apiService.uploadFoto(id_tps, "lapserah", situasiSp, prediksi.getText().toString(), image);
         call.enqueue(new Callback<UpdResponse>() {
             @Override
             public void onResponse(Call<UpdResponse> call, Response<UpdResponse> response) {
@@ -416,13 +410,13 @@ public class Cektps extends AppCompatActivity implements View.OnClickListener {
 
     private void updatedb(String msg) {
         showprogress("Menyimpan data di local");
-        cek = databaseHelper.updateTpsActivity(id_tps, "cektps",msg);
+        cek = databaseHelper.updateTpsActivity(id_tps, "lapserah",msg);
 
         if(cek){
             progressDialog.dismiss();
             if (msg.equals("YES, ALL")){
 
-                upd = databaseHelper.addCekTps(id_tps, String.valueOf(contentUri), situasiSp, prediksi.getText().toString(), "SERVER", getTimestamp());
+                upd = databaseHelper.addLapserah(id_tps, String.valueOf(contentUri), situasiSp, prediksi.getText().toString(), "SERVER", getTimestamp());
 
                 if (upd){
                     notifikasi("Berhasil", "Laporan berhasil dibuat, Laporan telah di upload ke server", true, true);
@@ -430,7 +424,7 @@ public class Cektps extends AppCompatActivity implements View.OnClickListener {
                     notifikasi("Berhasil", "Laporan berhasil dibuat, Laporan telah di upload ke server namun gagal mengupdate database local", true, true);
                 }
             }else{
-                upd = databaseHelper.addCekTps(id_tps, String.valueOf(contentUri), situasiSp, prediksi.getText().toString(), "LOCAL", getTimestamp());
+                upd = databaseHelper.addLapserah(id_tps, String.valueOf(contentUri), situasiSp, prediksi.getText().toString(), "LOCAL", getTimestamp());
 
                 if (upd){
                     notifikasi("Berhasil", "Laporan berhasil dibuat, namun tidak diupload ke server, Laporan tersimpan di draft", true, true);
@@ -452,7 +446,7 @@ public class Cektps extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void notifikasi(String info, String s, Boolean cancel, Boolean close) {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(Cektps.this);
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(Lapserah.this);
         if(cancel){
             if(close){
                 builder.setTitle(info)
@@ -490,5 +484,10 @@ public class Cektps extends AppCompatActivity implements View.OnClickListener {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String timestamp = sdf.format(new Date());
         return timestamp;
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
     }
 }

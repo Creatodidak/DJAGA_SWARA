@@ -1,11 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".Dashboard.TugasForm.Cektps">
-
+    tools:context=".Dashboard.TugasForm.Lapwal">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/headerPemilu"
@@ -187,14 +186,17 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:background="@android:color/transparent"
-                    android:text="SITUASI" />
+                    android:text="SITUASI SAAT PENGAWALAN" />
 
                 <Spinner
                     android:id="@+id/situasi"
                     android:layout_width="match_parent"
                     android:layout_height="42dp"
                     android:background="@drawable/bordered"
-                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"/>
 
                 <TextView
                     android:id="@+id/textView35"
@@ -202,7 +204,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:background="@android:color/transparent"
-                    android:text="PREDIKSI GANGGUAN KAMTIBMAS" />
+                    android:text="KETERANGAN TAMBAHAN" />
 
                 <EditText
                     android:id="@+id/prediksi"

@@ -23,6 +23,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
 import id.creatodidak.djaga_swara.API.Interface.ApiService;
 import id.creatodidak.djaga_swara.API.Models.UpdResponse;
@@ -50,7 +53,7 @@ public class Lokasi extends AppCompatActivity implements LocationListener {
     ApiService apiService;
 
     DatabaseHelper databaseHelper;
-    Boolean cek;
+    Boolean cek, upd;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,9 +91,21 @@ public class Lokasi extends AppCompatActivity implements LocationListener {
         if(cek){
             progressDialog.dismiss();
             if (msg.equals("YES, ALL")){
-                notifikasi("Berhasil", "Lokasi berhasil diupdate, Lokasi telah di upload ke server", true);
+                upd = databaseHelper.addLokasi(id_tps, String.valueOf(latitude), String.valueOf(longitude), "SERVER", getTimestamp());
+
+                if (upd){
+                    notifikasi("Berhasil", "Lokasi berhasil diupdate, Lokasi telah di upload ke server", true);
+                }else{
+                    notifikasi("Berhasil", "Lokasi berhasil diupdate, Lokasi telah di upload ke server namun gagal diperbarui di Local Database", true);
+                }
             }else{
-                notifikasi("Berhasil", "Lokasi berhasil diupdate, namun tidak diupload ke server", true);
+                upd = databaseHelper.addLokasi(id_tps, String.valueOf(latitude), String.valueOf(longitude), "LOCAL", getTimestamp());
+
+                if (upd) {
+                    notifikasi("Berhasil", "Lokasi berhasil diupdate, namun tidak diupload ke server dan tersimpan di Draft", true);
+                }else{
+                    notifikasi("Gagal", "Lokasi Gagal diupdate dan tidak tersimpan di Draft!", true);
+                }
             }
         }else{
             progressDialog.dismiss();
@@ -225,5 +240,11 @@ public class Lokasi extends AppCompatActivity implements LocationListener {
                             .show();
                 }
                 
+    }
+
+    public String getTimestamp() {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String timestamp = sdf.format(new Date());
+        return timestamp;
     }
 }

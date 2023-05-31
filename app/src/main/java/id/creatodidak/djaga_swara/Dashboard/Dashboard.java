@@ -2,6 +2,7 @@ package id.creatodidak.djaga_swara.Dashboard;
 
 // import statements
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,12 +12,16 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -38,8 +43,13 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
     ProgressDialog progressDialog;
     SharedPreferences sharedPreferences;
     String id_sprint, nrp;
+    int jlokasi, jcektps, jlappam, jformc1, jlapwal, jlapserah, totalJumlahData;
     private boolean isInternetAvailable;
 
+    LinearLayout btndraft;
+    TextView judul;
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,11 +70,23 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
         NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
         isInternetAvailable = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
+
+        btndraft = findViewById(R.id.draftbtn);
+        judul = findViewById(R.id.jumlahdraft);
+
         if (isInternetAvailable) {
             loadDataFromServer();
         } else {
             loadDataFromLocalDatabase();
         }
+
+        btndraft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Dashboard.this, Draft.class);
+                startActivity(intent);
+            }
+        });
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
             if (isInternetAvailable) {
@@ -94,9 +116,9 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
         call.enqueue(new Callback<List<TpsList>>() {
             @Override
             public void onResponse(Call<List<TpsList>> call, Response<List<TpsList>> response) {
-                progressDialog.dismiss();
                 swipeRefreshLayout.setRefreshing(false);
                 if (response.isSuccessful()) {
+                    progressDialog.dismiss();
                     List<TpsList> tpsList = response.body();
                     if (tpsList != null && !tpsList.isEmpty()) {
                         List<TpsList> tpsList2 = databaseHelper.getSprinDetailData();
@@ -148,6 +170,14 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
             TpsAdapter adapter = new TpsAdapter(tpsList, Dashboard.this);
             recyclerView.setAdapter(adapter);
             adapter.setOnItemClickListener(Dashboard.this);
+            jlokasi = databaseHelper.getDraft("lokasi").size();
+            jcektps = databaseHelper.getDraft("cektps").size();
+            jlappam = databaseHelper.getDraft("lappam").size();
+            jformc1 = databaseHelper.getDraft("formc1").size();
+            jlapwal = databaseHelper.getDraft("lapwal").size();
+            jlapserah = databaseHelper.getDraft("lapserah").size();
+            totalJumlahData = jlokasi + jcektps + jlappam + jformc1 + jlapwal + jlapserah;
+            judul.setText(String.valueOf(totalJumlahData)+" Draft Tersimpan!");
         }
     }
 
@@ -163,5 +193,18 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
         progressDialog.setMessage(message);
         progressDialog.setCancelable(false);
         progressDialog.show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        jlokasi = databaseHelper.getDraft("lokasi").size();
+        jcektps = databaseHelper.getDraft("cektps").size();
+        jlappam = databaseHelper.getDraft("lappam").size();
+        jformc1 = databaseHelper.getDraft("formc1").size();
+        jlapwal = databaseHelper.getDraft("lapwal").size();
+        jlapserah = databaseHelper.getDraft("lapserah").size();
+        totalJumlahData = jlokasi + jcektps + jlappam + jformc1 + jlapwal + jlapserah;
+        judul.setText(String.valueOf(totalJumlahData)+" Draft Tersimpan!");
     }
 }

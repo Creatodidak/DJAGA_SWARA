@@ -5,6 +5,7 @@ import java.util.List;
 import id.creatodidak.djaga_swara.API.Models.Alluser;
 import id.creatodidak.djaga_swara.API.Models.Profile;
 import id.creatodidak.djaga_swara.API.Models.SprintList;
+import id.creatodidak.djaga_swara.API.Models.SprintListOffline;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
 import id.creatodidak.djaga_swara.API.Models.UpdResponse;
 import id.creatodidak.djaga_swara.API.Models.UpdateApp;
@@ -49,7 +50,7 @@ public interface ApiService {
     );
 
     @GET("sprin")
-    Call<List<SprintList>> getSprints();
+    Call<List<SprintListOffline>> getSprints();
 
     @FormUrlEncoded
     @POST("tps/tpsbyjob")
