@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
 import android.view.View;
@@ -21,11 +22,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
 import id.creatodidak.djaga_swara.API.Interface.ApiService;
 import id.creatodidak.djaga_swara.API.Models.UpdateApp;
-import id.creatodidak.djaga_swara.Login.Login;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,8 +37,10 @@ import retrofit2.Response;
 public class CekUpdate extends AppCompatActivity {
 
     private static final int REQUEST_INSTALL_PERMISSION = 100;
+    private static final int OVERLAY_PERMISSION_REQUEST_CODE = 1000;
     TextView txt;
     ProgressBar pr;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +48,23 @@ public class CekUpdate extends AppCompatActivity {
         setContentView(R.layout.activity_cek_update);
         txt = findViewById(R.id.txPembaruan);
         pr = findViewById(R.id.loading);
-        checkForUpdates();
+
+        // Cek versi Android apakah sudah di atas Marshmallow (6.0)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // Periksa apakah izin sudah diberikan atau belum
+            if (!Settings.canDrawOverlays(this)) {
+                // Jika izin belum diberikan, tampilkan permintaan izin
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, OVERLAY_PERMISSION_REQUEST_CODE);
+            } else {
+                // Izin sudah diberikan, lanjutkan ke aktivitas berikutnya
+                startNextActivity();
+            }
+        } else {
+            // Jika versi Android di bawah Marshmallow, tidak perlu meminta izin
+            startNextActivity();
+        }
     }
 
     private void checkForUpdates() {
@@ -61,25 +83,31 @@ public class CekUpdate extends AppCompatActivity {
                         if (latestVersionCode > currentVersionCode) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(CekUpdate.this);
                             builder.setTitle("Versi Baru Ditemukan");
-                            builder.setMessage("Release Beta v"+response.body().getVersionName()+"\n\nRINCIAN UPDATE:\n"+response.body().getDescription());
+                            builder.setMessage("Release Beta v" + response.body().getVersionName() + "\n\nRINCIAN UPDATE:\n" + response.body().getDescription());
 
                             builder.setPositiveButton("PERBARUI", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
-                                    txt.setText("Pembaruan Tersedia!\nMemulai unduhan...");
+                                    txt.setText("Pembaruan Tersedia!\nMemulai unduhan...\nJangan keluar atau menutup aplikasi!");
                                     String updateUrl = updateApp.getLink(); // Ganti dengan URL pembaruan APK yang diberikan oleh server
 
                                     DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
                                     DownloadManager.Request request = new DownloadManager.Request(Uri.parse(updateUrl));
 
-                                    // Konfigurasi notifikasi unduhan
-                                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
                                     request.setTitle("Pembaruan Aplikasi");
                                     request.setDescription("Mengunduh pembaruan aplikasi...");
 
-                                    // Menentukan lokasi penyimpanan file unduhan
-                                    String fileName = "app-update.apk";
-                                    File file = new File(getExternalFilesDir("update"), fileName); // Menyimpan file di folder DjagaSwara/update
+                                    DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+                                    String todayDate = dateFormat.format(new Date());
+                                    String fileName = "djagaswara-" + todayDate + "-upd.apk";
+                                    String folderName = "Djaga Swara/release";
+
+                                    File folder = new File(Environment.getExternalStorageDirectory(), folderName);
+                                    if (!folder.exists()) {
+                                        folder.mkdirs();
+                                    }
+                                    File file = new File(folder, fileName);
                                     request.setDestinationUri(Uri.fromFile(file));
 
                                     // Memulai unduhan
@@ -190,49 +218,39 @@ public class CekUpdate extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             apkUri = FileProvider.getUriForFile(this, getPackageName() + ".provider", file);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         } else {
             apkUri = Uri.fromFile(file);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
 
         intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            boolean hasInstallPermission = getPackageManager().canRequestPackageInstalls();
-            if (!hasInstallPermission) {
-                startInstallPermissionSettingActivity();
-                return;
-            }
-        }
-
         startActivity(intent);
     }
 
-    private void updateProgressBar(int progressPercentage) {
-        ProgressBar progressBar = findViewById(R.id.progressBar);
-//        progressBar.setVisibility(View.VISIBLE);
-        progressBar.setProgress(progressPercentage);
-    }
-
-    private void startInstallPermissionSettingActivity() {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
-        intent.setData(Uri.parse("package:" + getPackageName()));
-        startActivityForResult(intent, REQUEST_INSTALL_PERMISSION);
+    private void updateProgressBar(int progress) {
+        runOnUiThread(() -> pr.setProgress(progress));
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_INSTALL_PERMISSION) {
-            if (resultCode == RESULT_OK) {
-                // User has granted the permission, retry installation
-                File file = new File(getExternalFilesDir("update"), "app-update.apk");
-                installUpdate(file);
-            } else {
-                Toast.makeText(this, "Permission denied. Cannot install the update.", Toast.LENGTH_SHORT).show();
+
+        if (requestCode == OVERLAY_PERMISSION_REQUEST_CODE) {
+            // Periksa kembali apakah izin diberikan setelah pengguna memilih
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (Settings.canDrawOverlays(this)) {
+                    // Izin sudah diberikan, lanjutkan ke aktivitas berikutnya
+                    startNextActivity();
+                } else {
+                    // Izin tidak diberikan, mungkin pengguna menolaknya
+                    // Anda dapat menampilkan pesan kesalahan atau mengambil tindakan lain sesuai kebutuhan
+                }
             }
         }
     }
 
+    private void startNextActivity() {
+        checkForUpdates();
+    }
 }

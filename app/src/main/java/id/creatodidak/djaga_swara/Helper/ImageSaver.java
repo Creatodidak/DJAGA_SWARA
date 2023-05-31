@@ -17,7 +17,7 @@ public class ImageSaver {
     private static final String IMAGE_DIRECTORY = "/CameraWatermark";
     private static final String IMAGE_FORMAT = ".jpg";
 
-    private Context context;
+    private final Context context;
     private OnImageSavedListener listener;
 
     public ImageSaver(Context context) {

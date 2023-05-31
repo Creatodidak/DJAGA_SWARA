@@ -1,12 +1,12 @@
 package id.creatodidak.djaga_swara.API.Models.Draft;
 
 public class Lokasi {
-    private int id;
-    private String id_tps;
-    private String latitude;
-    private String longitude;
-    private String status;
-    private String created_at;
+    private final int id;
+    private final String id_tps;
+    private final String latitude;
+    private final String longitude;
+    private final String status;
+    private final String created_at;
 
     public Lokasi(int id, String id_tps, String latitude, String longitude, String status, String created_at) {
         this.id = id;

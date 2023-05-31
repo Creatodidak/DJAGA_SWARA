@@ -334,12 +334,22 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@android:color/transparent"
             android:gravity="center"
             android:orientation="horizontal"
-            app:layout_columnSpan="3"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1">
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_columnWeight="1"
             app:layout_rowWeight="1">
 
             <TextView
@@ -352,6 +362,27 @@
                 android:textColor="#fff"
                 android:textSize="24sp"
                 android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1">
+
+            <ImageView
+                android:id="@+id/pinDelete"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:tint="@color/white"
+                app:srcCompat="@drawable/baseline_backspace_24"
+                tools:ignore="UseAppTint" />
+
         </LinearLayout>
 
     </androidx.gridlayout.widget.GridLayout>

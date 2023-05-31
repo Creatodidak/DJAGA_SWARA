@@ -83,5 +83,13 @@ public interface ApiService {
                                  @Part("situasi") String situasi,
                                  @Part("prediksi") String prediksi,
                                  @Part MultipartBody.Part image);
+
+    @FormUrlEncoded
+    @POST("android/updatetps")
+    Call<UpdResponse> updatetps(
+            @Field("id_tps") String id_tps,
+            @Field("dpt_final") String dpt_final,
+            @Field("keterangan") String keterangan
+    );
 }
 

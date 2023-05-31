@@ -23,7 +23,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Update {
-    private Context context;
+    private final Context context;
 
     public Update(Context context) {
         this.context = context;

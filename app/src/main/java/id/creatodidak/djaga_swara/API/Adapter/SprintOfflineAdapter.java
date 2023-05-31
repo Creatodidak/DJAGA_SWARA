@@ -19,7 +19,7 @@ import id.creatodidak.djaga_swara.API.Models.SprintListOffline;
 import id.creatodidak.djaga_swara.R;
 
 public class SprintOfflineAdapter extends RecyclerView.Adapter<SprintOfflineAdapter.SprintViewHolder> {
-    private Context context;
+    private final Context context;
     private List<SprintListOffline> sprints;
     private OnItemClickListener itemClickListener;
 
@@ -56,7 +56,10 @@ public class SprintOfflineAdapter extends RecyclerView.Adapter<SprintOfflineAdap
     }
 
     public class SprintViewHolder extends RecyclerView.ViewHolder {
-        private TextView judul, status, tanggal, type;
+        private final TextView judul;
+        private final TextView status;
+        private final TextView tanggal;
+        private final TextView type;
 
         public SprintViewHolder(@NonNull View itemView) {
             super(itemView);

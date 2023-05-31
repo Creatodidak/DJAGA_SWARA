@@ -15,8 +15,8 @@ import id.creatodidak.djaga_swara.API.Models.TpsList;
 import id.creatodidak.djaga_swara.R;
 
 public class TpsAdapter extends RecyclerView.Adapter<TpsAdapter.ViewHolder> {
-    private List<TpsList> tpsList;
-    private Context context;
+    private final List<TpsList> tpsList;
+    private final Context context;
     private OnItemClickListener onItemClickListener;
 
     public TpsAdapter(List<TpsList> tpsList, Context context) {

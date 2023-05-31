@@ -4,24 +4,24 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class TugasList implements Parcelable {
-    private String id;
-    private String nomor;
-    private String judul;
-    private String kode;
-    private String tahun;
-    private String penerbit;
-    private String tandatangan;
-    private String status;
-    private String dasar;
-    private String namaops;
-    private String perintah;
-    private String tanggal;
-    private String tanggalmulai;
-    private String tanggalberakhir;
-    private String type;
-    private String created_at;
-    private String updated_at;
-    private TPS tps;
+    private final String id;
+    private final String nomor;
+    private final String judul;
+    private final String kode;
+    private final String tahun;
+    private final String penerbit;
+    private final String tandatangan;
+    private final String status;
+    private final String dasar;
+    private final String namaops;
+    private final String perintah;
+    private final String tanggal;
+    private final String tanggalmulai;
+    private final String tanggalberakhir;
+    private final String type;
+    private final String created_at;
+    private final String updated_at;
+    private final TPS tps;
 
     public TugasList(String id, String nomor, String judul, String kode, String tahun, String penerbit, String tandatangan, String status, String dasar, String namaops, String perintah, String tanggal, String tanggalmulai, String tanggalberakhir, String type, String created_at, String updated_at, TPS tps) {
         this.id = id;

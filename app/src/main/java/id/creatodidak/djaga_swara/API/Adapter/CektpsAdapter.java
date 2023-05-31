@@ -35,8 +35,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CektpsAdapter extends RecyclerView.Adapter<CektpsAdapter.ViewHolder> {
-    private List<CekTps> cektpsList;
-    private Activity mActivity;
+    private final List<CekTps> cektpsList;
+    private final Activity mActivity;
 
     ApiService apiService;
 

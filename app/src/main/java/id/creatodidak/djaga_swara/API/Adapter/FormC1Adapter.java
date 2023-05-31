@@ -20,7 +20,7 @@ import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
 import id.creatodidak.djaga_swara.R;
 
 public class FormC1Adapter extends RecyclerView.Adapter<FormC1Adapter.ViewHolder> {
-    private List<FormC1> formc1List;
+    private final List<FormC1> formc1List;
 
     public FormC1Adapter(List<FormC1> formc1List) {
         this.formc1List = formc1List;

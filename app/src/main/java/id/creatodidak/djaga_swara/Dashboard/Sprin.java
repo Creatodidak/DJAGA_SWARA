@@ -226,4 +226,27 @@ public class Sprin extends AppCompatActivity implements SprintAdapter.OnItemClic
         super.onStop();
         unregisterReceiver(networkChangeReceiver);
     }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("KONFIRMASI");
+        builder.setIcon(R.drawable.logosmall);
+
+        builder.setMessage("Keluar dari aplikasi?");
+        builder.setPositiveButton("YA, KELUAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        builder.setNegativeButton("BATAL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 }

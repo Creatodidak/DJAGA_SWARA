@@ -1,3 +1,4 @@
+// NotificationHelper.java
 package id.creatodidak.djaga_swara.Helper;
 
 import android.Manifest;
@@ -9,15 +10,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.widget.RemoteViews;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import id.creatodidak.djaga_swara.R;
+import id.creatodidak.djaga_swara.Splash;
 
 public class NotificationHelper {
+
     private static final String CHANNEL_ID = "channel_id";
     private static final String CHANNEL_NAME = "channel_name";
     private static final int NOTIFICATION_ID = 1;
@@ -25,19 +27,20 @@ public class NotificationHelper {
     public static void showNotification(Context context, String title, String message) {
         createNotificationChannel(context);
 
+        // Create intent for the full screen intent
+        Intent fullScreenIntent = new Intent(context, Splash.class);
+        PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(context, 0, fullScreenIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        // Create the expanded notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.logosmall)
                 .setContentTitle(title)
                 .setContentText(message)
-                .setStyle(new NotificationCompat.DecoratedCustomViewStyle());
-
-        // Set custom notification layout
-        RemoteViews notificationLayout = new RemoteViews(context.getPackageName(), R.layout.notifikasi);
-        notificationLayout.setTextViewText(R.id.notifJudul, title);
-        notificationLayout.setTextViewText(R.id.notifText, message);
-        notificationLayout.setImageViewResource(R.id.notifImg, R.drawable.logosmall);
-
-        builder.setContent(notificationLayout);
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_CALL)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message)) // Set the expanded style
+                .setFullScreenIntent(fullScreenPendingIntent, true)
+                .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -47,43 +50,10 @@ public class NotificationHelper {
         notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 
-    public static void showNotificationWithButton(final Context context, String title, String message) {
-        createNotificationChannel(context);
-
-        // Check if permission to show notification is granted
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.FOREGROUND_SERVICE) != PackageManager.PERMISSION_GRANTED) {
-            // Handle permission not granted
-            return;
-        }
-
-        // Create intent to handle button action
-        Intent buttonIntent = new Intent(context, NotificationButtonReceiver.class);
-        PendingIntent buttonPendingIntent = PendingIntent.getBroadcast(context, 0, buttonIntent, PendingIntent.FLAG_IMMUTABLE); // Set FLAG_IMMUTABLE
-
-        // Create notification with button
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.logosmall)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                .addAction(R.drawable.logosmall, "AKAN SAYA LAPORKAN", buttonPendingIntent);
-
-        // Set custom notification layout
-        RemoteViews notificationLayout = new RemoteViews(context.getPackageName(), R.layout.notifikasi);
-        notificationLayout.setTextViewText(R.id.notifJudul, title);
-        notificationLayout.setTextViewText(R.id.notifText, message);
-        notificationLayout.setImageViewResource(R.id.notifImg, R.drawable.logosmall);
-
-        builder.setContent(notificationLayout);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(NOTIFICATION_ID, builder.build());
-    }
-
 
     private static void createNotificationChannel(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }

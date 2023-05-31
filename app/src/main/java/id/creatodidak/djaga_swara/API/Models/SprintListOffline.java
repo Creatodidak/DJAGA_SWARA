@@ -3,28 +3,28 @@ package id.creatodidak.djaga_swara.API.Models;
 import com.google.gson.annotations.SerializedName;
 
 public class SprintListOffline {
-    private int id;
-    private String nomor;
-    private String judul;
-    private String kode;
-    private String tahun;
-    private String penerbit;
-    private String tandatangan;
-    private String status;
-    private String dasar;
-    private String namaops;
-    private String perintah;
+    private final int id;
+    private final String nomor;
+    private final String judul;
+    private final String kode;
+    private final String tahun;
+    private final String penerbit;
+    private final String tandatangan;
+    private final String status;
+    private final String dasar;
+    private final String namaops;
+    private final String perintah;
     @SerializedName("tanggal")
-    private String tanggalString;
+    private final String tanggalString;
     @SerializedName("tanggalmulai")
-    private String tanggalmulaiString;
+    private final String tanggalmulaiString;
     @SerializedName("tanggalberakhir")
-    private String tanggalberakhirString;
-    private String type;
+    private final String tanggalberakhirString;
+    private final String type;
     @SerializedName("created_at")
-    private String createdAtString;
+    private final String createdAtString;
     @SerializedName("updated_at")
-    private String updatedAtString;
+    private final String updatedAtString;
 
     public SprintListOffline(int id, String nomor, String judul, String kode, String tahun, String penerbit, String tandatangan, String status, String dasar, String namaops, String perintah, String tanggalString, String tanggalmulaiString, String tanggalberakhirString, String type, String createdAtString, String updatedAtString) {
         this.id = id;

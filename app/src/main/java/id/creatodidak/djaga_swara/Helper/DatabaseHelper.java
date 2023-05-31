@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import id.creatodidak.djaga_swara.API.Models.Draft.CekTps;
+import id.creatodidak.djaga_swara.API.Models.Draft.DraftDpt;
 import id.creatodidak.djaga_swara.API.Models.Draft.FormC1;
 import id.creatodidak.djaga_swara.API.Models.Draft.Lappam;
 import id.creatodidak.djaga_swara.API.Models.Draft.Lapserah;
@@ -25,7 +26,7 @@ import id.creatodidak.djaga_swara.BuildConfig;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "djagaswara.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -63,6 +64,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String createLapserah = "CREATE TABLE IF NOT EXISTS lapserah (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL, status TEXT, created_at TEXT)";
         db.execSQL(createLapserah);
+
+
+        String createdDraftdpt = "CREATE TABLE IF NOT EXISTS draftdpt (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT NOT NULL, dpt_final TEXT NOT NULL, keterangan TEXT NOT NULL, status TEXT NOT NULL)";
+        db.execSQL(createdDraftdpt);
     }
 
     @Override
@@ -136,6 +141,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void resetLapserahTable() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM lapserah");
+        db.execSQL("VACUUM");
+    }
+
+    public void resetDraftdpt() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM draftdpt");
         db.execSQL("VACUUM");
     }
 
@@ -346,7 +357,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return tpsActivity;
     }
 
-
     @SuppressLint("Range")
     public TpsList getSprindetail(String id_tps) {
         TpsList tps = null;
@@ -389,6 +399,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
 
         return tps;
+    }
+
+    @SuppressLint("Range")
+    public TpsList getDpt(String id_tps) {
+        TpsList tps = null;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String[] columns = {"dpt_sementara", "dpt_tetap", "dpt_final", "keterangan"};
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("sprindetail", columns, selection, selectionArgs, null, null, null);
+        if (cursor.moveToFirst()) {
+            tps = new TpsList();
+            tps.setDptSementara(cursor.getString(cursor.getColumnIndex("dpt_sementara")));
+            tps.setDptTetap(cursor.getString(cursor.getColumnIndex("dpt_tetap")));
+            tps.setDptFinal(cursor.getString(cursor.getColumnIndex("dpt_final")));
+            tps.setKeterangan(cursor.getString(cursor.getColumnIndex("keterangan")));
+        }
+
+        cursor.close();
+        db.close();
+
+        return tps;
+    }
+
+    public boolean updateDpt(String id_tps, String dptf, String ket) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("dpt_final", dptf);
+        values.put("keterangan", ket);
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        int rowsAffected = db.update("sprindetail", values, selection, selectionArgs);
+        db.close();
+
+        return rowsAffected > 0;
     }
 
     public boolean addLokasi(String idTps, String latitude, String longitude, String status, String created_at) {
@@ -470,6 +521,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("status", status);
         values.put("created_at", created_at);
         long result = db.insert("lapserah", null, values);
+        db.close();
+        return result != -1;
+    }
+
+    public boolean addDraftdpt(String idTps, String dptf, String keterangan, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id_tps", idTps);
+        values.put("dpt_final", dptf);
+        values.put("keterangan", keterangan);
+        values.put("status", status);
+        long result = db.insert("draftdpt", null, values);
         db.close();
         return result != -1;
     }
@@ -701,6 +764,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return lapserahList;
     }
+
+    @SuppressLint("Range")
+    public List<DraftDpt> getAllDraftDpt() {
+        List<DraftDpt> draftDptList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("draftdpt", null, "status = ?", new String[]{"LOCAL"}, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String id_tps = cursor.getString(cursor.getColumnIndex("id_tps"));
+                String dpt_final = cursor.getString(cursor.getColumnIndex("dpt_final"));
+                String keterangan = cursor.getString(cursor.getColumnIndex("keterangan"));
+                String status = cursor.getString(cursor.getColumnIndex("status"));
+
+                DraftDpt draftDpt = new DraftDpt(id_tps, dpt_final, keterangan, status);
+                draftDpt.setId(id);
+                draftDptList.add(draftDpt);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return draftDptList;
+    }
+
 
     public boolean updateStatus(String tableName, String idTps) {
         SQLiteDatabase db = this.getWritableDatabase();

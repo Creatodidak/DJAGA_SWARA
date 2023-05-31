@@ -1,9 +1,9 @@
 package id.creatodidak.djaga_swara.API.Models;
 
 public class Pangkat {
-    private String id;
-    private String lengkap;
-    private String singkat;
+    private final String id;
+    private final String lengkap;
+    private final String singkat;
 
     public Pangkat(String id, String lengkap, String singkat) {
         this.id = id;

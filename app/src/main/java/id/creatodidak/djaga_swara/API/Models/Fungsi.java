@@ -1,9 +1,9 @@
 package id.creatodidak.djaga_swara.API.Models;
 
 public class Fungsi {
-    private int id;
-    private String satfung;
-    private String satker;
+    private final int id;
+    private final String satfung;
+    private final String satker;
 
     public Fungsi(int id, String satfung, String satker) {
         this.id = id;

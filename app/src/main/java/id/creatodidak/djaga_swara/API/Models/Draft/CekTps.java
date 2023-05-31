@@ -1,13 +1,13 @@
 package id.creatodidak.djaga_swara.API.Models.Draft;
 
 public class CekTps {
-    private int id;
-    private String id_tps;
-    private String foto;
-    private String situasi;
-    private String prediksi;
-    private String status;
-    private String created_at;
+    private final int id;
+    private final String id_tps;
+    private final String foto;
+    private final String situasi;
+    private final String prediksi;
+    private final String status;
+    private final String created_at;
 
     public CekTps(int id, String id_tps, String foto, String situasi, String prediksi, String status, String created_at) {
         this.id = id;

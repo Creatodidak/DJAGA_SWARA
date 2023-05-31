@@ -22,7 +22,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import id.creatodidak.djaga_swara.API.Interface.ApiService;
-import id.creatodidak.djaga_swara.API.Models.Draft.Lokasi;
+import id.creatodidak.djaga_swara.API.Models.Draft.DraftDpt;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
 import id.creatodidak.djaga_swara.API.Models.UpdResponse;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
@@ -31,8 +31,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LokasiAdapter extends RecyclerView.Adapter<LokasiAdapter.ViewHolder> {
-    private final List<Lokasi> LokasiList;
+public class DptAdapter extends RecyclerView.Adapter<DptAdapter.ViewHolder> {
+    private final List<DraftDpt> DptList;
     private final Activity mActivity;
     ApiService apiService;
 
@@ -42,9 +42,9 @@ public class LokasiAdapter extends RecyclerView.Adapter<LokasiAdapter.ViewHolder
 
     boolean cek, upd;
 
-    public LokasiAdapter(List<Lokasi> LokasiList, Activity activity) {
+    public DptAdapter(List<DraftDpt> DptList, Activity activity) {
 
-        this.LokasiList = LokasiList;
+        this.DptList = DptList;
         mActivity = activity;
     }
 
@@ -72,20 +72,20 @@ public class LokasiAdapter extends RecyclerView.Adapter<LokasiAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Lokasi Lokasi = LokasiList.get(position);
+        DraftDpt Dpt = DptList.get(position);
         databaseHelper = new DatabaseHelper(holder.itemView.getContext());
-        TpsList tpsList = databaseHelper.getSprindetail(Lokasi.getId_tps());
+        TpsList tpsList = databaseHelper.getSprindetail(Dpt.getIdTps());
 
-        holder.judul.setText("Laporan koordinat TPS " + tpsList.getNomorTps() + " Desa "+tpsList.getNamaDes());
-                holder.tanggal.setText(Lokasi.getCreated_at());
+        holder.judul.setText("Update DPT Final TPS " + tpsList.getNomorTps() + " Desa "+tpsList.getNamaDes());
+        holder.tanggal.setText("Tidak tersedia");
         Glide.with(holder.itemView.getContext())
-                .load(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.lokasi))
+                .load(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.dpt))
                 .into(holder.fotoImageView);
 
         TextView situasiTextView = new TextView(holder.itemView.getContext());
         TextView prediksiTextView = new TextView(holder.itemView.getContext());
-        situasiTextView.setText("LATITUDE:\n" + Lokasi.getLatitude());
-        prediksiTextView.setText("LONGITUDE:\n" + Lokasi.getLongitude());
+        situasiTextView.setText("DPT FINAL:\n" + Dpt.getDptFinal()+" ORANG");
+        prediksiTextView.setText("KETERANGAN:\n"+Dpt.getKeterangan());
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -112,14 +112,14 @@ public class LokasiAdapter extends RecyclerView.Adapter<LokasiAdapter.ViewHolder
                         dialog.dismiss();
                         showprogress("Mengupload data ke server", v);
                         apiService = ApiClient.getClient().create(ApiService.class);
-                        Call<UpdResponse> call = apiService.updateloc(tpsList.getIdTps(), Lokasi.getLatitude(), Lokasi.getLongitude());
+                        Call<UpdResponse> call = apiService.updatetps(tpsList.getIdTps(), Dpt.getDptFinal(), Dpt.getKeterangan());
                         call.enqueue(new Callback<UpdResponse>() {
                             @Override
                             public void onResponse(Call<UpdResponse> call, Response<UpdResponse> response) {
                                 if (response.body() != null) {
                                     progressDialog.dismiss();
                                     if (response.body().getMsg().equals("ok")) {
-                                        updatedb("YES, ALL", v, Lokasi.getId_tps());
+                                        updatedb("YES, ALL", v, Dpt.getIdTps());
                                     }else{
                                         notifikasi("GAGAL", "Data gagal diupload ke server!", true, v);
                                     }
@@ -150,7 +150,7 @@ public class LokasiAdapter extends RecyclerView.Adapter<LokasiAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return LokasiList.size();
+        return DptList.size();
     }
 
     private void showprogress(String msg, View view) {
@@ -163,8 +163,8 @@ public class LokasiAdapter extends RecyclerView.Adapter<LokasiAdapter.ViewHolder
     private void updatedb(String msg, View v, String id_tps) {
         showprogress("Update data di local", v);
 
-        cek = databaseHelper.updateTpsActivity(id_tps, "lokasi", msg);
-        upd = databaseHelper.updateStatus("lokasi", id_tps);
+        cek = databaseHelper.updateTpsActivity(id_tps, "dpt", msg);
+        upd = databaseHelper.updateStatus("draftdpt", id_tps);
 
         if(cek){
             if(upd){

@@ -3,17 +3,22 @@ package id.creatodidak.djaga_swara.Dashboard;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Calendar;
+
 import id.creatodidak.djaga_swara.API.Models.TpsActivity;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Cektps;
+import id.creatodidak.djaga_swara.Dashboard.TugasForm.Dpt;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lappam;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lapwal;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lapserah;
@@ -192,7 +197,13 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
                 }
                 break;
             case R.id.actdpttps:
-                Toast.makeText(this, "Fungsi Segera tersedia", Toast.LENGTH_SHORT).show();
+                if(tpsActivity.getDpt().equals("NO")){
+                    Intent intent = new Intent(Tugas.this, Dpt.class);
+                    intent.putExtra("id_tps", id_tps);
+                    startActivity(intent);
+                }else{
+                    notifikasi("INFO", "ANDA SUDAH MENGISI TUGAS INI");
+                }
                 break;
             case R.id.actlappam:
                 if(tpsActivity.getLappam().equals("NO")){
@@ -231,7 +242,7 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
                 }
                 break;
             case R.id.actcall:
-                Toast.makeText(this, "Fungsi Segera tersedia", Toast.LENGTH_SHORT).show();
+                showPilihanAksi(tpslist.getHpKpps());
                 break;
         }
     }
@@ -254,5 +265,85 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
         cekall();
+    }
+
+    private void showPilihanAksi(String nomorhp) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("HUBUNGI KETUA KPPS")
+                .setIcon(R.drawable.logosmall)
+                .setItems(new CharSequence[]{"Hub. Ketua KPPS via Telepon", "Hub. Ketua KPPS via SMS", "Hub. Ketua KPPS via Panggilan WhatsApp", "Hub. Ketua KPPS via Pesan WhatsApp"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Tangani aksi sesuai pilihan pengguna
+                        switch (which) {
+                            case 0:
+                                // Aksi panggil via seluler
+                                panggilViaSeluler(nomorhp);
+                                break;
+                            case 1:
+                                // Aksi kirim SMS
+                                kirimSMS(nomorhp);
+                                break;
+                            case 2:
+                                // Aksi panggil via WhatsApp
+                                panggilViaWhatsApp(nomorhp);
+                                break;
+                            case 3:
+                                // Aksi kirim pesan WhatsApp
+                                kirimPesanWhatsApp(nomorhp);
+                                break;
+                        }
+                    }
+                })
+                .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void panggilViaSeluler(String nomorHp) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + nomorHp));
+        startActivity(intent);
+    }
+
+    private void kirimSMS(String nomorHp) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("smsto:" + nomorHp));
+        intent.putExtra("sms_body", "Halo, Selamat "+getWaktu()+"\nSaya...");
+        startActivity(intent);
+    }
+
+    private void panggilViaWhatsApp(String nomorHp) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("https://api.whatsapp.com/send?phone=" + nomorHp));
+        startActivity(intent);
+    }
+
+    private void kirimPesanWhatsApp(String nomorHp) {
+        String url = "https://api.whatsapp.com/send?phone=" + nomorHp;
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
+    }
+
+    private String getWaktu() {
+        Calendar calendar = Calendar.getInstance();
+        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+
+        if (hourOfDay >= 0 && hourOfDay < 6) {
+            return "Pagi";
+        } else if (hourOfDay >= 6 && hourOfDay < 12) {
+            return "Siang";
+        } else if (hourOfDay >= 12 && hourOfDay < 18) {
+            return "Sore";
+        } else {
+            return "Malam";
+        }
     }
 }

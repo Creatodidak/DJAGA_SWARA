@@ -1,12 +1,12 @@
 package id.creatodidak.djaga_swara.API.Models;
 
 public class Drafts {
-    private String situasi;
-    private String prediksi;
+    private final String situasi;
+    private final String prediksi;
 
-    private String idTps;
+    private final String idTps;
 
-    private String createdAt;
+    private final String createdAt;
 
     public Drafts(String situasi, String prediksi, String idTps, String createdAt) {
         this.situasi = situasi;

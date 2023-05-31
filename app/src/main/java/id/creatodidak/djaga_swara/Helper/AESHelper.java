@@ -2,6 +2,8 @@ package id.creatodidak.djaga_swara.Helper;
 
 import android.util.Base64;
 
+import java.nio.charset.StandardCharsets;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -18,7 +20,7 @@ public class AESHelper {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
             cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
 
-            byte[] encryptedBytes = cipher.doFinal(data.getBytes("UTF-8"));
+            byte[] encryptedBytes = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
             return Base64.encodeToString(encryptedBytes, Base64.DEFAULT);
         } catch (Exception e) {
             e.printStackTrace();
@@ -40,7 +42,7 @@ public class AESHelper {
 
             byte[] decodedBytes = Base64.decode(encryptedData, Base64.DEFAULT);
             byte[] decryptedBytes = cipher.doFinal(decodedBytes);
-            return new String(decryptedBytes, "UTF-8");
+            return new String(decryptedBytes, StandardCharsets.UTF_8);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

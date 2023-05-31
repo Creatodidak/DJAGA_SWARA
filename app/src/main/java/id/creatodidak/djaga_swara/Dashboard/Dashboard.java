@@ -3,8 +3,10 @@ package id.creatodidak.djaga_swara.Dashboard;
 // import statements
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -43,7 +45,7 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
     ProgressDialog progressDialog;
     SharedPreferences sharedPreferences;
     String id_sprint, nrp;
-    int jlokasi, jcektps, jlappam, jformc1, jlapwal, jlapserah, totalJumlahData;
+    int jlokasi, jcektps, jlappam, jformc1, jlapwal, jlapserah, totalJumlahData, jdraftdpt;
     private boolean isInternetAvailable;
 
     LinearLayout btndraft;
@@ -176,8 +178,9 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
             jformc1 = databaseHelper.getDraft("formc1").size();
             jlapwal = databaseHelper.getDraft("lapwal").size();
             jlapserah = databaseHelper.getDraft("lapserah").size();
-            totalJumlahData = jlokasi + jcektps + jlappam + jformc1 + jlapwal + jlapserah;
-            judul.setText(String.valueOf(totalJumlahData)+" Draft Tersimpan!");
+            jdraftdpt = databaseHelper.getDraft("draftdpt").size();
+            totalJumlahData = jlokasi + jcektps + jlappam + jformc1 + jlapwal + jlapserah + jdraftdpt;
+            judul.setText(totalJumlahData +" Draft Tersimpan!");
         }
     }
 
@@ -204,7 +207,8 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
         jformc1 = databaseHelper.getDraft("formc1").size();
         jlapwal = databaseHelper.getDraft("lapwal").size();
         jlapserah = databaseHelper.getDraft("lapserah").size();
-        totalJumlahData = jlokasi + jcektps + jlappam + jformc1 + jlapwal + jlapserah;
-        judul.setText(String.valueOf(totalJumlahData)+" Draft Tersimpan!");
+        jdraftdpt = databaseHelper.getDraft("draftdpt").size();
+        totalJumlahData = jlokasi + jcektps + jlappam + jformc1 + jlapwal + jlapserah + jdraftdpt;
+        judul.setText(totalJumlahData +" Draft Tersimpan!");
     }
 }

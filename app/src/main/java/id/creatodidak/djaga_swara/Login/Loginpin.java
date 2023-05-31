@@ -2,21 +2,19 @@ package id.creatodidak.djaga_swara.Login;
 
 import static id.creatodidak.djaga_swara.Helper.RandomStringGenerator.generateRandomString;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import id.creatodidak.djaga_swara.Dashboard.Dashboard;
-import id.creatodidak.djaga_swara.Dashboard.First;
+import androidx.appcompat.app.AppCompatActivity;
+
 import id.creatodidak.djaga_swara.Dashboard.Sprin;
-import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
 import id.creatodidak.djaga_swara.R;
 
 public class Loginpin extends AppCompatActivity implements View.OnClickListener {
@@ -25,6 +23,7 @@ public class Loginpin extends AppCompatActivity implements View.OnClickListener 
 
     private String PIN1, PIN2, PIN3, PIN4;
     private TextView pin1, pin2, pin3, pin4, pin5, pin6, pin7, pin8, pin9, pin0;
+    private ImageView pinDelete;
     SharedPreferences sharedPreferences;
 
     int sisa = 0;
@@ -55,6 +54,7 @@ public class Loginpin extends AppCompatActivity implements View.OnClickListener 
         pin8 = findViewById(R.id.pin8);
         pin9 = findViewById(R.id.pin9);
         pin0 = findViewById(R.id.pin10);
+        pinDelete = findViewById(R.id.pinDelete);
 
         pin1.setOnClickListener(this);
         pin2.setOnClickListener(this);
@@ -66,6 +66,8 @@ public class Loginpin extends AppCompatActivity implements View.OnClickListener 
         pin8.setOnClickListener(this);
         pin9.setOnClickListener(this);
         pin0.setOnClickListener(this);
+        pinDelete.setOnClickListener(this);
+
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -102,6 +104,9 @@ public class Loginpin extends AppCompatActivity implements View.OnClickListener 
             case R.id.pin9:
                 insertpin("9");
                 break;
+            case R.id.pinDelete:
+                deletePin();
+                break;
         }
     }
 
@@ -128,18 +133,6 @@ public class Loginpin extends AppCompatActivity implements View.OnClickListener 
                 editor.putString("token", null);
                 editor.putInt("kesempatan", 0);
                 editor.apply();
-
-//                Boolean first = sharedPreferences.getBoolean("firstcheck", false);
-//
-//                if (first){
-//                    Intent intent = new Intent(Loginpin.this, Sprin.class);
-//                    startActivity(intent);
-//                    finish();
-//                }else{
-//                    Intent intent = new Intent(Loginpin.this, First.class);
-//                    startActivity(intent);
-//                    finish();
-//                }
 
                 Intent intent = new Intent(Loginpin.this, Sprin.class);
                 startActivity(intent);
@@ -179,6 +172,22 @@ public class Loginpin extends AppCompatActivity implements View.OnClickListener 
                     PIN4 = "";
                 }
             }
+        }
+    }
+
+    private void deletePin() {
+        if (!PIN4.isEmpty()) {
+            etPin4.setText("");
+            PIN4 = "";
+        } else if (!PIN3.isEmpty()) {
+            etPin3.setText("");
+            PIN3 = "";
+        } else if (!PIN2.isEmpty()) {
+            etPin2.setText("");
+            PIN2 = "";
+        } else if (!PIN1.isEmpty()) {
+            etPin1.setText("");
+            PIN1 = "";
         }
     }
 

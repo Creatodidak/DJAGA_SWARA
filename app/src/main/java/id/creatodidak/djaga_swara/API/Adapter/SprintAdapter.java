@@ -21,7 +21,7 @@ import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
 import id.creatodidak.djaga_swara.R;
 
 public class SprintAdapter extends RecyclerView.Adapter<SprintAdapter.SprintViewHolder> {
-    private Context context;
+    private final Context context;
     private List<SprintList> sprints;
     private OnItemClickListener itemClickListener;
 
@@ -58,7 +58,10 @@ public class SprintAdapter extends RecyclerView.Adapter<SprintAdapter.SprintView
     }
 
     public class SprintViewHolder extends RecyclerView.ViewHolder {
-        private TextView judul, status, tanggal, type;
+        private final TextView judul;
+        private final TextView status;
+        private final TextView tanggal;
+        private final TextView type;
 
         public SprintViewHolder(@NonNull View itemView) {
             super(itemView);

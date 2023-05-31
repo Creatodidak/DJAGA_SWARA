@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 
+import id.creatodidak.djaga_swara.Helper.NotificationHelper;
 import id.creatodidak.djaga_swara.Login.Login;
 
 public class Splash extends AppCompatActivity {
@@ -55,6 +56,15 @@ public class Splash extends AppCompatActivity {
         isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         cekGPS();
+        showWelcomeNotification();
+    }
+
+    private void showWelcomeNotification() {
+        String title = "Selamat Datang Di Djaga Swara Polres Landak";
+        String message = "Silahkan gunakan aplikasi ini dengan penuh rasa tanggung jawab!";
+
+        // Memanggil metode showNotification pada NotificationHelper untuk menampilkan notifikasi
+        NotificationHelper.showNotification(this, title, message);
     }
 
     private void cekGPS() {
