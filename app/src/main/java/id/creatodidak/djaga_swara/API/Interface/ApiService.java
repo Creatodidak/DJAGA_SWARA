@@ -3,8 +3,9 @@ package id.creatodidak.djaga_swara.API.Interface;
 import java.util.List;
 
 import id.creatodidak.djaga_swara.API.Models.Alluser;
+import id.creatodidak.djaga_swara.API.Models.DataCalon;
+import id.creatodidak.djaga_swara.API.Models.Multi.SuaraData;
 import id.creatodidak.djaga_swara.API.Models.Profile;
-import id.creatodidak.djaga_swara.API.Models.SprintList;
 import id.creatodidak.djaga_swara.API.Models.SprintListOffline;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
 import id.creatodidak.djaga_swara.API.Models.UpdResponse;
@@ -12,8 +13,8 @@ import id.creatodidak.djaga_swara.API.Models.UpdateApp;
 import id.creatodidak.djaga_swara.API.Models.UpdateFoto;
 import id.creatodidak.djaga_swara.API.Models.ValidationLoginResponse;
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -91,5 +92,39 @@ public interface ApiService {
             @Field("dpt_final") String dpt_final,
             @Field("keterangan") String keterangan
     );
+
+    @GET("android/peserta/{type}/{id}")
+    Call<List<DataCalon.Presiden>> datapresiden(@Path("id") String id, @Path("type") String type);
+
+    @GET("android/peserta/{type}/{id}")
+    Call<List<DataCalon.DPRRI>> datadprri(@Path("id") String id, @Path("type") String type);
+
+    @GET("android/peserta/{type}/{id}")
+    Call<List<DataCalon.DPDRI>> datadpdri(@Path("id") String id, @Path("type") String type);
+
+    @GET("android/peserta/{type}/{id}")
+    Call<List<DataCalon.DPRDProv>> datadprdprov(@Path("id") String id, @Path("type") String type);
+
+    @GET("android/peserta/{type}/{id}")
+    Call<List<DataCalon.DPRDKab>> datadprdkab(@Path("id") String id, @Path("type") String type);
+
+    @GET("android/peserta/{type}/{id}")
+    Call<List<DataCalon.Gubernur>> datagubernur(@Path("id") String id, @Path("type") String type);
+
+    @GET("android/peserta/{type}/{id}")
+    Call<List<DataCalon.Bupati>> databupati(@Path("id") String id, @Path("type") String type);
+
+    @GET("android/peserta/{type}/{id}")
+    Call<List<DataCalon.Kades>> datakades(@Path("id") String id, @Path("type") String type);
+
+    @POST("android/suara/add")
+    Call<UpdResponse> sendSuaraData(@Body SuaraData suaraData);
+
+    @FormUrlEncoded
+    @POST("android/suara/addtidaksah")
+    Call<UpdResponse> sendTidaksah(
+            @Field("tpsId") String tpsId,
+            @Field("suaratidaksah") int suaratidaksah,
+            @Field("type") String type);
 }
 

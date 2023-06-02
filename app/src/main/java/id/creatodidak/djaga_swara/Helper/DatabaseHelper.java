@@ -8,10 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Handler;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import id.creatodidak.djaga_swara.API.Models.DataCalon;
 import id.creatodidak.djaga_swara.API.Models.Draft.CekTps;
 import id.creatodidak.djaga_swara.API.Models.Draft.DraftDpt;
 import id.creatodidak.djaga_swara.API.Models.Draft.FormC1;
@@ -19,14 +19,22 @@ import id.creatodidak.djaga_swara.API.Models.Draft.Lappam;
 import id.creatodidak.djaga_swara.API.Models.Draft.Lapserah;
 import id.creatodidak.djaga_swara.API.Models.Draft.Lapwal;
 import id.creatodidak.djaga_swara.API.Models.Draft.Lokasi;
+import id.creatodidak.djaga_swara.API.Models.Multi.Bupati;
+import id.creatodidak.djaga_swara.API.Models.Multi.DPDRI;
+import id.creatodidak.djaga_swara.API.Models.Multi.DPRDKab;
+import id.creatodidak.djaga_swara.API.Models.Multi.DPRDProv;
+import id.creatodidak.djaga_swara.API.Models.Multi.DPRRI;
+import id.creatodidak.djaga_swara.API.Models.Multi.Gubernur;
+import id.creatodidak.djaga_swara.API.Models.Multi.Kades;
+import id.creatodidak.djaga_swara.API.Models.Multi.Presiden;
+import id.creatodidak.djaga_swara.API.Models.Multi.SuaraData;
 import id.creatodidak.djaga_swara.API.Models.SprintListOffline;
 import id.creatodidak.djaga_swara.API.Models.TpsActivity;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
-import id.creatodidak.djaga_swara.BuildConfig;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "djagaswara.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -65,9 +73,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String createLapserah = "CREATE TABLE IF NOT EXISTS lapserah (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL, status TEXT, created_at TEXT)";
         db.execSQL(createLapserah);
 
-
         String createdDraftdpt = "CREATE TABLE IF NOT EXISTS draftdpt (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT NOT NULL, dpt_final TEXT NOT NULL, keterangan TEXT NOT NULL, status TEXT NOT NULL)";
         db.execSQL(createdDraftdpt);
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS presiden (id INTEGER, id_calon TEXT, no_urut TEXT, capres TEXT, cawapres TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS dprri (id INTEGER, id_calon TEXT, id_dapil TEXT, id_partai TEXT, nomorurut TEXT, nama TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS dpdri (id INTEGER, id_calon TEXT, id_prov TEXT, nomorurut TEXT, nama TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS dprdprov (id INTEGER, id_calon TEXT, id_dapil TEXT, id_partai TEXT, nomorurut TEXT, nama TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS dprdkab (id INTEGER, id_calon TEXT, id_dapil TEXT, id_partai TEXT, nomorurut TEXT, nama TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS gubernur (id INTEGER, id_prov TEXT, id_calon TEXT, no_urut TEXT, cagub TEXT, cawagub TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS bupati (id INTEGER, id_kab TEXT, id_calon TEXT, no_urut TEXT, cabup TEXT, cawabup TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS kades (id INTEGER, id_des TEXT, id_calon TEXT, no_urut TEXT, cakades TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS suaratidaksah (id INTEGER, id_tps TEXT, type TEXT, jumlah TEXT, status TEXT);");
+
     }
 
     @Override
@@ -76,11 +102,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS sprinlist");
         db.execSQL("DROP TABLE IF EXISTS sprindetail");
         db.execSQL("DROP TABLE IF EXISTS tpsactivity");
+        db.execSQL("DROP TABLE IF EXISTS lokasi");
         db.execSQL("DROP TABLE IF EXISTS cektps");
         db.execSQL("DROP TABLE IF EXISTS formc1");
         db.execSQL("DROP TABLE IF EXISTS lappam");
         db.execSQL("DROP TABLE IF EXISTS lapwal");
         db.execSQL("DROP TABLE IF EXISTS lapserah");
+        db.execSQL("DROP TABLE IF EXISTS draftdpt");
+        db.execSQL("DROP TABLE IF EXISTS presiden");
+        db.execSQL("DROP TABLE IF EXISTS dprri");
+        db.execSQL("DROP TABLE IF EXISTS dpdri");
+        db.execSQL("DROP TABLE IF EXISTS dprdprov");
+        db.execSQL("DROP TABLE IF EXISTS dprdkab");
+        db.execSQL("DROP TABLE IF EXISTS gubernur");
+        db.execSQL("DROP TABLE IF EXISTS bupati");
+        db.execSQL("DROP TABLE IF EXISTS kades");
+        db.execSQL("DROP TABLE IF EXISTS suaratidaksah");
 
         // Recreate the tables
         onCreate(db);
@@ -149,6 +186,55 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM draftdpt");
         db.execSQL("VACUUM");
     }
+
+    public void resetPresiden() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM presiden");
+        db.execSQL("VACUUM");
+    }
+
+    public void resetDPRRI() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM dprri");
+        db.execSQL("VACUUM");
+    }
+
+    public void resetDPDRI() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM dpdri");
+        db.execSQL("VACUUM");
+    }
+
+    public void resetDPRDProv() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM dprdprov");
+        db.execSQL("VACUUM");
+    }
+
+    public void resetDPRDKab() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM dprdkab");
+        db.execSQL("VACUUM");
+    }
+
+    public void resetGubernur() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM gubernur");
+        db.execSQL("VACUUM");
+    }
+
+    public void resetBupati() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM bupati");
+        db.execSQL("VACUUM");
+    }
+
+    public void resetKades() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM kades");
+        db.execSQL("VACUUM");
+    }
+
 
     public void newtpsactivity(String id_tps) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -572,19 +658,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 int jformc1 = getDraft("formc1").size();
                 int jlapwal = getDraft("lapwal").size();
                 int jlapserah = getDraft("lapserah").size();
-
-                int totalJumlahData = jlokasi + jcektps + jlappam + jformc1 + jlapwal + jlapserah;
-
+                int jdraftdpt = getDraft("draftdpt").size();
+                int presidenj = getpresiden("LOCAL").size();
+                int bupatij = getbupati("LOCAL").size();
+                int gubernurj = getgubernur("LOCAL").size();
+                int dprrij = getdprri("LOCAL").size();
+                int dpdrij = getdpdri("LOCAL").size();
+                int kadesj = getkades("LOCAL").size();
+                int dprdProvj = getdprdprov("LOCAL").size();
+                int dprdKabj = getdprdkab("LOCAL").size();
+                int totalJumlahData = jlokasi + jcektps + jlappam + jformc1 + jlapwal + jlapserah + jdraftdpt + presidenj + bupatij + gubernurj + dprrij + dpdrij + kadesj +dprdProvj + dprdKabj;
+                
                 if (totalJumlahData != 0) {
                     String notificationTitle = "PERIKSA DRAFT ANDA!";
-                    String notificationMessage = "Terdapat " + totalJumlahData + " data yang belum dilaporkan.\nNotifikasi ini akan terus muncul setiap 30 Menit...";
+                    String notificationMessage = "Terdapat " + totalJumlahData + " data yang belum dilaporkan.\nNotifikasi ini akan terus muncul setiap 15 Menit...";
 
-//                    if (!BuildConfig.DEBUG) {
                         NotificationHelper.showNotification(context, notificationTitle, notificationMessage);
-//                    }
                 }
 
-                handler.postDelayed(this, 30 * 60 * 1000); // Check every 1 minute
+                handler.postDelayed(this, 15 * 60 * 1000); // Check every 1 minute
             }
         };
 
@@ -801,5 +893,1047 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return rowsAffected > 0;
     }
+
+    public void insertPresiden(int id, String id_calon, String no_urut, String capres, String cawapres, String tahun, String periode, String created_at, String updated_at, String id_tps) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id", id);
+        values.put("id_calon", id_calon);
+        values.put("no_urut", no_urut);
+        values.put("capres", capres);
+        values.put("cawapres", cawapres);
+        values.put("tahun", tahun);
+        values.put("periode", periode);
+        values.put("created_at", created_at);
+        values.put("updated_at", updated_at);
+        values.put("id_tps", id_tps);
+        db.insert("presiden", null, values);
+        db.close();
+    }
+
+    public void insertDPRRI(int id, String id_calon, String id_dapil, String id_partai, String nomorurut, String nama, String tahun, String periode, String created_at, String updated_at, String id_tps) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id", id);
+        values.put("id_calon", id_calon);
+        values.put("id_dapil", id_dapil);
+        values.put("id_partai", id_partai);
+        values.put("nomorurut", nomorurut);
+        values.put("nama", nama);
+        values.put("tahun", tahun);
+        values.put("periode", periode);
+        values.put("created_at", created_at);
+        values.put("updated_at", updated_at);
+        values.put("id_tps", id_tps);
+        db.insert("dprri", null, values);
+        db.close();
+    }
+
+    public void insertDPDRI(int id, String id_calon, String id_prov, String nomorurut, String nama, String tahun, String periode, String created_at, String updated_at, String id_tps) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id", id);
+        values.put("id_calon", id_calon);
+        values.put("id_prov", id_prov);
+        values.put("nomorurut", nomorurut);
+        values.put("nama", nama);
+        values.put("tahun", tahun);
+        values.put("periode", periode);
+        values.put("created_at", created_at);
+        values.put("updated_at", updated_at);
+        values.put("id_tps", id_tps);
+        db.insert("dpdri", null, values);
+        db.close();
+    }
+
+    public void insertDPRDProv(int id, String id_calon, String id_dapil, String id_partai, String nomorurut, String nama, String tahun, String periode, String created_at, String updated_at, String id_tps) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id", id);
+        values.put("id_calon", id_calon);
+        values.put("id_dapil", id_dapil);
+        values.put("id_partai", id_partai);
+        values.put("nomorurut", nomorurut);
+        values.put("nama", nama);
+        values.put("tahun", tahun);
+        values.put("periode", periode);
+        values.put("created_at", created_at);
+        values.put("updated_at", updated_at);
+        values.put("id_tps", id_tps);
+        db.insert("dprdprov", null, values);
+        db.close();
+    }
+
+    public void insertDPRDKab(int id, String id_calon, String id_dapil, String id_partai, String nomorurut, String nama, String tahun, String periode, String created_at, String updated_at, String id_tps) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id", id);
+        values.put("id_calon", id_calon);
+        values.put("id_dapil", id_dapil);
+        values.put("id_partai", id_partai);
+        values.put("nomorurut", nomorurut);
+        values.put("nama", nama);
+        values.put("tahun", tahun);
+        values.put("periode", periode);
+        values.put("created_at", created_at);
+        values.put("updated_at", updated_at);
+        values.put("id_tps", id_tps);
+        db.insert("dprdkab", null, values);
+        db.close();
+    }
+
+    public void insertGubernur(int id, String id_prov, String id_calon, String no_urut, String cagub, String cawagub, String tahun, String periode, String created_at, String updated_at, String id_tps) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id", id);
+        values.put("id_prov", id_prov);
+        values.put("id_calon", id_calon);
+        values.put("no_urut", no_urut);
+        values.put("cagub", cagub);
+        values.put("cawagub", cawagub);
+        values.put("tahun", tahun);
+        values.put("periode", periode);
+        values.put("created_at", created_at);
+        values.put("updated_at", updated_at);
+        values.put("id_tps", id_tps);
+        db.insert("gubernur", null, values);
+        db.close();
+    }
+
+    public void insertBupati(int id, String id_kab, String id_calon, String no_urut, String cabup, String cawabup, String tahun, String periode, String created_at, String updated_at, String id_tps) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id", id);
+        values.put("id_kab", id_kab);
+        values.put("id_calon", id_calon);
+        values.put("no_urut", no_urut);
+        values.put("cabup", cabup);
+        values.put("cawabup", cawabup);
+        values.put("tahun", tahun);
+        values.put("periode", periode);
+        values.put("created_at", created_at);
+        values.put("updated_at", updated_at);
+        values.put("id_tps", id_tps);
+        db.insert("bupati", null, values);
+        db.close();
+    }
+
+    public void insertKades(int id, String id_des, String id_calon, String no_urut, String cakades, String tahun, String periode, String created_at, String updated_at, String id_tps) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id", id);
+        values.put("id_des", id_des);
+        values.put("id_calon", id_calon);
+        values.put("no_urut", no_urut);
+        values.put("cakades", cakades);
+        values.put("tahun", tahun);
+        values.put("periode", periode);
+        values.put("created_at", created_at);
+        values.put("updated_at", updated_at);
+        values.put("id_tps", id_tps);
+        db.insert("kades", null, values);
+        db.close();
+    }
+
+    @SuppressLint("Range")
+    public List<DataCalon.Presiden> getAllPresiden(String id_tps) {
+        List<DataCalon.Presiden> presidenList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("presiden", null, selection, selectionArgs, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String id_calon = cursor.getString(cursor.getColumnIndex("id_calon"));
+                String no_urut = cursor.getString(cursor.getColumnIndex("no_urut"));
+                String capres = cursor.getString(cursor.getColumnIndex("capres"));
+                String cawapres = cursor.getString(cursor.getColumnIndex("cawapres"));
+                String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+                String periode = cursor.getString(cursor.getColumnIndex("periode"));
+                String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+                String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+
+                DataCalon.Presiden presiden = new DataCalon.Presiden(id, id_calon, no_urut, capres, cawapres, tahun, periode, created_at, updated_at);
+                presidenList.add(presiden);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return presidenList;
+    }
+
+    @SuppressLint("Range")
+    public List<DataCalon.DPRRI> getAllDprri(String id_tps) {
+        List<DataCalon.DPRRI> dprriList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("dprri", null, selection, selectionArgs, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String id_calon = cursor.getString(cursor.getColumnIndex("id_calon"));
+                String id_dapil = cursor.getString(cursor.getColumnIndex("id_dapil"));
+                String id_partai = cursor.getString(cursor.getColumnIndex("id_partai"));
+                String nomorurut = cursor.getString(cursor.getColumnIndex("nomorurut"));
+                String nama = cursor.getString(cursor.getColumnIndex("nama"));
+                String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+                String periode = cursor.getString(cursor.getColumnIndex("periode"));
+                String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+                String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+
+                DataCalon.DPRRI dprri = new DataCalon.DPRRI(id, id_calon, id_dapil, id_partai, nomorurut, nama, tahun, periode, created_at, updated_at);
+                dprriList.add(dprri);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return dprriList;
+    }
+
+    @SuppressLint("Range")
+    public List<DataCalon.DPDRI> getAllDpdri(String id_tps) {
+        List<DataCalon.DPDRI> dpdriList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("dpdri", null, selection, selectionArgs, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String id_calon = cursor.getString(cursor.getColumnIndex("id_calon"));
+                String id_prov = cursor.getString(cursor.getColumnIndex("id_prov"));
+                String nomorurut = cursor.getString(cursor.getColumnIndex("nomorurut"));
+                String nama = cursor.getString(cursor.getColumnIndex("nama"));
+                String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+                String periode = cursor.getString(cursor.getColumnIndex("periode"));
+                String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+                String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+
+                DataCalon.DPDRI dpdri = new DataCalon.DPDRI(id, id_calon, id_prov, nomorurut, nama, tahun, periode, created_at, updated_at);
+                dpdriList.add(dpdri);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return dpdriList;
+    }
+
+    @SuppressLint("Range")
+    public List<DataCalon.DPRDProv> getAllDPRDprov(String id_tps) {
+        List<DataCalon.DPRDProv> dprdprovList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("dprdprov", null, selection, selectionArgs, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String id_calon = cursor.getString(cursor.getColumnIndex("id_calon"));
+                String id_dapil = cursor.getString(cursor.getColumnIndex("id_dapil"));
+                String id_partai = cursor.getString(cursor.getColumnIndex("id_partai"));
+                String nomorurut = cursor.getString(cursor.getColumnIndex("nomorurut"));
+                String nama = cursor.getString(cursor.getColumnIndex("nama"));
+                String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+                String periode = cursor.getString(cursor.getColumnIndex("periode"));
+                String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+                String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+
+                DataCalon.DPRDProv dprdprov = new DataCalon.DPRDProv(id, id_calon, id_dapil, id_partai, nomorurut, nama, tahun, periode, created_at, updated_at);
+                dprdprovList.add(dprdprov);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return dprdprovList;
+    }
+
+    @SuppressLint("Range")
+    public List<DataCalon.DPRDKab> getAllDPRDkab(String id_tps) {
+        List<DataCalon.DPRDKab> dprdkabList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("dprdkab", null, selection, selectionArgs, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String id_calon = cursor.getString(cursor.getColumnIndex("id_calon"));
+                String id_dapil = cursor.getString(cursor.getColumnIndex("id_dapil"));
+                String id_partai = cursor.getString(cursor.getColumnIndex("id_partai"));
+                String nomorurut = cursor.getString(cursor.getColumnIndex("nomorurut"));
+                String nama = cursor.getString(cursor.getColumnIndex("nama"));
+                String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+                String periode = cursor.getString(cursor.getColumnIndex("periode"));
+                String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+                String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+
+                DataCalon.DPRDKab dprdkab = new DataCalon.DPRDKab(id, id_calon, id_dapil, id_partai, nomorurut, nama, tahun, periode, created_at, updated_at);
+                dprdkabList.add(dprdkab);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return dprdkabList;
+    }
+
+    @SuppressLint("Range")
+    public List<DataCalon.Gubernur> getAllGubernur(String id_tps) {
+        List<DataCalon.Gubernur> gubernurList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("gubernur", null, selection, selectionArgs, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String id_prov = cursor.getString(cursor.getColumnIndex("id_prov"));
+                String id_calon = cursor.getString(cursor.getColumnIndex("id_calon"));
+                String no_urut = cursor.getString(cursor.getColumnIndex("no_urut"));
+                String cagub = cursor.getString(cursor.getColumnIndex("cagub"));
+                String cawagub = cursor.getString(cursor.getColumnIndex("cawagub"));
+                String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+                String periode = cursor.getString(cursor.getColumnIndex("periode"));
+                String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+                String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+
+                DataCalon.Gubernur gubernur = new DataCalon.Gubernur(id, id_prov, id_calon, no_urut, cagub, cawagub, tahun, periode, created_at, updated_at);
+                gubernurList.add(gubernur);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return gubernurList;
+    }
+
+    @SuppressLint("Range")
+    public List<DataCalon.Bupati> getAllBupati(String id_tps) {
+        List<DataCalon.Bupati> bupatiList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("bupati", null, selection, selectionArgs, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String id_kab = cursor.getString(cursor.getColumnIndex("id_kab"));
+                String id_calon = cursor.getString(cursor.getColumnIndex("id_calon"));
+                String no_urut = cursor.getString(cursor.getColumnIndex("no_urut"));
+                String cabup = cursor.getString(cursor.getColumnIndex("cabup"));
+                String cawabup = cursor.getString(cursor.getColumnIndex("cawabup"));
+                String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+                String periode = cursor.getString(cursor.getColumnIndex("periode"));
+                String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+                String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+
+                DataCalon.Bupati bupati = new DataCalon.Bupati(id, id_kab, id_calon, no_urut, cabup, cawabup, tahun, periode, created_at, updated_at);
+                bupatiList.add(bupati);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return bupatiList;
+    }
+
+    @SuppressLint("Range")
+    public List<DataCalon.Kades> getAllKades(String id_tps) {
+        List<DataCalon.Kades> kadesList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("kades", null, selection, selectionArgs, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String id_des = cursor.getString(cursor.getColumnIndex("id_des"));
+                String id_calon = cursor.getString(cursor.getColumnIndex("id_calon"));
+                String no_urut = cursor.getString(cursor.getColumnIndex("no_urut"));
+                String cakades = cursor.getString(cursor.getColumnIndex("cakades"));
+                String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+                String periode = cursor.getString(cursor.getColumnIndex("periode"));
+                String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+                String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+
+                DataCalon.Kades kades = new DataCalon.Kades(id, id_des, id_calon, no_urut, cakades, tahun, periode, created_at, updated_at);
+                kadesList.add(kades);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return kadesList;
+    }
+
+    public boolean isTableEmpty(String tableName, String idTps) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String[] columns = {"id"};
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {idTps};
+
+        Cursor cursor = db.query(tableName, columns, selection, selectionArgs, null, null, null);
+        boolean isEmpty = (cursor.getCount() == 0);
+        cursor.close();
+
+        return isEmpty;
+    }
+
+    @SuppressLint("Range")
+    public List<Presiden> getPresidenData(String id_tps) {
+        List<Presiden> presidenList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("presiden", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String id_calon = cursor.getString(cursor.getColumnIndex("id_calon"));
+            String no_urut = cursor.getString(cursor.getColumnIndex("no_urut"));
+            String capres = cursor.getString(cursor.getColumnIndex("capres"));
+            String cawapres = cursor.getString(cursor.getColumnIndex("cawapres"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String tps_id = cursor.getString(cursor.getColumnIndex("id_tps"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara"));
+            String status = cursor.getString(cursor.getColumnIndex("status"));
+            Presiden presiden = new Presiden(id, id_calon, no_urut, capres, cawapres, tahun, periode, created_at, updated_at, tps_id, suara, status);
+            presidenList.add(presiden);
+        }
+
+        cursor.close();
+        return presidenList;
+    }
+
+    @SuppressLint("Range")
+    public List<DPRRI> getDPRRIdata(String id_tps) {
+        List<DPRRI> dprriList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("dprri", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String id_calon = cursor.getString(cursor.getColumnIndex("id_calon"));
+            String id_dapil = cursor.getString(cursor.getColumnIndex("id_dapil"));
+            String id_partai = cursor.getString(cursor.getColumnIndex("id_partai"));
+            String nomorurut = cursor.getString(cursor.getColumnIndex("nomorurut"));
+            String nama = cursor.getString(cursor.getColumnIndex("nama"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String tps_id = cursor.getString(cursor.getColumnIndex("id_tps"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara"));
+            String status = cursor.getString(cursor.getColumnIndex("status"));
+
+            DPRRI dprri = new DPRRI(id, id_calon, id_dapil, id_partai, nomorurut, nama, tahun, periode, created_at, updated_at, tps_id, suara, status);
+            dprriList.add(dprri);
+        }
+
+        cursor.close();
+        return dprriList;
+    }
+
+    @SuppressLint("Range")
+    public List<DPDRI> getDPDRIdata(String id_tps) {
+        List<DPDRI> dpdriList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("dpdri", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String id_calon = cursor.getString(cursor.getColumnIndex("id_calon"));
+            String id_prov = cursor.getString(cursor.getColumnIndex("id_prov"));
+            String nomorurut = cursor.getString(cursor.getColumnIndex("nomorurut"));
+            String nama = cursor.getString(cursor.getColumnIndex("nama"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String tps_id = cursor.getString(cursor.getColumnIndex("id_tps"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara"));
+            String status = cursor.getString(cursor.getColumnIndex("status"));
+
+            DPDRI dpdri = new DPDRI(id, id_calon, id_prov, nomorurut, nama, tahun, periode, created_at, updated_at, tps_id, suara, status);
+            dpdriList.add(dpdri);
+        }
+
+        cursor.close();
+        return dpdriList;
+    }
+
+    @SuppressLint("Range")
+    public List<DPRDProv> getDPRDProvData(String id_tps) {
+        List<DPRDProv> dprdProvList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("dprdprov", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String id_calon = cursor.getString(cursor.getColumnIndex("id_calon"));
+            String id_dapil = cursor.getString(cursor.getColumnIndex("id_dapil"));
+            String id_partai = cursor.getString(cursor.getColumnIndex("id_partai"));
+            String nomorurut = cursor.getString(cursor.getColumnIndex("nomorurut"));
+            String nama = cursor.getString(cursor.getColumnIndex("nama"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String tps_id = cursor.getString(cursor.getColumnIndex("id_tps"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara"));
+            String status = cursor.getString(cursor.getColumnIndex("status"));
+
+            DPRDProv dprdProv = new DPRDProv(id, id_calon, id_dapil, id_partai, nomorurut, nama, tahun, periode, created_at, updated_at, tps_id, suara, status);
+            dprdProvList.add(dprdProv);
+        }
+
+        cursor.close();
+        return dprdProvList;
+    }
+
+    @SuppressLint("Range")
+    public List<DPRDKab> getDPRDKabData(String id_tps) {
+        List<DPRDKab> dprdkabList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("dprdkab", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String id_calon = cursor.getString(cursor.getColumnIndex("id_calon"));
+            String id_dapil = cursor.getString(cursor.getColumnIndex("id_dapil"));
+            String id_partai = cursor.getString(cursor.getColumnIndex("id_partai"));
+            String nomorurut = cursor.getString(cursor.getColumnIndex("nomorurut"));
+            String nama = cursor.getString(cursor.getColumnIndex("nama"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String tps_id = cursor.getString(cursor.getColumnIndex("id_tps"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara"));
+            String status = cursor.getString(cursor.getColumnIndex("status"));
+
+            DPRDKab dprdkab = new DPRDKab(id, id_calon, id_dapil, id_partai, nomorurut, nama, tahun, periode, created_at, updated_at, tps_id, suara, status);
+            dprdkabList.add(dprdkab);
+        }
+
+        cursor.close();
+        return dprdkabList;
+    }
+
+    @SuppressLint("Range")
+    public List<Gubernur> getGubernurData(String id_tps) {
+        List<Gubernur> gubernurList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("gubernur", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String id_prov = cursor.getString(cursor.getColumnIndex("id_prov"));
+            String id_calon = cursor.getString(cursor.getColumnIndex("id_calon"));
+            String no_urut = cursor.getString(cursor.getColumnIndex("no_urut"));
+            String cagub = cursor.getString(cursor.getColumnIndex("cagub"));
+            String cawagub = cursor.getString(cursor.getColumnIndex("cawagub"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String tps_id = cursor.getString(cursor.getColumnIndex("id_tps"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara"));
+            String status = cursor.getString(cursor.getColumnIndex("status"));
+
+            Gubernur gubernur = new Gubernur(id, id_prov, id_calon, no_urut, cagub, cawagub, tahun, periode, created_at, updated_at, tps_id, suara, status);
+            gubernurList.add(gubernur);
+        }
+
+        cursor.close();
+        return gubernurList;
+    }
+
+    @SuppressLint("Range")
+    public List<Bupati> getBupatiData(String id_tps) {
+        List<Bupati> bupatiList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("bupati", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String id_kab = cursor.getString(cursor.getColumnIndex("id_kab"));
+            String id_calon = cursor.getString(cursor.getColumnIndex("id_calon"));
+            String no_urut = cursor.getString(cursor.getColumnIndex("no_urut"));
+            String cabup = cursor.getString(cursor.getColumnIndex("cabup"));
+            String cawabup = cursor.getString(cursor.getColumnIndex("cawabup"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String tps_id = cursor.getString(cursor.getColumnIndex("id_tps"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara"));
+            String status = cursor.getString(cursor.getColumnIndex("status"));
+
+            Bupati bupati = new Bupati(id, id_kab, id_calon, no_urut, cabup, cawabup, tahun, periode, created_at, updated_at, tps_id, suara, status);
+            bupatiList.add(bupati);
+        }
+
+        cursor.close();
+        return bupatiList;
+    }
+
+    @SuppressLint("Range")
+    public List<Kades> getKadesData(String id_tps) {
+        List<Kades> kadesList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "id_tps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("kades", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String id_des = cursor.getString(cursor.getColumnIndex("id_des"));
+            String id_calon = cursor.getString(cursor.getColumnIndex("id_calon"));
+            String no_urut = cursor.getString(cursor.getColumnIndex("no_urut"));
+            String cakades = cursor.getString(cursor.getColumnIndex("cakades"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String tps_id = cursor.getString(cursor.getColumnIndex("id_tps"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara"));
+            String status = cursor.getString(cursor.getColumnIndex("status"));
+
+            Kades kades = new Kades(id, id_des, id_calon, no_urut, cakades, tahun, periode, created_at, updated_at, tps_id, suara, status);
+            kadesList.add(kades);
+        }
+
+        cursor.close();
+        return kadesList;
+    }
+
+    public boolean updateSuara(String tableName, SuaraData suaraData, String status, String calonId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("suara", suaraData.getSuara());
+        values.put("status", status);
+        int rowsAffected = db.update(tableName, values, "id_tps=? AND id_calon=?", new String[]{suaraData.getTpsId(), calonId});
+        db.close();
+        return rowsAffected > 0;
+    }
+
+
+    public boolean savesuaratidaksah(String tpsId, int suaratidaksah, String type, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id_tps", tpsId);
+        values.put("type", type);
+        values.put("jumlah", suaratidaksah);
+        values.put("status", status);
+
+        try {
+            db.insertOrThrow("suaratidaksah", null, values);
+            db.close();
+            return true;
+        } catch (android.database.SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @SuppressLint("Range")
+    public List<Presiden> getpresiden(String status) {
+        List<Presiden> presidenList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "status = ?";
+        String[] selectionArgs = {status};
+
+        Cursor cursor = db.query("presiden", null, selection, selectionArgs, null, null, null);
+
+        if (cursor.moveToNext()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String idCalon = cursor.getString(cursor.getColumnIndex("id_calon"));
+                String noUrut = cursor.getString(cursor.getColumnIndex("no_urut"));
+                String capres = cursor.getString(cursor.getColumnIndex("capres"));
+                String cawapres = cursor.getString(cursor.getColumnIndex("cawapres"));
+                String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+                String periode = cursor.getString(cursor.getColumnIndex("periode"));
+                String createdAt = cursor.getString(cursor.getColumnIndex("created_at"));
+                String updatedAt = cursor.getString(cursor.getColumnIndex("updated_at"));
+                String idTps = cursor.getString(cursor.getColumnIndex("id_tps"));
+                String suara = cursor.getString(cursor.getColumnIndex("suara"));
+                String statuS = cursor.getString(cursor.getColumnIndex("status"));
+
+                Presiden presiden = new Presiden(id, idCalon, noUrut, capres, cawapres, tahun, periode, createdAt, updatedAt, idTps, suara, statuS);
+                presidenList.add(presiden);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return presidenList;
+    }
+
+    @SuppressLint("Range")
+    public List<DPRRI> getdprri(String status) {
+        List<DPRRI> dprriList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "status = ?";
+        String[] selectionArgs = {status};
+
+        Cursor cursor = db.query("dprri", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String idCalon = cursor.getString(cursor.getColumnIndex("id_calon"));
+            String idDapil = cursor.getString(cursor.getColumnIndex("id_dapil"));
+            String idPartai = cursor.getString(cursor.getColumnIndex("id_partai"));
+            String nomorUrut = cursor.getString(cursor.getColumnIndex("nomorurut"));
+            String nama = cursor.getString(cursor.getColumnIndex("nama"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String createdAt = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updatedAt = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String idTps = cursor.getString(cursor.getColumnIndex("id_tps"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara"));
+            String statuS = cursor.getString(cursor.getColumnIndex("status"));
+
+            DPRRI dprri = new DPRRI(id, idCalon, idDapil, idPartai, nomorUrut, nama, tahun, periode, createdAt, updatedAt, idTps, suara, statuS);
+            dprriList.add(dprri);
+        }
+
+        cursor.close();
+
+        return dprriList;
+    }
+
+
+    @SuppressLint("Range")
+    public List<DPDRI> getdpdri(String status) {
+        List<DPDRI> dpdriList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "status = ?";
+        String[] selectionArgs = {status};
+
+        Cursor cursor = db.query("dpdri", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String idCalon = cursor.getString(cursor.getColumnIndex("id_calon"));
+            String idProv = cursor.getString(cursor.getColumnIndex("id_prov"));
+            String nomorUrut = cursor.getString(cursor.getColumnIndex("nomorurut"));
+            String nama = cursor.getString(cursor.getColumnIndex("nama"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String createdAt = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updatedAt = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String idTps = cursor.getString(cursor.getColumnIndex("id_tps"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara"));
+            String statuS = cursor.getString(cursor.getColumnIndex("status"));
+
+            DPDRI dpdri = new DPDRI(id, idCalon, idProv, nomorUrut, nama, tahun, periode, createdAt, updatedAt, idTps, suara, statuS);
+            dpdriList.add(dpdri);
+        }
+
+        cursor.close();
+
+        return dpdriList;
+    }
+
+    @SuppressLint("Range")
+    public List<DPRDProv> getdprdprov(String status) {
+        List<DPRDProv> dprdProvList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "status = ?";
+        String[] selectionArgs = {status};
+
+        Cursor cursor = db.query("dprdprov", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String idCalon = cursor.getString(cursor.getColumnIndex("id_calon"));
+            String idDapil = cursor.getString(cursor.getColumnIndex("id_dapil"));
+            String idPartai = cursor.getString(cursor.getColumnIndex("id_partai"));
+            String nomorUrut = cursor.getString(cursor.getColumnIndex("nomorurut"));
+            String nama = cursor.getString(cursor.getColumnIndex("nama"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String createdAt = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updatedAt = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String idTps = cursor.getString(cursor.getColumnIndex("id_tps"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara"));
+            String statuS = cursor.getString(cursor.getColumnIndex("status"));
+
+            DPRDProv dprdProv = new DPRDProv(id, idCalon, idDapil, idPartai, nomorUrut, nama, tahun, periode, createdAt, updatedAt, idTps, suara, statuS);
+            dprdProvList.add(dprdProv);
+        }
+
+        cursor.close();
+
+        return dprdProvList;
+    }
+
+    @SuppressLint("Range")
+    public List<DPRDKab> getdprdkab(String status) {
+        List<DPRDKab> dprdKabList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "status = ?";
+        String[] selectionArgs = {status};
+
+        Cursor cursor = db.query("dprdkab", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String idCalon = cursor.getString(cursor.getColumnIndex("id_calon"));
+            String idDapil = cursor.getString(cursor.getColumnIndex("id_dapil"));
+            String idPartai = cursor.getString(cursor.getColumnIndex("id_partai"));
+            String nomorUrut = cursor.getString(cursor.getColumnIndex("nomorurut"));
+            String nama = cursor.getString(cursor.getColumnIndex("nama"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String createdAt = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updatedAt = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String idTps = cursor.getString(cursor.getColumnIndex("id_tps"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara"));
+            String statuS = cursor.getString(cursor.getColumnIndex("status"));
+
+            DPRDKab dprdKab = new DPRDKab(id, idCalon, idDapil, idPartai, nomorUrut, nama, tahun, periode, createdAt, updatedAt, idTps, suara, statuS);
+            dprdKabList.add(dprdKab);
+        }
+
+        cursor.close();
+
+        return dprdKabList;
+    }
+
+    @SuppressLint("Range")
+    public List<Gubernur> getgubernur(String status) {
+        List<Gubernur> gubernurList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "status = ?";
+        String[] selectionArgs = {status};
+
+        Cursor cursor = db.query("gubernur", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String idProv = cursor.getString(cursor.getColumnIndex("id_prov"));
+            String idCalon = cursor.getString(cursor.getColumnIndex("id_calon"));
+            String noUrut = cursor.getString(cursor.getColumnIndex("no_urut"));
+            String cagub = cursor.getString(cursor.getColumnIndex("cagub"));
+            String cawagub = cursor.getString(cursor.getColumnIndex("cawagub"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String createdAt = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updatedAt = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String idTps = cursor.getString(cursor.getColumnIndex("id_tps"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara"));
+            String statuS = cursor.getString(cursor.getColumnIndex("status"));
+
+            Gubernur gubernur = new Gubernur(id, idProv, idCalon, noUrut, cagub, cawagub, tahun, periode, createdAt, updatedAt, idTps, suara, statuS);
+            gubernurList.add(gubernur);
+        }
+
+        cursor.close();
+
+        return gubernurList;
+    }
+
+    @SuppressLint("Range")
+    public List<Bupati> getbupati(String status) {
+        List<Bupati> bupatiList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "status = ?";
+        String[] selectionArgs = {status};
+
+        Cursor cursor = db.query("bupati", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String idKab = cursor.getString(cursor.getColumnIndex("id_kab"));
+            String idCalon = cursor.getString(cursor.getColumnIndex("id_calon"));
+            String noUrut = cursor.getString(cursor.getColumnIndex("no_urut"));
+            String cabup = cursor.getString(cursor.getColumnIndex("cabup"));
+            String cawabup = cursor.getString(cursor.getColumnIndex("cawabup"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String createdAt = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updatedAt = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String idTps = cursor.getString(cursor.getColumnIndex("id_tps"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara"));
+            String statuS = cursor.getString(cursor.getColumnIndex("status"));
+
+            Bupati bupati = new Bupati(id, idKab, idCalon, noUrut, cabup, cawabup, tahun, periode, createdAt, updatedAt, idTps, suara, statuS);
+            bupatiList.add(bupati);
+        }
+
+        cursor.close();
+
+        return bupatiList;
+    }
+
+    @SuppressLint("Range")
+    public List<Kades> getkades(String status) {
+        List<Kades> kadesList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "status = ?";
+        String[] selectionArgs = {status};
+
+        Cursor cursor = db.query("kades", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String idDes = cursor.getString(cursor.getColumnIndex("id_des"));
+            String idCalon = cursor.getString(cursor.getColumnIndex("id_calon"));
+            String noUrut = cursor.getString(cursor.getColumnIndex("no_urut"));
+            String cakades = cursor.getString(cursor.getColumnIndex("cakades"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String createdAt = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updatedAt = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String idTps = cursor.getString(cursor.getColumnIndex("id_tps"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara"));
+            String statuS = cursor.getString(cursor.getColumnIndex("status"));
+
+            Kades kades = new Kades(id, idDes, idCalon, noUrut, cakades, tahun, periode, createdAt, updatedAt, idTps, suara, statuS);
+            kadesList.add(kades);
+        }
+
+        cursor.close();
+
+        return kadesList;
+    }
+
+    public boolean ceksuara(String table, String idTps) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "status IS NULL AND id_tps = ?";
+        String[] selectionArgs = {idTps};
+
+        Cursor cursor = db.query(table, null, selection, selectionArgs, null, null, null);
+
+        boolean dataExists = false;
+        if (cursor != null && cursor.getCount() > 0) {
+            dataExists = true;
+            cursor.close();
+        }
+
+        return dataExists;
+    }
+
+    public boolean ceksuara2(String[] tables, String idTps) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "status IS NULL AND id_tps = ?";
+        String[] selectionArgs = {idTps};
+
+        boolean dataExists = false;
+
+        for (String table : tables) {
+            Cursor cursor = db.query(table, null, selection, selectionArgs, null, null, null);
+
+            if (cursor != null && cursor.getCount() > 0) {
+                dataExists = true;
+                cursor.close();
+                break; // Break out of the loop if data is found in any table
+            }
+        }
+
+        return dataExists;
+    }
+
+
+
 
 }

@@ -209,6 +209,7 @@ public class Sprin extends AppCompatActivity implements SprintAdapter.OnItemClic
         if (sprint.getStatus().equals("OPEN")) {
             Intent intent = new Intent(Sprin.this, Dashboard.class);
             intent.putExtra("sprint_id", String.valueOf(sprint.getId()));
+            intent.putExtra("type", sprint.getType());
             startActivity(intent);
         } else {
             showNotificationDialog("INFO", "Surat Perintah Ini Sudah Tidak Berlaku Lagi!");

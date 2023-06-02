@@ -52,6 +52,14 @@ public class LappamAdapter extends RecyclerView.Adapter<LappamAdapter.ViewHolder
         mActivity = activity;
     }
 
+    public void setData(List<Lappam> data) {
+        LappamList.clear();
+        if (data != null) {
+            LappamList.addAll(data);
+        }
+        notifyDataSetChanged();
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView fotoImageView;
         TextView judul, tanggal;

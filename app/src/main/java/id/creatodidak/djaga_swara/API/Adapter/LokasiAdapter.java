@@ -63,6 +63,14 @@ public class LokasiAdapter extends RecyclerView.Adapter<LokasiAdapter.ViewHolder
         }
     }
 
+    public void setData(List<Lokasi> data) {
+        LokasiList.clear();
+        if (data != null) {
+            LokasiList.addAll(data);
+        }
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

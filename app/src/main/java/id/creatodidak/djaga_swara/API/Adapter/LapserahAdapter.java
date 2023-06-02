@@ -50,6 +50,14 @@ public class LapserahAdapter extends RecyclerView.Adapter<LapserahAdapter.ViewHo
         mActivity = activity;
     }
 
+    public void setData(List<Lapserah> data) {
+        LapserahList.clear();
+        if (data != null) {
+            LapserahList.addAll(data);
+        }
+        notifyDataSetChanged();
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView fotoImageView;
         TextView judul, tanggal;

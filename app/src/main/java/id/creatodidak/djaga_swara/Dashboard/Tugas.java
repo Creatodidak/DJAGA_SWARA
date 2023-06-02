@@ -2,38 +2,52 @@ package id.creatodidak.djaga_swara.Dashboard;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.gridlayout.widget.GridLayout;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.List;
 
+import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
+import id.creatodidak.djaga_swara.API.Interface.ApiService;
+import id.creatodidak.djaga_swara.API.Models.DataCalon;
 import id.creatodidak.djaga_swara.API.Models.TpsActivity;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Cektps;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Dpt;
+import id.creatodidak.djaga_swara.Dashboard.TugasForm.FormC1;
+import id.creatodidak.djaga_swara.Dashboard.TugasForm.Hasilsuara;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lappam;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lapwal;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lapserah;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lokasi;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
 import id.creatodidak.djaga_swara.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Tugas extends AppCompatActivity implements View.OnClickListener {
     DatabaseHelper databaseHelper;
     String id_tps;
     TextView namatps, lokasitps, dpttpss, dpttpst, dpttpsf;
     TpsList tpslist;
-
+    ApiService apiService;
     TpsActivity tpsActivity;
     CardView cv1, cv2, cv3, cv4, cv5, cv6, cv7, cv8, cv9;
+
+    ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +81,8 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
         cekall();
     }
 
+
+
     private void cekall() {
         tpslist = databaseHelper.getSprindetail(id_tps);
         tpsActivity = databaseHelper.getTpsActivity(id_tps);
@@ -77,12 +93,37 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
         dpttpsf.setText(" : "+tpslist.getDptFinal()+" ORG");
         dpttpss.setText(" : "+tpslist.getDptSementara()+" ORG");
 
+        String text = getIntent().getStringExtra("type");
+
+        text = text.substring(1, text.length() - 1);
+        text = text.replaceAll("\\s+", "").replaceAll("-", "").replaceAll("\"", "");
+
+        String[] array = text.split(",");
+
+        boolean dataExists2 = false;
+
+        for (int i = 0; i < array.length; i++) {
+            String item = array[i];
+
+            String[] tables = {item}; // Convert the table name to an array of tables
+            if (databaseHelper.ceksuara2(tables, getIntent().getStringExtra("id_tps"))) {
+                dataExists2 = true;
+                break; // Break out of the loop if data exists in any table
+            }
+        }
+
+        if (dataExists2) {
+            cv5.setCardBackgroundColor(Color.parseColor("#FAD5D5"));
+        } else {
+            cv5.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
+        }
+
         switch (tpsActivity.getLokasi()) {
             case "NO":
                 cv1.setCardBackgroundColor(Color.parseColor("#FAD5D5"));
                 break;
             case "YES, LOCAL":
-                cv1.setCardBackgroundColor(Color.parseColor("#FFEFC8"));
+                cv1.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
                 break;
             case "YES, ALL":
                 cv1.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
@@ -94,7 +135,7 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
                 cv2.setCardBackgroundColor(Color.parseColor("#FAD5D5"));
                 break;
             case "YES, LOCAL":
-                cv2.setCardBackgroundColor(Color.parseColor("#FFEFC8"));
+                cv2.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
                 break;
             case "YES, ALL":
                 cv2.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
@@ -106,7 +147,7 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
                 cv3.setCardBackgroundColor(Color.parseColor("#FAD5D5"));
                 break;
             case "YES, LOCAL":
-                cv3.setCardBackgroundColor(Color.parseColor("#FFEFC8"));
+                cv3.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
                 break;
             case "YES, ALL":
                 cv3.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
@@ -118,22 +159,10 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
                 cv4.setCardBackgroundColor(Color.parseColor("#FAD5D5"));
                 break;
             case "YES, LOCAL":
-                cv4.setCardBackgroundColor(Color.parseColor("#FFEFC8"));
+                cv4.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
                 break;
             case "YES, ALL":
                 cv4.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
-                break;
-        }
-
-        switch (tpsActivity.getLaphasil()) {
-            case "NO":
-                cv5.setCardBackgroundColor(Color.parseColor("#FAD5D5"));
-                break;
-            case "YES, LOCAL":
-                cv5.setCardBackgroundColor(Color.parseColor("#FFEFC8"));
-                break;
-            case "YES, ALL":
-                cv5.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
                 break;
         }
 
@@ -142,7 +171,7 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
                 cv6.setCardBackgroundColor(Color.parseColor("#FAD5D5"));
                 break;
             case "YES, LOCAL":
-                cv6.setCardBackgroundColor(Color.parseColor("#FFEFC8"));
+                cv6.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
                 break;
             case "YES, ALL":
                 cv6.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
@@ -154,7 +183,7 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
                 cv7.setCardBackgroundColor(Color.parseColor("#FAD5D5"));
                 break;
             case "YES, LOCAL":
-                cv7.setCardBackgroundColor(Color.parseColor("#FFEFC8"));
+                cv7.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
                 break;
             case "YES, ALL":
                 cv7.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
@@ -166,7 +195,7 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
                 cv8.setCardBackgroundColor(Color.parseColor("#FAD5D5"));
                 break;
             case "YES, LOCAL":
-                cv8.setCardBackgroundColor(Color.parseColor("#FFEFC8"));
+                cv8.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
                 break;
             case "YES, ALL":
                 cv8.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
@@ -216,10 +245,44 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
                 }
                 break;
             case R.id.acthasilsuara:
-                Toast.makeText(this, "Fungsi Segera tersedia", Toast.LENGTH_SHORT).show();
+                String text = getIntent().getStringExtra("type");
+
+                text = text.substring(1, text.length() - 1);
+                text = text.replaceAll("\\s+", "").replaceAll("-", "").replaceAll("\"", "");
+
+                String[] array = text.split(",");
+
+                boolean dataExists = false;
+
+                for (int i = 0; i < array.length; i++) {
+                    String item = array[i];
+
+                    String[] tables = {item}; // Convert the table name to an array of tables
+                    if (databaseHelper.ceksuara2(tables, getIntent().getStringExtra("id_tps"))) {
+                        dataExists = true;
+                        break; // Break out of the loop if data exists in any table
+                    }
+                }
+
+                if (dataExists) {
+                    Intent intent = new Intent(Tugas.this, Hasilsuara.class);
+                    intent.putExtra("id_tps", id_tps);
+                    intent.putExtra("type", getIntent().getStringExtra("type"));
+                    intent.putExtra("namatps", "TPS " + tpslist.getNomorTps() + " Desa " + tpslist.getNamaDes());
+                    startActivity(intent);
+                } else {
+                    notifikasi("INFO", "ANDA SUDAH MENGISI TUGAS INI");
+                }
                 break;
             case R.id.actformc1:
-                Toast.makeText(this, "Fungsi Segera tersedia", Toast.LENGTH_SHORT).show();
+                if(tpsActivity.getFormc1().equals("NO")){
+                    Intent intent = new Intent(Tugas.this, FormC1.class);
+                    intent.putExtra("id_tps", id_tps);
+                    intent.putExtra("type", getIntent().getStringExtra("type"));
+                    startActivity(intent);
+                }else{
+                    notifikasi("INFO", "ANDA SUDAH MENGISI TUGAS INI");
+                }
                 break;
             case R.id.actlapwal:
                 if(tpsActivity.getLapwal().equals("NO")){
@@ -345,5 +408,12 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
         } else {
             return "Malam";
         }
+    }
+
+    private void showDialog(String message) {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(message);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
     }
 }

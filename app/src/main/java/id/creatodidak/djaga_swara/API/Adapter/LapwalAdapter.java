@@ -50,6 +50,13 @@ public class LapwalAdapter extends RecyclerView.Adapter<LapwalAdapter.ViewHolder
         mActivity = activity;
     }
 
+    public void setData(List<Lapwal> data) {
+        LapwalList.clear();
+        if (data != null) {
+            LapwalList.addAll(data);
+        }
+        notifyDataSetChanged();
+    }
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView fotoImageView;
         TextView judul, tanggal;
@@ -64,6 +71,8 @@ public class LapwalAdapter extends RecyclerView.Adapter<LapwalAdapter.ViewHolder
             kirim = itemView.findViewById(R.id.kirimdata);
         }
     }
+
+
 
     @NonNull
     @Override

@@ -48,6 +48,14 @@ public class DptAdapter extends RecyclerView.Adapter<DptAdapter.ViewHolder> {
         mActivity = activity;
     }
 
+    public void setData(List<DraftDpt> data) {
+        DptList.clear();
+        if (data != null) {
+            DptList.addAll(data);
+        }
+        notifyDataSetChanged();
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView fotoImageView;
         TextView judul, tanggal;

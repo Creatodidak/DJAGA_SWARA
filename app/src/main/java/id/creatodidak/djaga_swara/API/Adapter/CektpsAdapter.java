@@ -52,6 +52,14 @@ public class CektpsAdapter extends RecyclerView.Adapter<CektpsAdapter.ViewHolder
         mActivity = activity;
     }
 
+    public void setData(List<CekTps> data) {
+        cektpsList.clear();
+        if (data != null) {
+            cektpsList.addAll(data);
+        }
+        notifyDataSetChanged();
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView fotoImageView;
         TextView judul, tanggal;
