@@ -14,8 +14,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
+import id.creatodidak.djaga_swara.API.Interface.ApiService;
+import id.creatodidak.djaga_swara.API.Models.UpdResponse;
 import id.creatodidak.djaga_swara.Helper.Enkripsi;
 import id.creatodidak.djaga_swara.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Blocked extends AppCompatActivity implements View.OnClickListener {
 
@@ -59,15 +65,46 @@ public class Blocked extends AppCompatActivity implements View.OnClickListener {
                     Toast.makeText(this, "KODE KOSONG!", Toast.LENGTH_SHORT).show();
                 }else {
                     if (enc.equals(unblock.getText().toString())) {
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putBoolean("blocked", false);
-                        editor.remove("token");
-                        editor.remove("PIN");
-                        editor.apply();
+                        if (!sharedPreferences.getString("mock", "").isEmpty()) {
+                            ApiService apiService = ApiClient.getClient().create(ApiService.class);
+                            Call<UpdResponse> call = apiService.resetmock(sharedPreferences.getString("nrp", ""));
+                            call.enqueue(new Callback<UpdResponse>() {
+                                @Override
+                                public void onResponse(Call<UpdResponse> call, Response<UpdResponse> response) {
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putBoolean("blocked", false);
+                                    editor.remove("token");
+                                    editor.remove("mock");
+                                    editor.apply();
 
-                        Intent intent = new Intent(Blocked.this, SetLoginPin.class);
-                        startActivity(intent);
-                        finish();
+                                        Intent intent = new Intent(Blocked.this, Login.class);
+                                        startActivity(intent);
+                                        finish();
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<UpdResponse> call, Throwable t) {
+                                    Toast.makeText(Blocked.this, "PERIKSA JARINGAN!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        } else {
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putBoolean("blocked", false);
+                            editor.remove("token");
+                            editor.remove("PIN");
+                            editor.apply();
+
+                            if (sharedPreferences.getBoolean("login", true)) {
+                                Intent intent = new Intent(Blocked.this, SetLoginPin.class);
+                                startActivity(intent);
+                                finish();
+                            }else{
+                                Intent intent = new Intent(Blocked.this, Login.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }
                     }else{
                         Toast.makeText(this, "KODE SALAH!", Toast.LENGTH_SHORT).show();
                     }

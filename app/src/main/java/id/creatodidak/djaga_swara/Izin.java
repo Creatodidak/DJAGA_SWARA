@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.Login.Login;
 
 public class Izin extends AppCompatActivity {
@@ -32,19 +33,20 @@ public class Izin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_izin);
 
-        b1 = findViewById(R.id.btn1);
-        b2 = findViewById(R.id.btn2);
-        b3 = findViewById(R.id.btn3);
-        b4 = findViewById(R.id.btn4);
-        b5 = findViewById(R.id.btn5);
-        b6 = findViewById(R.id.btn6);
-        b7 = findViewById(R.id.btn7);
-        b8 = findViewById(R.id.btn8);
-        b9 = findViewById(R.id.btn9);
-        b10 = findViewById(R.id.btn10);
-        disabled = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.disabled));
+            b1 = findViewById(R.id.btn1);
+            b2 = findViewById(R.id.btn2);
+            b3 = findViewById(R.id.btn3);
+            b4 = findViewById(R.id.btn4);
+            b5 = findViewById(R.id.btn5);
+            b6 = findViewById(R.id.btn6);
+            b7 = findViewById(R.id.btn7);
+            b8 = findViewById(R.id.btn8);
+            b9 = findViewById(R.id.btn9);
+            b10 = findViewById(R.id.btn10);
+            disabled = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.disabled));
 
-        cekallperm();
+            cekallperm();
+
     }
 
     private void cekallperm() {

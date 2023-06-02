@@ -33,6 +33,7 @@ import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lapwal;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lapserah;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lokasi;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
+import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,33 +53,37 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tugas);
-        databaseHelper = new DatabaseHelper(Tugas.this);
-        id_tps = getIntent().getStringExtra("id_tps");
-        namatps = findViewById(R.id.tslistTPS);
-        lokasitps = findViewById(R.id.tslistLOC);
-        dpttpst = findViewById(R.id.tslistDPTt);
-        dpttpss = findViewById(R.id.tslistDPTs);
-        dpttpsf = findViewById(R.id.tslistDPTf);
-        cv1 = findViewById(R.id.actlokasitps);
-        cv2 = findViewById(R.id.actcektps);
-        cv3 = findViewById(R.id.actdpttps);
-        cv4 = findViewById(R.id.actlappam);
-        cv5 = findViewById(R.id.acthasilsuara);
-        cv6 = findViewById(R.id.actformc1);
-        cv7 = findViewById(R.id.actlapwal);
-        cv8 = findViewById(R.id.actlappenyerahan);
-        cv9 = findViewById(R.id.actcall);
-        cv1.setOnClickListener(this);
-        cv2.setOnClickListener(this);
-        cv3.setOnClickListener(this);
-        cv4.setOnClickListener(this);
-        cv5.setOnClickListener(this);
-        cv6.setOnClickListener(this);
-        cv7.setOnClickListener(this);
-        cv8.setOnClickListener(this);
-        cv9.setOnClickListener(this);
+        MockDetector mockDetector = new MockDetector(this);
+        boolean isMockLocationDetected = mockDetector.checkMockLocation();
+        if (!isMockLocationDetected) {
+            databaseHelper = new DatabaseHelper(Tugas.this);
+            id_tps = getIntent().getStringExtra("id_tps");
+            namatps = findViewById(R.id.tslistTPS);
+            lokasitps = findViewById(R.id.tslistLOC);
+            dpttpst = findViewById(R.id.tslistDPTt);
+            dpttpss = findViewById(R.id.tslistDPTs);
+            dpttpsf = findViewById(R.id.tslistDPTf);
+            cv1 = findViewById(R.id.actlokasitps);
+            cv2 = findViewById(R.id.actcektps);
+            cv3 = findViewById(R.id.actdpttps);
+            cv4 = findViewById(R.id.actlappam);
+            cv5 = findViewById(R.id.acthasilsuara);
+            cv6 = findViewById(R.id.actformc1);
+            cv7 = findViewById(R.id.actlapwal);
+            cv8 = findViewById(R.id.actlappenyerahan);
+            cv9 = findViewById(R.id.actcall);
+            cv1.setOnClickListener(this);
+            cv2.setOnClickListener(this);
+            cv3.setOnClickListener(this);
+            cv4.setOnClickListener(this);
+            cv5.setOnClickListener(this);
+            cv6.setOnClickListener(this);
+            cv7.setOnClickListener(this);
+            cv8.setOnClickListener(this);
+            cv9.setOnClickListener(this);
 
-        cekall();
+            cekall();
+        }
     }
 
 

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.R;
 
 public class FormC1 extends AppCompatActivity {
@@ -17,44 +18,47 @@ public class FormC1 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_c1);
+        MockDetector mockDetector = new MockDetector(this);
+        boolean isMockLocationDetected = mockDetector.checkMockLocation();
+        if (!isMockLocationDetected) {
+            String text = getIntent().getStringExtra("type");
 
-        String text = getIntent().getStringExtra("type");
+            text = text.substring(1, text.length() - 1);
+            text = text.replaceAll("\\s+", "").replaceAll("-", "").replaceAll("\"", "");
 
-        text = text.substring(1, text.length() - 1);
-        text = text.replaceAll("\\s+", "").replaceAll("-", "").replaceAll("\"", "");
+            String[] array = text.split(",");
 
-        String[] array = text.split(",");
+            GridLayout gridLayout = findViewById(R.id.subtugas);
 
-        GridLayout gridLayout = findViewById(R.id.subtugas);
+            for (int i = 0; i < array.length; i++) {
+                String item = array[i];
+                int drawableId = getDrawableId(item);
+                if (drawableId != 0) {
+                    final ImageView imageView = new ImageView(this);
 
-        for (int i = 0; i < array.length; i++) {
-            String item = array[i];
-            int drawableId = getDrawableId(item);
-            if (drawableId != 0) {
-                final ImageView imageView = new ImageView(this);
+                    GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+                    params.width = 0;
+                    params.height = GridLayout.LayoutParams.WRAP_CONTENT;
+                    params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+                    params.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+                    imageView.setLayoutParams(params);
 
-                GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-                params.width = 0;
-                params.height = GridLayout.LayoutParams.WRAP_CONTENT;
-                params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-                params.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-                imageView.setLayoutParams(params);
+                    imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    imageView.setAdjustViewBounds(true);
+                    imageView.setImageResource(drawableId);
+                    imageView.setBackgroundColor(Color.TRANSPARENT);
+                    imageView.setPadding(10, 10, 10, 10);
 
-                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                imageView.setAdjustViewBounds(true);
-                imageView.setImageResource(drawableId);
-                imageView.setBackgroundColor(Color.TRANSPARENT);
-                imageView.setPadding(10, 10, 10, 10);
-
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Aksi yang ingin Anda lakukan saat ImageView diklik
-                        // Misalnya, tampilkan pesan Toast
-                        Toast.makeText(FormC1.this, item, Toast.LENGTH_SHORT).show();
-                    }
-                });
-                gridLayout.addView(imageView);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // Aksi yang ingin Anda lakukan saat ImageView diklik
+                            // Misalnya, tampilkan pesan Toast
+                            Toast.makeText(FormC1.this, item, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    gridLayout.addView(imageView);
+                }
             }
         }
     }

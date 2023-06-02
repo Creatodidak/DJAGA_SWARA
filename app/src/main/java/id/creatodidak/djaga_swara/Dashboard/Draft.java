@@ -20,6 +20,7 @@ import id.creatodidak.djaga_swara.API.Adapter.Draft.DprdProvAdapter;
 import id.creatodidak.djaga_swara.API.Adapter.Draft.GubernurAdapter;
 import id.creatodidak.djaga_swara.API.Adapter.Draft.KadesAdapter;
 import id.creatodidak.djaga_swara.API.Adapter.Draft.PresidenAdapter;
+import id.creatodidak.djaga_swara.API.Adapter.Draft.SuaraTidakSahAdapter;
 import id.creatodidak.djaga_swara.API.Adapter.FormC1Adapter;
 import id.creatodidak.djaga_swara.API.Adapter.LappamAdapter;
 import id.creatodidak.djaga_swara.API.Adapter.LapserahAdapter;
@@ -40,7 +41,9 @@ import id.creatodidak.djaga_swara.API.Models.Multi.DPRRI;
 import id.creatodidak.djaga_swara.API.Models.Multi.Gubernur;
 import id.creatodidak.djaga_swara.API.Models.Multi.Kades;
 import id.creatodidak.djaga_swara.API.Models.Multi.Presiden;
+import id.creatodidak.djaga_swara.API.Models.Multi.SuaraTidakSah;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
+import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.R;
 
 public class Draft extends AppCompatActivity {
@@ -60,9 +63,10 @@ public class Draft extends AppCompatActivity {
     private List<DPDRI> dpdriList = new ArrayList<>();
     private List<DPRDProv> dprdProvList = new ArrayList<>();
     private List<DPRDKab> dprdKabList = new ArrayList<>();
-    private RecyclerView lokasi, cektps, lappam, formc1, lapwal, lapserah, dpt, presiden, gubernur, bupati, kades, dprri, dpdri, dprdprov, dprdkab;
+    private List<SuaraTidakSah> suaraTidakSahList = new ArrayList<>();
+    private RecyclerView lokasi, cektps, lappam, formc1, lapwal, lapserah, dpt, presiden, gubernur, bupati, kades, dprri, dpdri, dprdprov, dprdkab, suaratidaksah;
     private CektpsAdapter cektpsAdapter;
-
+    private SuaraTidakSahAdapter suaraTidakSahAdapter;
     private LokasiAdapter lokasiAdapter;
     private FormC1Adapter formC1Adapter;
     private LappamAdapter lappamAdapter;
@@ -83,93 +87,101 @@ public class Draft extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_draft);
-        // Inisialisasi semua RecyclerView
-        lokasi = findViewById(R.id.lokasi);
-        cektps = findViewById(R.id.cektps);
-        lappam = findViewById(R.id.lappam);
-        formc1 = findViewById(R.id.formc1);
-        lapwal = findViewById(R.id.lapwal);
-        lapserah = findViewById(R.id.lapserah);
-        dpt = findViewById(R.id.dpt);
-        gubernur = findViewById(R.id.gubernur);
-        bupati = findViewById(R.id.bupati);
-        kades = findViewById(R.id.kades);
-        presiden = findViewById(R.id.presiden);
-        dprri = findViewById(R.id.dprri);
-        dpdri = findViewById(R.id.dpdri);
-        dprdprov = findViewById(R.id.dprdprov);
-        dprdkab = findViewById(R.id.dprdkab);
+        MockDetector mockDetector = new MockDetector(this);
+        boolean isMockLocationDetected = mockDetector.checkMockLocation();
+        if (!isMockLocationDetected) {
+            // Inisialisasi semua RecyclerView
+            lokasi = findViewById(R.id.lokasi);
+            cektps = findViewById(R.id.cektps);
+            lappam = findViewById(R.id.lappam);
+            formc1 = findViewById(R.id.formc1);
+            lapwal = findViewById(R.id.lapwal);
+            lapserah = findViewById(R.id.lapserah);
+            dpt = findViewById(R.id.dpt);
+            gubernur = findViewById(R.id.gubernur);
+            bupati = findViewById(R.id.bupati);
+            kades = findViewById(R.id.kades);
+            presiden = findViewById(R.id.presiden);
+            dprri = findViewById(R.id.dprri);
+            dpdri = findViewById(R.id.dpdri);
+            dprdprov = findViewById(R.id.dprdprov);
+            dprdkab = findViewById(R.id.dprdkab);
+            suaratidaksah = findViewById(R.id.suaratidaksah);
+            // Inisialisasi LayoutManager untuk setiap RecyclerView
+            RecyclerView.LayoutManager lokasiLayoutManager = new LinearLayoutManager(this);
+            RecyclerView.LayoutManager cektpsLayoutManager = new LinearLayoutManager(this);
+            RecyclerView.LayoutManager lappamLayoutManager = new LinearLayoutManager(this);
+            RecyclerView.LayoutManager formc1LayoutManager = new LinearLayoutManager(this);
+            RecyclerView.LayoutManager lapwalLayoutManager = new LinearLayoutManager(this);
+            RecyclerView.LayoutManager lapserahLayoutManager = new LinearLayoutManager(this);
+            RecyclerView.LayoutManager dptLM = new LinearLayoutManager(this);
+            RecyclerView.LayoutManager presidenLM = new LinearLayoutManager(this);
+            RecyclerView.LayoutManager gubernurLM = new LinearLayoutManager(this);
+            RecyclerView.LayoutManager bupatiLM = new LinearLayoutManager(this);
+            RecyclerView.LayoutManager kadesLM = new LinearLayoutManager(this);
+            RecyclerView.LayoutManager dprriLM = new LinearLayoutManager(this);
+            RecyclerView.LayoutManager dpdriLM = new LinearLayoutManager(this);
+            RecyclerView.LayoutManager dprdprovLM = new LinearLayoutManager(this);
+            RecyclerView.LayoutManager dprdkabLM = new LinearLayoutManager(this);
+            RecyclerView.LayoutManager suaratidaksahLM = new LinearLayoutManager(this);
 
-        // Inisialisasi LayoutManager untuk setiap RecyclerView
-        RecyclerView.LayoutManager lokasiLayoutManager = new LinearLayoutManager(this);
-        RecyclerView.LayoutManager cektpsLayoutManager = new LinearLayoutManager(this);
-        RecyclerView.LayoutManager lappamLayoutManager = new LinearLayoutManager(this);
-        RecyclerView.LayoutManager formc1LayoutManager = new LinearLayoutManager(this);
-        RecyclerView.LayoutManager lapwalLayoutManager = new LinearLayoutManager(this);
-        RecyclerView.LayoutManager lapserahLayoutManager = new LinearLayoutManager(this);
-        RecyclerView.LayoutManager dptLM = new LinearLayoutManager(this);
-        RecyclerView.LayoutManager presidenLM = new LinearLayoutManager(this);
-        RecyclerView.LayoutManager gubernurLM = new LinearLayoutManager(this);
-        RecyclerView.LayoutManager bupatiLM = new LinearLayoutManager(this);
-        RecyclerView.LayoutManager kadesLM = new LinearLayoutManager(this);
-        RecyclerView.LayoutManager dprriLM = new LinearLayoutManager(this);
-        RecyclerView.LayoutManager dpdriLM = new LinearLayoutManager(this);
-        RecyclerView.LayoutManager dprdprovLM = new LinearLayoutManager(this);
-        RecyclerView.LayoutManager dprdkabLM = new LinearLayoutManager(this);
+            // Set LayoutManager untuk setiap RecyclerView
+            lokasi.setLayoutManager(lokasiLayoutManager);
+            cektps.setLayoutManager(cektpsLayoutManager);
+            lappam.setLayoutManager(lappamLayoutManager);
+            formc1.setLayoutManager(formc1LayoutManager);
+            lapwal.setLayoutManager(lapwalLayoutManager);
+            lapserah.setLayoutManager(lapserahLayoutManager);
+            dpt.setLayoutManager(dptLM);
+            presiden.setLayoutManager(presidenLM);
+            gubernur.setLayoutManager(gubernurLM);
+            bupati.setLayoutManager(bupatiLM);
+            kades.setLayoutManager(kadesLM);
+            dprri.setLayoutManager(dprriLM);
+            dpdri.setLayoutManager(dpdriLM);
+            dprdprov.setLayoutManager(dprdprovLM);
+            dprdkab.setLayoutManager(dprdkabLM);
+            suaratidaksah.setLayoutManager(suaratidaksahLM);
 
-        // Set LayoutManager untuk setiap RecyclerView
-        lokasi.setLayoutManager(lokasiLayoutManager);
-        cektps.setLayoutManager(cektpsLayoutManager);
-        lappam.setLayoutManager(lappamLayoutManager);
-        formc1.setLayoutManager(formc1LayoutManager);
-        lapwal.setLayoutManager(lapwalLayoutManager);
-        lapserah.setLayoutManager(lapserahLayoutManager);
-        dpt.setLayoutManager(dptLM);
-        presiden.setLayoutManager(presidenLM);
-        gubernur.setLayoutManager(gubernurLM);
-        bupati.setLayoutManager(bupatiLM);
-        kades.setLayoutManager(kadesLM);
-        dprri.setLayoutManager(dprriLM);
-        dpdri.setLayoutManager(dpdriLM);
-        dprdprov.setLayoutManager(dprdprovLM);
-        dprdkab.setLayoutManager(dprdkabLM);
-
-        // Inisialisasi adapter untuk setiap RecyclerView
-        lokasiAdapter = new LokasiAdapter(lokasiList, this);
-        dptAdapter = new DptAdapter(draftDptList, this);
-        cektpsAdapter = new CektpsAdapter(cekTpsList, this);
+            // Inisialisasi adapter untuk setiap RecyclerView
+            lokasiAdapter = new LokasiAdapter(lokasiList, this);
+            dptAdapter = new DptAdapter(draftDptList, this);
+            cektpsAdapter = new CektpsAdapter(cekTpsList, this);
 //        formc1Adapter = new Formc1Adapter(formC1List);
-        lappamAdapter = new LappamAdapter(lappamList, this);
-        lapwalAdapter = new LapwalAdapter(lapwalList, this);
-        lapserahAdapter = new LapserahAdapter(lapserahList, this);
-        presidenAdapter = new PresidenAdapter(presidenList, this);
-        gubernurAdapter = new GubernurAdapter(gubernurList, this);
-        bupatiAdapter = new BupatiAdapter(bupatiList, this);
-        kadesAdapter = new KadesAdapter(kadesList, this);
-        dprRiAdapter = new DprRiAdapter(dprriList, this);
-        dpdRiAdapter = new DpdRiAdapter(dpdriList, this);
-        dprdProvAdapter = new DprdProvAdapter(dprdProvList, this);
-        dprdKabAdapter = new DprdKabAdapter(dprdKabList, this);
+            lappamAdapter = new LappamAdapter(lappamList, this);
+            lapwalAdapter = new LapwalAdapter(lapwalList, this);
+            lapserahAdapter = new LapserahAdapter(lapserahList, this);
+            presidenAdapter = new PresidenAdapter(presidenList, this);
+            gubernurAdapter = new GubernurAdapter(gubernurList, this);
+            bupatiAdapter = new BupatiAdapter(bupatiList, this);
+            kadesAdapter = new KadesAdapter(kadesList, this);
+            dprRiAdapter = new DprRiAdapter(dprriList, this);
+            dpdRiAdapter = new DpdRiAdapter(dpdriList, this);
+            dprdProvAdapter = new DprdProvAdapter(dprdProvList, this);
+            dprdKabAdapter = new DprdKabAdapter(dprdKabList, this);
+            suaraTidakSahAdapter = new SuaraTidakSahAdapter(suaraTidakSahList, this);
 
-        // Set adapter untuk setiap RecyclerView
-        lokasi.setAdapter(lokasiAdapter);
-        dpt.setAdapter(dptAdapter);
-        cektps.setAdapter(cektpsAdapter);
+            // Set adapter untuk setiap RecyclerView
+            lokasi.setAdapter(lokasiAdapter);
+            dpt.setAdapter(dptAdapter);
+            cektps.setAdapter(cektpsAdapter);
 //        formc1.setAdapter(formc1Adapter);
-        lappam.setAdapter(lappamAdapter);
-        lapwal.setAdapter(lapwalAdapter);
-        lapserah.setAdapter(lapserahAdapter);
-        presiden.setAdapter(presidenAdapter);
-        gubernur.setAdapter(gubernurAdapter);
-        bupati.setAdapter(bupatiAdapter);
-        kades.setAdapter(kadesAdapter);
-        dprri.setAdapter(dprRiAdapter);
-        dpdri.setAdapter(dpdRiAdapter);
-        dprdprov.setAdapter(dprdProvAdapter);
-        dprdkab.setAdapter(dprdKabAdapter);
+            lappam.setAdapter(lappamAdapter);
+            lapwal.setAdapter(lapwalAdapter);
+            lapserah.setAdapter(lapserahAdapter);
+            presiden.setAdapter(presidenAdapter);
+            gubernur.setAdapter(gubernurAdapter);
+            bupati.setAdapter(bupatiAdapter);
+            kades.setAdapter(kadesAdapter);
+            dprri.setAdapter(dprRiAdapter);
+            dpdri.setAdapter(dpdRiAdapter);
+            dprdprov.setAdapter(dprdProvAdapter);
+            dprdkab.setAdapter(dprdKabAdapter);
+            suaratidaksah.setAdapter(suaraTidakSahAdapter);
 
-        // Mengambil data dari database dan memperbarui tampilan RecyclerView
-        fetchDataAndUpdateViews();
+            // Mengambil data dari database dan memperbarui tampilan RecyclerView
+            fetchDataAndUpdateViews();
+        }
     }
 
     @Override
@@ -197,6 +209,7 @@ public class Draft extends AppCompatActivity {
         kadesList = databaseHelper.getkades("LOCAL");
         dprdProvList = databaseHelper.getdprdprov("LOCAL");
         dprdKabList = databaseHelper.getdprdkab("LOCAL");
+        suaraTidakSahList = databaseHelper.getsuaratidaksah("LOCAL");
 
         // Memperbarui tampilan RecyclerView
         lokasiAdapter.setData(lokasiList);
@@ -214,6 +227,7 @@ public class Draft extends AppCompatActivity {
         dpdRiAdapter.setData(dpdriList);
         dprdProvAdapter.setData(dprdProvList);
         dprdKabAdapter.setData(dprdKabList);
+        suaraTidakSahAdapter.setData(suaraTidakSahList);
 
         // Memperbarui tampilan RecyclerView
         lokasiAdapter.notifyDataSetChanged();
@@ -231,5 +245,6 @@ public class Draft extends AppCompatActivity {
         dpdRiAdapter.notifyDataSetChanged();
         dprdProvAdapter.notifyDataSetChanged();
         dprdKabAdapter.notifyDataSetChanged();
+        suaraTidakSahAdapter.notifyDataSetChanged();
     }
 }

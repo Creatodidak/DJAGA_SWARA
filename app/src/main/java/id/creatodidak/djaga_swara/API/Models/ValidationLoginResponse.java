@@ -7,7 +7,13 @@ public class ValidationLoginResponse {
     @SerializedName("msg")
     private String message;
 
+    @SerializedName("tokens")
+    private String tokens;
+
     public String getMessage() {
         return message;
+    }
+    public String getTokens() {
+        return tokens;
     }
 }

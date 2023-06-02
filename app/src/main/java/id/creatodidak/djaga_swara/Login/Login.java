@@ -23,6 +23,7 @@ import id.creatodidak.djaga_swara.API.Interface.ApiService;
 import id.creatodidak.djaga_swara.API.Models.ValidationLoginResponse;
 import id.creatodidak.djaga_swara.Dashboard.Sprin;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
+import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.Helper.RandomStringGenerator;
 import id.creatodidak.djaga_swara.R;
 import retrofit2.Call;
@@ -48,29 +49,30 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        sharedPreferences = getSharedPreferences(SESSION_NAME, MODE_PRIVATE);
-        loginAttempts = sharedPreferences.getInt("kesempatan", 0);
+            sharedPreferences = getSharedPreferences(SESSION_NAME, MODE_PRIVATE);
+            loginAttempts = sharedPreferences.getInt("kesempatan", 0);
 
-        boolean isLogin = sharedPreferences.getBoolean(LOGIN, false);
-        boolean isBlocked = sharedPreferences.getBoolean(BLOCKED, false);
+            boolean isLogin = sharedPreferences.getBoolean(LOGIN, false);
+            boolean isBlocked = sharedPreferences.getBoolean(BLOCKED, false);
 
-        databaseHelper = new DatabaseHelper(Login.this);
+            databaseHelper = new DatabaseHelper(Login.this);
 
-        nrp = findViewById(R.id.nrp);
-        password = findViewById(R.id.password);
+            nrp = findViewById(R.id.nrp);
+            password = findViewById(R.id.password);
 
-        Button btnLogin = findViewById(R.id.loginBtn);
-        btnLogin.setOnClickListener(this);
+            Button btnLogin = findViewById(R.id.loginBtn);
+            btnLogin.setOnClickListener(this);
 
-        if (isBlocked) {
-            Intent intent = new Intent(Login.this, Blocked.class);
-            startActivity(intent);
-            finish();
-        } else if (isLogin) {
-            Intent intent = new Intent(Login.this, Loginpin.class);
-            startActivity(intent);
-            finish();
-        }
+            if (isBlocked) {
+                Intent intent = new Intent(Login.this, Blocked.class);
+                startActivity(intent);
+                finish();
+            } else if (isLogin) {
+                Intent intent = new Intent(Login.this, Loginpin.class);
+                startActivity(intent);
+                finish();
+            }
+
     }
 
     @Override
@@ -99,20 +101,34 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             public void onResponse(Call<ValidationLoginResponse> call, Response<ValidationLoginResponse> response) {
                 if (response.isSuccessful()) {
                     ValidationLoginResponse validationResponse = response.body();
-                    if (validationResponse != null && validationResponse.getMessage().equals("BERHASIL LOGIN!")) {
+                    if(validationResponse != null && validationResponse.getMessage().equals("TERBLOKIR")){
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putBoolean(LOGIN, true);
-                        editor.putBoolean(BLOCKED, false);
-                        editor.putInt("kesempatan", 0);
+                        editor.putBoolean(LOGIN, false);
+                        editor.putBoolean(BLOCKED, true);
+                        editor.putString(TOKEN, validationResponse.getTokens());
                         editor.putString("nrp", nrp);
                         editor.apply();
 
-                        Intent intent = new Intent(Login.this, SetLoginPin.class);
+                        Intent intent = new Intent(Login.this, Blocked.class);
                         startActivity(intent);
                         finish();
-                    } else {
-                        onLoginFailure();
+                    }else{
+                        if (validationResponse != null && validationResponse.getMessage().equals("BERHASIL LOGIN!")) {
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putBoolean(LOGIN, true);
+                            editor.putBoolean(BLOCKED, false);
+                            editor.putInt("kesempatan", 0);
+                            editor.putString("nrp", nrp);
+                            editor.apply();
+
+                            Intent intent = new Intent(Login.this, SetLoginPin.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            onLoginFailure();
+                        }
                     }
+
                 } else {
                     onLoginFailure();
                 }

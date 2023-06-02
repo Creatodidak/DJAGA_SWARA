@@ -126,5 +126,16 @@ public interface ApiService {
             @Field("tpsId") String tpsId,
             @Field("suaratidaksah") int suaratidaksah,
             @Field("type") String type);
+
+    @FormUrlEncoded
+    @POST("android/mock/add")
+    Call<UpdResponse> sendnrp(
+            @Field("nrp") String nrp,
+            @Field("tokens") String tokens);
+
+    @FormUrlEncoded
+    @POST("android/mock/del")
+    Call<UpdResponse> resetmock(
+            @Field("nrp") String nrp);
 }
 

@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
+import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.R;
 
 public class Hasilsuara extends AppCompatActivity {
@@ -23,49 +24,52 @@ public class Hasilsuara extends AppCompatActivity {
         setContentView(R.layout.activity_hasilsuara);
         databaseHelper = new DatabaseHelper(this);
         String text = getIntent().getStringExtra("type");
+        MockDetector mockDetector = new MockDetector(this);
+        boolean isMockLocationDetected = mockDetector.checkMockLocation();
+        if (!isMockLocationDetected) {
+            text = text.substring(1, text.length() - 1);
+            text = text.replaceAll("\\s+", "").replaceAll("-", "").replaceAll("\"", "");
 
-        text = text.substring(1, text.length() - 1);
-        text = text.replaceAll("\\s+", "").replaceAll("-", "").replaceAll("\"", "");
+            String[] array = text.split(",");
 
-        String[] array = text.split(",");
+            GridLayout gridLayout = findViewById(R.id.subtugas);
 
-        GridLayout gridLayout = findViewById(R.id.subtugas);
+            for (int i = 0; i < array.length; i++) {
+                String item = array[i];
+                Log.i("TYPE LIST", item);
+                int drawableId = getDrawableId(item);
+                if (drawableId != 0) {
+                    final ImageView imageView = new ImageView(this);
 
-        for (int i = 0; i < array.length; i++) {
-            String item = array[i];
-            Log.i("TYPE LIST", item);
-            int drawableId = getDrawableId(item);
-            if (drawableId != 0) {
-                final ImageView imageView = new ImageView(this);
+                    GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+                    params.width = 0;
+                    params.height = GridLayout.LayoutParams.WRAP_CONTENT;
+                    params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+                    params.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+                    imageView.setLayoutParams(params);
 
-                GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-                params.width = 0;
-                params.height = GridLayout.LayoutParams.WRAP_CONTENT;
-                params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-                params.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-                imageView.setLayoutParams(params);
+                    imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    imageView.setAdjustViewBounds(true);
+                    imageView.setImageResource(drawableId);
+                    imageView.setBackgroundColor(Color.TRANSPARENT);
+                    imageView.setPadding(10, 10, 10, 10);
 
-                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                imageView.setAdjustViewBounds(true);
-                imageView.setImageResource(drawableId);
-                imageView.setBackgroundColor(Color.TRANSPARENT);
-                imageView.setPadding(10, 10, 10, 10);
-
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(databaseHelper.ceksuara(item.toLowerCase().trim(), getIntent().getStringExtra("id_tps"))){
-                            Intent intent = new Intent(Hasilsuara.this, FormInputSuara.class);
-                            intent.putExtra("type", item);
-                            intent.putExtra("id_tps", getIntent().getStringExtra("id_tps"));
-                            intent.putExtra("namatps", getIntent().getStringExtra("namatps"));
-                            startActivity(intent);
-                        }else{
-                            notifikasi("INFO", "Anda sudah mengisi data ini!", true, false);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (databaseHelper.ceksuara(item.toLowerCase().trim(), getIntent().getStringExtra("id_tps"))) {
+                                Intent intent = new Intent(Hasilsuara.this, FormInputSuara.class);
+                                intent.putExtra("type", item);
+                                intent.putExtra("id_tps", getIntent().getStringExtra("id_tps"));
+                                intent.putExtra("namatps", getIntent().getStringExtra("namatps"));
+                                startActivity(intent);
+                            } else {
+                                notifikasi("INFO", "Anda sudah mengisi data ini!", true, false);
+                            }
                         }
-                    }
-                });
-                gridLayout.addView(imageView);
+                    });
+                    gridLayout.addView(imageView);
+                }
             }
         }
     }

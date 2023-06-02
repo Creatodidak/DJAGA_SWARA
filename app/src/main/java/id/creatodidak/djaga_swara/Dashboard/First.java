@@ -67,6 +67,7 @@ import id.creatodidak.djaga_swara.API.Models.Profile;
 import id.creatodidak.djaga_swara.API.Models.Satker;
 import id.creatodidak.djaga_swara.API.Models.UpdResponse;
 import id.creatodidak.djaga_swara.API.Models.UpdateFoto;
+import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.R;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -110,158 +111,160 @@ public class First extends AppCompatActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
+        MockDetector mockDetector = new MockDetector(this);
+        boolean isMockLocationDetected = mockDetector.checkMockLocation();
+        if (!isMockLocationDetected) {
+            Jpangkat = "pangkat.json";
+            Jsatker = "satker.json";
+            Jfungpolres = "satfung-polres.json";
+            JfungPolsek = "satfung-polsek.json";
+            JjabPolres = "jabatan-polres.json";
+            JjabPolsek = "jabatan-polsek.json";
+            JjabPolsubsektor = "jabatan-polsubsektor.json";
+            addPangkat(Jpangkat);
+            addSatker(Jsatker);
+            fpset = findViewById(R.id.fpset);
+            sPpangkat = findViewById(R.id.spPangkat);
+            sPsatker = findViewById(R.id.spSatker);
+            sPfungsi = findViewById(R.id.spFungsi);
+            sPjabatan = findViewById(R.id.spJabatan);
+            eTnrp = findViewById(R.id.etNrp);
+            eTnama = findViewById(R.id.etNama);
+            eTwa = findViewById(R.id.etWa);
+            btEdit = findViewById(R.id.btnEdit);
+            btSimpan = findViewById(R.id.btnSimpan);
+            btLanjutkan = findViewById(R.id.btnLanjut);
 
-        Jpangkat = "pangkat.json";
-        Jsatker = "satker.json";
-        Jfungpolres = "satfung-polres.json";
-        JfungPolsek = "satfung-polsek.json";
-        JjabPolres = "jabatan-polres.json";
-        JjabPolsek = "jabatan-polsek.json";
-        JjabPolsubsektor = "jabatan-polsubsektor.json";
-        addPangkat(Jpangkat);
-        addSatker(Jsatker);
-        fpset = findViewById(R.id.fpset);
-        sPpangkat = findViewById(R.id.spPangkat);
-        sPsatker = findViewById(R.id.spSatker);
-        sPfungsi = findViewById(R.id.spFungsi);
-        sPjabatan = findViewById(R.id.spJabatan);
-        eTnrp = findViewById(R.id.etNrp);
-        eTnama = findViewById(R.id.etNama);
-        eTwa = findViewById(R.id.etWa);
-        btEdit = findViewById(R.id.btnEdit);
-        btSimpan = findViewById(R.id.btnSimpan);
-        btLanjutkan = findViewById(R.id.btnLanjut);
+            sPpangkat.setEnabled(false);
+            sPsatker.setEnabled(false);
+            sPfungsi.setEnabled(false);
+            sPjabatan.setEnabled(false);
 
-        sPpangkat.setEnabled(false);
-        sPsatker.setEnabled(false);
-        sPfungsi.setEnabled(false);
-        sPjabatan.setEnabled(false);
+            btEdit.setOnClickListener(this);
+            btSimpan.setOnClickListener(this);
+            btLanjutkan.setOnClickListener(this);
 
-        btEdit.setOnClickListener(this);
-        btSimpan.setOnClickListener(this);
-        btLanjutkan.setOnClickListener(this);
+            isSaved = true;
 
-        isSaved = true;
+            gantifoto = findViewById(R.id.gantifoto);
 
-        gantifoto = findViewById(R.id.gantifoto);
+            gantifoto.setOnClickListener(this);
 
-        gantifoto.setOnClickListener(this);
+            sharedPreferences = getSharedPreferences("session", MODE_PRIVATE);
+            String nrp = sharedPreferences.getString("nrp", "");
+            if (isInternetAvailable()) {
+                progressDialog2 = new ProgressDialog(this);
+                progressDialog2.setMessage("Mengambil data...");
+                progressDialog2.setCancelable(false);
+                progressDialog2.setContentView(R.layout.progress_dialog);
+                progressDialog2.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                ImageView iconImageView = progressDialog2.findViewById(R.id.iconImageView);
+                iconImageView.setImageResource(R.drawable.logosmall); // Ganti 'ic_progress' dengan sumber daya ikon yang diinginkan
 
-        sharedPreferences = getSharedPreferences("session", MODE_PRIVATE);
-        String nrp = sharedPreferences.getString("nrp", "");
-        if (isInternetAvailable()) {
-            progressDialog2 = new ProgressDialog(this);
-            progressDialog2.setMessage("Mengambil data...");
-            progressDialog2.setCancelable(false);
-            progressDialog2.setContentView(R.layout.progress_dialog);
-            progressDialog2.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            ImageView iconImageView = progressDialog2.findViewById(R.id.iconImageView);
-            iconImageView.setImageResource(R.drawable.logosmall); // Ganti 'ic_progress' dengan sumber daya ikon yang diinginkan
+                progressDialog2.show();
 
-            progressDialog2.show();
+                apiService = ApiClient.getClient().create(ApiService.class);
 
-            apiService = ApiClient.getClient().create(ApiService.class);
+                Call<Profile> call = apiService.getProfile(nrp);
+                call.enqueue(new Callback<Profile>() {
+                    @Override
+                    public void onResponse(Call<Profile> call, @NonNull Response<Profile> response) {
+                        assert response.body() != null;
+                        progressDialog2.dismiss();
+                        eTnrp.setText(decrypt(response.body().getNrp()));
+                        eTnama.setText(decrypt(response.body().getNama()));
+                        eTwa.setText(decrypt(response.body().getWa()));
+                        String selectedPangkat = decrypt(response.body().getPangkat());
+                        setSpinnerSelection(sPpangkat, selectedPangkat, "pangkat");
+                        String selectedSatker = decrypt(response.body().getSatker());
+                        setSpinnerSelection(sPsatker, selectedSatker, "satker");
+                        String selFungsi = decrypt(response.body().getSatfung());
+                        String selJabatan = decrypt(response.body().getJabatan());
 
-            Call<Profile> call = apiService.getProfile(nrp);
-            call.enqueue(new Callback<Profile>() {
-                @Override
-                public void onResponse(Call<Profile> call, @NonNull Response<Profile> response) {
-                    assert response.body() != null;
-                    progressDialog2.dismiss();
-                    eTnrp.setText(decrypt(response.body().getNrp()));
-                    eTnama.setText(decrypt(response.body().getNama()));
-                    eTwa.setText(decrypt(response.body().getWa()));
-                    String selectedPangkat = decrypt(response.body().getPangkat());
-                    setSpinnerSelection(sPpangkat, selectedPangkat, "pangkat");
-                    String selectedSatker = decrypt(response.body().getSatker());
-                    setSpinnerSelection(sPsatker, selectedSatker, "satker");
-                    String selFungsi = decrypt(response.body().getSatfung());
-                    String selJabatan = decrypt(response.body().getJabatan());
+                        String foto = decrypt(response.body().getFoto());
+                        if (foto.equals("no")) {
+                            Glide.with(First.this)
+                                    .load(R.drawable.defaultfp)
+                                    .circleCrop()
+                                    .into(fpset);
+                        } else {
+                            Glide.with(First.this)
+                                    .load(foto) // Ganti dengan URL gambar yang sesuai
+                                    .circleCrop()
+                                    .listener(new RequestListener<Drawable>() {
+                                        @Override
+                                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                            Toast.makeText(First.this, "GAGAL MEMUAT FOTO", Toast.LENGTH_SHORT).show();
+                                            Glide.with(First.this)
+                                                    .load(R.drawable.defaultfp)
+                                                    .circleCrop()
+                                                    .into(fpset);
+                                            return true;
+                                        }
 
-                    String foto = decrypt(response.body().getFoto());
-                    if (foto.equals("no")){
+                                        @Override
+                                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                            return false;
+                                        }
+                                    })
+                                    .into(fpset);
+                        }
+                        assert selectedSatker != null;
+                        if (selectedSatker.contains("POLRES")) {
+                            addFungsi("polres");
+                            addJabatan("polres");
+                            setSpinnerSelection(sPfungsi, selFungsi, "fungsi");
+                            setSpinnerSelection(sPjabatan, selJabatan, "jabatan");
+                        } else if (selectedSatker.contains("POLSEK")) {
+                            addFungsi("polsek");
+                            addJabatan("polres");
+                            setSpinnerSelection(sPfungsi, selFungsi, "fungsi");
+                            setSpinnerSelection(sPjabatan, selJabatan, "jabatan");
+                        } else if (selectedSatker.contains("POLSUBSEKTOR")) {
+                            addFungsi("polsubsektor");
+                            addJabatan("polres");
+                            setSpinnerSelection(sPfungsi, selFungsi, "fungsi");
+                            setSpinnerSelection(sPjabatan, selJabatan, "jabatan");
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Profile> call, Throwable t) {
+                        progressDialog2.dismiss();
+
                         Glide.with(First.this)
                                 .load(R.drawable.defaultfp)
                                 .circleCrop()
                                 .into(fpset);
-                    }else {
-                        Glide.with(First.this)
-                                .load(foto) // Ganti dengan URL gambar yang sesuai
-                                .circleCrop()
-                                .listener(new RequestListener<Drawable>() {
-                                    @Override
-                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                        Toast.makeText(First.this, "GAGAL MEMUAT FOTO", Toast.LENGTH_SHORT).show();
-                                        Glide.with(First.this)
-                                                .load(R.drawable.defaultfp)
-                                                .circleCrop()
-                                                .into(fpset);
-                                        return true;
-                                    }
-
-                                    @Override
-                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                        return false;
-                                    }
-                                })
-                                .into(fpset);
                     }
-                    assert selectedSatker != null;
-                    if (selectedSatker.contains("POLRES")){
-                        addFungsi("polres");
-                        addJabatan("polres");
-                        setSpinnerSelection(sPfungsi, selFungsi, "fungsi");
-                        setSpinnerSelection(sPjabatan, selJabatan, "jabatan");
-                    }else if (selectedSatker.contains("POLSEK")){
-                        addFungsi("polsek");
-                        addJabatan("polres");
-                        setSpinnerSelection(sPfungsi, selFungsi, "fungsi");
-                        setSpinnerSelection(sPjabatan, selJabatan, "jabatan");
-                    }else if (selectedSatker.contains("POLSUBSEKTOR")){
-                        addFungsi("polsubsektor");
-                        addJabatan("polres");
-                        setSpinnerSelection(sPfungsi, selFungsi, "fungsi");
-                        setSpinnerSelection(sPjabatan, selJabatan, "jabatan");
+                });
+
+                ArrayAdapter<Pangkat> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Pangkats);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                this.sPpangkat.setAdapter(adapter);
+
+                ArrayAdapter<Satker> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Satkers);
+                adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                this.sPsatker.setAdapter(adapter2);
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Maaf");
+                builder.setMessage("Fungsi ini hanya bisa digunakan pada saat internet tersedia");
+                builder.setCancelable(false);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
                     }
+                });
 
 
-                }
-
-                @Override
-                public void onFailure(Call<Profile> call, Throwable t) {
-                    progressDialog2.dismiss();
-
-                    Glide.with(First.this)
-                            .load(R.drawable.defaultfp)
-                            .circleCrop()
-                            .into(fpset);
-                }
-            });
-
-            ArrayAdapter<Pangkat> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Pangkats);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            this.sPpangkat.setAdapter(adapter);
-
-            ArrayAdapter<Satker> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Satkers);
-            adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            this.sPsatker.setAdapter(adapter2);
-        }else{
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Maaf");
-            builder.setMessage("Fungsi ini hanya bisa digunakan pada saat internet tersedia");
-            builder.setCancelable(false);
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
-
-
-            // Menampilkan dialog
-            builder.show();
+                // Menampilkan dialog
+                builder.show();
+            }
         }
-
     }
 
     private boolean isInternetAvailable() {

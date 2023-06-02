@@ -15,6 +15,7 @@ import id.creatodidak.djaga_swara.API.Interface.ApiService;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
 import id.creatodidak.djaga_swara.API.Models.UpdResponse;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
+import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,35 +35,38 @@ public class Dpt extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dpt);
+        MockDetector mockDetector = new MockDetector(this);
+        boolean isMockLocationDetected = mockDetector.checkMockLocation();
+        if (!isMockLocationDetected) {
+            dpts = findViewById(R.id.Dpts);
+            dptt = findViewById(R.id.Dptt);
+            dptf = findViewById(R.id.Dptf);
+            ketdptf = findViewById(R.id.ketDptf);
+            svdpt = findViewById(R.id.svDptf);
 
-        dpts = findViewById(R.id.Dpts);
-        dptt = findViewById(R.id.Dptt);
-        dptf = findViewById(R.id.Dptf);
-        ketdptf = findViewById(R.id.ketDptf);
-        svdpt = findViewById(R.id.svDptf);
+            databaseHelper = new DatabaseHelper(this);
 
-        databaseHelper = new DatabaseHelper(this);
+            tpsList = databaseHelper.getDpt(getIntent().getStringExtra("id_tps"));
 
-        tpsList = databaseHelper.getDpt(getIntent().getStringExtra("id_tps"));
+            dpts.setText(tpsList.getDptSementara());
+            dptt.setText(tpsList.getDptTetap());
 
-        dpts.setText(tpsList.getDptSementara());
-        dptt.setText(tpsList.getDptTetap());
-
-        svdpt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(dptf.getText().toString().trim().isEmpty()){
-                    notifikasi("WAJIB DIISI!", "JUMLAH DPT FINAL HARUS DI ISI!", true, false);
-                }else{
-                    if(ketdptf.getText().toString().trim().isEmpty()){
-                        notifikasi("WAJIB DIISI!", "KETERANGAN JUMLAH DPT FINAL HARUS DI ISI!", true, false);
-                    }else{
-                        showprogress("UPDATE DATA TPS...");
-                        svDpt();
+            svdpt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (dptf.getText().toString().trim().isEmpty()) {
+                        notifikasi("WAJIB DIISI!", "JUMLAH DPT FINAL HARUS DI ISI!", true, false);
+                    } else {
+                        if (ketdptf.getText().toString().trim().isEmpty()) {
+                            notifikasi("WAJIB DIISI!", "KETERANGAN JUMLAH DPT FINAL HARUS DI ISI!", true, false);
+                        } else {
+                            showprogress("UPDATE DATA TPS...");
+                            svDpt();
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void svDpt() {

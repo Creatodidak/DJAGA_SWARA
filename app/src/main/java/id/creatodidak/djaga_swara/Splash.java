@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 
+import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.Helper.NotificationHelper;
 import id.creatodidak.djaga_swara.Login.Login;
 
@@ -43,20 +44,22 @@ public class Splash extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        ver = findViewById(R.id.versi);
-        sharedPreferences = getSharedPreferences("session", MODE_PRIVATE);
 
-        tirex = findViewById(R.id.tirex);
-        progressBar = findViewById(R.id.progressBar3);
-        ver.setText("DjagaSwara BETA v"+BuildConfig.VERSION_NAME);
-        animationDuration = 3010;
-        maxProgress = 100;
+            ver = findViewById(R.id.versi);
+            sharedPreferences = getSharedPreferences("session", MODE_PRIVATE);
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            tirex = findViewById(R.id.tirex);
+            progressBar = findViewById(R.id.progressBar3);
+            ver.setText("DjagaSwara BETA v"+BuildConfig.VERSION_NAME);
+            animationDuration = 3010;
+            maxProgress = 100;
 
-        cekGPS();
-        showWelcomeNotification();
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            cekGPS();
+            showWelcomeNotification();
+
     }
 
     private void showWelcomeNotification() {

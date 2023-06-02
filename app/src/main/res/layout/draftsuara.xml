@@ -61,7 +61,6 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-black"
                         android:gravity="center"
-                        android:text="00"
                         android:textColor="@color/white"
                         android:textSize="40sp" />
                 </LinearLayout>
@@ -80,8 +79,10 @@
                         android:fontFamily="@font/bold"
                         android:gravity="center"
                         android:text="NAMA"
+                        android:textAllCaps="true"
                         android:textColor="@color/primary"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:textAllCaps="true" />
 
                     <TextView
                         android:id="@+id/etSuara"

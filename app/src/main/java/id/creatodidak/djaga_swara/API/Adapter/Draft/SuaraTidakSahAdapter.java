@@ -17,8 +17,9 @@ import java.util.List;
 
 import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
 import id.creatodidak.djaga_swara.API.Interface.ApiService;
-import id.creatodidak.djaga_swara.API.Models.Multi.Bupati;
+import id.creatodidak.djaga_swara.API.Models.Multi.SuaraTidakSah;
 import id.creatodidak.djaga_swara.API.Models.Multi.SuaraData;
+import id.creatodidak.djaga_swara.API.Models.Multi.SuaraTidakSah;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
 import id.creatodidak.djaga_swara.API.Models.UpdResponse;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
@@ -30,7 +31,7 @@ import retrofit2.Response;
 public class SuaraTidakSahAdapter extends RecyclerView.Adapter<SuaraTidakSahAdapter.ViewHolder> {
 
     private final Activity mActivity;
-    private final List<Bupati> bupatiList;
+    private final List<SuaraTidakSah> suaratidaksahList;
 
     ApiService apiService;
 
@@ -40,15 +41,15 @@ public class SuaraTidakSahAdapter extends RecyclerView.Adapter<SuaraTidakSahAdap
 
     boolean cek, upd;
 
-    public SuaraTidakSahAdapter(List<Bupati> bupatiList, Activity activity) {
-        this.bupatiList = bupatiList;
+    public SuaraTidakSahAdapter(List<SuaraTidakSah> suaratidaksahList, Activity activity) {
+        this.suaratidaksahList = suaratidaksahList;
         mActivity = activity;
     }
 
-    public void setData(List<Bupati> data) {
-        bupatiList.clear();
+    public void setData(List<SuaraTidakSah> data) {
+        suaratidaksahList.clear();
         if (data != null) {
-            bupatiList.addAll(data);
+            suaratidaksahList.addAll(data);
         }
         notifyDataSetChanged();
     }
@@ -77,14 +78,14 @@ public class SuaraTidakSahAdapter extends RecyclerView.Adapter<SuaraTidakSahAdap
 
     @Override
     public void onBindViewHolder(@NonNull SuaraTidakSahAdapter.ViewHolder holder, int position) {
-        Bupati bupati = bupatiList.get(position);
+        SuaraTidakSah suaratidaksah = suaratidaksahList.get(position);
         databaseHelper = new DatabaseHelper(holder.itemView.getContext());
-        TpsList tpsList =databaseHelper.getSprindetail(bupati.getId_tps());
+        TpsList tpsList =databaseHelper.getSprindetail(suaratidaksah.getIdTps());
 
-        holder.judul.setText("Laporan Jumlah Suara Pemilihan Bupati Nomor Urut "+bupati.getNo_urut()+" di TPS "+tpsList.getNomorTps()+" Desa "+tpsList.getNamaDes());
-        holder.nourut.setText(bupati.getNo_urut());
-        holder.suara.setText(bupati.getSuara());
-        holder.nama.setText(bupati.getCabup()+"\n"+bupati.getCawabup());
+        holder.judul.setText("Laporan Jumlah Suara Tidak Sah dalam Pemilihan "+suaratidaksah.getType()+" di TPS "+tpsList.getNomorTps()+" Desa "+tpsList.getNamaDes());
+        holder.suara.setText(String.valueOf(suaratidaksah.getJumlah()));
+        holder.nama.setText("TPS "+tpsList.getNomorTps()+" Desa "+tpsList.getNamaDes());
+
         holder.kirimdata.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,8 +99,7 @@ public class SuaraTidakSahAdapter extends RecyclerView.Adapter<SuaraTidakSahAdap
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         showprogress("Mengirim data ke server...", v);
-                        SuaraData suaraData = new SuaraData(tpsList.getIdTps(), bupati.getId_calon(), Integer.parseInt(bupati.getSuara().trim()), "bupati");
-                        sendsuaradata(suaraData, v, "bupati", bupati.getId_calon());
+                        sendsuaradata(tpsList.getIdTps(), suaratidaksah.getJumlah(), suaratidaksah.getType(), suaratidaksah.getId(), v);
                     }
                 });
 
@@ -117,15 +117,15 @@ public class SuaraTidakSahAdapter extends RecyclerView.Adapter<SuaraTidakSahAdap
         });
     }
 
-    private void sendsuaradata(SuaraData suaraData, View v, String type, String idCalon) {
+    private void sendsuaradata(String tpsId, int suaratidaksah, String type, int id, View v) {
         apiService = ApiClient.getClient().create(ApiService.class);
-        Call<UpdResponse> call = apiService.sendSuaraData(suaraData);
+        Call<UpdResponse> call = apiService.sendTidaksah(tpsId, suaratidaksah, type);
         call.enqueue(new Callback<UpdResponse>() {
             @Override
             public void onResponse(Call<UpdResponse> call, Response<UpdResponse> response) {
                 progressDialog.dismiss();
                 if (response.body().getMsg().equals("ok")){
-                    if(databaseHelper.updateSuara(type, suaraData, "SERVER", idCalon)){
+                    if(databaseHelper.updateSuaraTidakSah(id)){
                         notifikasi("BERHASIL", "Data Berhasil Dikirim Ke Server!", true, v);
                     }else{
                         notifikasi("GAGAL", "Data Berhasil Dikirim, Namun Gagal Menghapus Dari Draft!", true, v);
@@ -145,7 +145,7 @@ public class SuaraTidakSahAdapter extends RecyclerView.Adapter<SuaraTidakSahAdap
 
     @Override
     public int getItemCount() {
-        return bupatiList.size();
+        return suaratidaksahList.size();
     }
     private void showprogress(String msg, View view) {
         progressDialog = new ProgressDialog(view.getContext());

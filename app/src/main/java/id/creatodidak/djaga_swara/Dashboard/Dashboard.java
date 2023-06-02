@@ -35,6 +35,7 @@ import id.creatodidak.djaga_swara.API.Models.DataCalon;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lappam;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
+import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -60,57 +61,59 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         sharedPreferences = getSharedPreferences("session", MODE_PRIVATE);
+        MockDetector mockDetector = new MockDetector(this);
+        boolean isMockLocationDetected = mockDetector.checkMockLocation();
+        if (!isMockLocationDetected) {
+            id_sprint = getIntent().getStringExtra("sprint_id");
+            nrp = sharedPreferences.getString("nrp", "");
+            apiService = ApiClient.getClient().create(ApiService.class);
+            databaseHelper = new DatabaseHelper(this);
 
-        id_sprint = getIntent().getStringExtra("sprint_id");
-        nrp = sharedPreferences.getString("nrp", "");
-        apiService = ApiClient.getClient().create(ApiService.class);
-        databaseHelper = new DatabaseHelper(this);
+            recyclerView = findViewById(R.id.listTps);
+            swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        recyclerView = findViewById(R.id.listTps);
-        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            // Check internet availability
+            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+            isInternetAvailable = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
-        // Check internet availability
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-        isInternetAvailable = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+            btndraft = findViewById(R.id.draftbtn);
+            judul = findViewById(R.id.jumlahdraft);
 
-        btndraft = findViewById(R.id.draftbtn);
-        judul = findViewById(R.id.jumlahdraft);
-
-        if (isInternetAvailable) {
-            loadDataFromServer();
-        } else {
-            loadDataFromLocalDatabase();
-        }
-
-        btndraft.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Dashboard.this, Draft.class);
-                startActivity(intent);
-            }
-        });
-
-        swipeRefreshLayout.setOnRefreshListener(() -> {
             if (isInternetAvailable) {
                 loadDataFromServer();
             } else {
-                swipeRefreshLayout.setRefreshing(false);
-                Toast.makeText(this, "Tidak ada koneksi internet", Toast.LENGTH_SHORT).show();
+                loadDataFromLocalDatabase();
             }
-        });
 
-        ImageView profile = findViewById(R.id.profile);
+            btndraft.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Dashboard.this, Draft.class);
+                    startActivity(intent);
+                }
+            });
 
-        profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Dashboard.this, First.class);
-                startActivity(intent);
-            }
-        });
+            swipeRefreshLayout.setOnRefreshListener(() -> {
+                if (isInternetAvailable) {
+                    loadDataFromServer();
+                } else {
+                    swipeRefreshLayout.setRefreshing(false);
+                    Toast.makeText(this, "Tidak ada koneksi internet", Toast.LENGTH_SHORT).show();
+                }
+            });
 
+            ImageView profile = findViewById(R.id.profile);
+
+            profile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Dashboard.this, First.class);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
 
@@ -514,7 +517,9 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
             int kadesj = databaseHelper.getkades("LOCAL").size();
             int dprdProvj = databaseHelper.getdprdprov("LOCAL").size();
             int dprdKabj = databaseHelper.getdprdkab("LOCAL").size();
-            totalJumlahData = jlokasi + jcektps + jlappam + jformc1 + jlapwal + jlapserah + jdraftdpt + presidenj + bupatij + gubernurj + dprrij + dpdrij + kadesj +dprdProvj + dprdKabj;
+            int suaratidaksahj = databaseHelper.getsuaratidaksah("LOCAL").size();
+
+            totalJumlahData = jlokasi + jcektps + jlappam + jformc1 + jlapwal + jlapserah + jdraftdpt + presidenj + bupatij + gubernurj + dprrij + dpdrij + kadesj +dprdProvj + dprdKabj + suaratidaksahj;
             judul.setText(totalJumlahData +" Draft Tersimpan!");
         }
     }
@@ -555,7 +560,9 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
         int kadesj = databaseHelper.getkades("LOCAL").size();
         int dprdProvj = databaseHelper.getdprdprov("LOCAL").size();
         int dprdKabj = databaseHelper.getdprdkab("LOCAL").size();
-        totalJumlahData = jlokasi + jcektps + jlappam + jformc1 + jlapwal + jlapserah + jdraftdpt + presidenj + bupatij + gubernurj + dprrij + dpdrij + kadesj +dprdProvj + dprdKabj;
+        int suaratidaksahj = databaseHelper.getsuaratidaksah("LOCAL").size();
+
+        totalJumlahData = jlokasi + jcektps + jlappam + jformc1 + jlapwal + jlapserah + jdraftdpt + presidenj + bupatij + gubernurj + dprrij + dpdrij + kadesj +dprdProvj + dprdKabj + suaratidaksahj;
         judul.setText(totalJumlahData +" Draft Tersimpan!");
     }
 

@@ -33,6 +33,7 @@ import id.creatodidak.djaga_swara.Dashboard.Dashboard;
 import id.creatodidak.djaga_swara.Dashboard.Sprin;
 import id.creatodidak.djaga_swara.Dashboard.Tugas;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
+import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,29 +60,33 @@ public class Lokasi extends AppCompatActivity implements LocationListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lokasi);
-        tvlat = findViewById(R.id.latitude);
-        tvlng = findViewById(R.id.longitude);
-        tvid = findViewById(R.id.idtpsreal);
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        id_tps = getIntent().getStringExtra("id_tps");
-        btn = findViewById(R.id.btnset);
-        tvid.setText("ID: "+id_tps);
-        databaseHelper = new DatabaseHelper(Lokasi.this);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-                isInternetAvailable = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        MockDetector mockDetector = new MockDetector(this);
+        boolean isMockLocationDetected = mockDetector.checkMockLocation();
+        if (!isMockLocationDetected) {
+            tvlat = findViewById(R.id.latitude);
+            tvlng = findViewById(R.id.longitude);
+            tvid = findViewById(R.id.idtpsreal);
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            id_tps = getIntent().getStringExtra("id_tps");
+            btn = findViewById(R.id.btnset);
+            tvid.setText("ID: " + id_tps);
+            databaseHelper = new DatabaseHelper(Lokasi.this);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+                    isInternetAvailable = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
-                if (isInternetAvailable) {
-                    setlokasi();
-                } else {
-                    updatedb("YES, LOCAL");
+                    if (isInternetAvailable) {
+                        setlokasi();
+                    } else {
+                        updatedb("YES, LOCAL");
+                    }
                 }
-            }
-        });
-        refresh();
+            });
+            refresh();
+        }
     }
 
     private void updatedb(String msg) {

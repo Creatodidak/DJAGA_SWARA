@@ -55,6 +55,7 @@ import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
 import id.creatodidak.djaga_swara.API.Interface.ApiService;
 import id.creatodidak.djaga_swara.API.Models.UpdResponse;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
+import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.R;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -88,68 +89,71 @@ public class Lapwal extends AppCompatActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lapwal);
+        MockDetector mockDetector = new MockDetector(this);
+        boolean isMockLocationDetected = mockDetector.checkMockLocation();
+        if (!isMockLocationDetected) {
+            ambilFotoButton = findViewById(R.id.btambilfoto);
+            ambilFotoButton.setOnClickListener(this);
+            kirim = findViewById(R.id.btkirimlaporan);
+            kirim.setOnClickListener(this);
+            fotoImageView = findViewById(R.id.fotonya);
+            wmbox = findViewById(R.id.wmbox);
+            wm1 = findViewById(R.id.wm1);
+            wm2 = findViewById(R.id.wm2);
+            wm3 = findViewById(R.id.wm3);
+            wm4 = findViewById(R.id.wm4);
+            wm5 = findViewById(R.id.wm5);
+            cl = findViewById(R.id.foto);
+            spinner = findViewById(R.id.situasi);
+            prediksi = findViewById(R.id.prediksi);
 
-        ambilFotoButton = findViewById(R.id.btambilfoto);
-        ambilFotoButton.setOnClickListener(this);
-        kirim = findViewById(R.id.btkirimlaporan);
-        kirim.setOnClickListener(this);
-        fotoImageView = findViewById(R.id.fotonya);
-        wmbox = findViewById(R.id.wmbox);
-        wm1 = findViewById(R.id.wm1);
-        wm2 = findViewById(R.id.wm2);
-        wm3 = findViewById(R.id.wm3);
-        wm4 = findViewById(R.id.wm4);
-        wm5 = findViewById(R.id.wm5);
-        cl = findViewById(R.id.foto);
-        spinner = findViewById(R.id.situasi);
-        prediksi = findViewById(R.id.prediksi);
 
+            constraintSet = new ConstraintSet();
 
-        constraintSet = new ConstraintSet();
+            // Set onClickListener pada tombol ambilFotoButton
+            ambilFotoButton.setOnClickListener(this);
 
-        // Set onClickListener pada tombol ambilFotoButton
-        ambilFotoButton.setOnClickListener(this);
+            judul = getIntent().getStringExtra("judul");
+            id_tps = getIntent().getStringExtra("id_tps");
+            SharedPreferences sharedPreferences = getSharedPreferences("session", MODE_PRIVATE);
+            nrp = sharedPreferences.getString("nrp", "");
+            Date date = new Date();
 
-        judul = getIntent().getStringExtra("judul");
-        id_tps = getIntent().getStringExtra("id_tps");
-        SharedPreferences sharedPreferences = getSharedPreferences("session", MODE_PRIVATE);
-        nrp = sharedPreferences.getString("nrp", "");
-        Date date = new Date();
+            // Format tanggal dan waktu
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, dd MMMM yyyy 'Pukul' HH:mm 'WIB'", new Locale("id"));
+            formattedDateTime = dateFormat.format(date);
 
-        // Format tanggal dan waktu
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, dd MMMM yyyy 'Pukul' HH:mm 'WIB'", new Locale("id"));
-        formattedDateTime = dateFormat.format(date);
+            // Cek dan minta izin lokasi jika belum diberikan
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
+            } else {
+                getLocation();
+            }
 
-        // Cek dan minta izin lokasi jika belum diberikan
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
-        } else {
-            getLocation();
+            databaseHelper = new DatabaseHelper(Lapwal.this);
+
+            String[] isiSpinner = {"PILIH SITUASI", "AMAN, KOTAK SUARA SAMPAI DI PPS TANPA ADA GANGGUAN/HALANGAN", "RAWAN, SAAT MELAKSANAKAN TUGAS PENGAWALAN ADA GANGGUAN/HALANGAN", "BAHAYA, KOTAK SUARA TERKENA EFEK GANGGUAN/HALANGAN"};
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, isiSpinner);
+            adapter.setDropDownViewResource(R.layout.dropdown);
+            spinner.setSelected(true);
+            spinner.setFocusable(true);
+            spinner.setFocusableInTouchMode(true);
+            spinner.requestFocus();
+            spinner.setAdapter(adapter);
+
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    situasiSp = parent.getItemAtPosition(position).toString();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    // Kode yang akan dijalankan jika tidak ada item yang dipilih
+                }
+            });
         }
-
-        databaseHelper = new DatabaseHelper(Lapwal.this);
-
-        String[] isiSpinner = {"PILIH SITUASI" ,"AMAN, KOTAK SUARA SAMPAI DI PPS TANPA ADA GANGGUAN/HALANGAN", "RAWAN, SAAT MELAKSANAKAN TUGAS PENGAWALAN ADA GANGGUAN/HALANGAN", "BAHAYA, KOTAK SUARA TERKENA EFEK GANGGUAN/HALANGAN"};
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, isiSpinner);
-        adapter.setDropDownViewResource(R.layout.dropdown);
-        spinner.setSelected(true);
-        spinner.setFocusable(true);
-        spinner.setFocusableInTouchMode(true);
-        spinner.requestFocus();
-        spinner.setAdapter(adapter);
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                situasiSp = parent.getItemAtPosition(position).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Kode yang akan dijalankan jika tidak ada item yang dipilih
-            }
-        });
     }
 
 

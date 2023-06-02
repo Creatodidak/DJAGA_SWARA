@@ -1,6 +1,5 @@
 package id.creatodidak.djaga_swara.Dashboard;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,15 +14,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +29,9 @@ import id.creatodidak.djaga_swara.API.Adapter.SprintOfflineAdapter;
 import id.creatodidak.djaga_swara.API.Interface.ApiService;
 import id.creatodidak.djaga_swara.API.Models.SprintList;
 import id.creatodidak.djaga_swara.API.Models.SprintListOffline;
-import id.creatodidak.djaga_swara.Helper.AESHelper;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
+import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.Helper.NetworkChangeReceiver;
-import id.creatodidak.djaga_swara.Helper.NotificationHelper;
 import id.creatodidak.djaga_swara.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -64,49 +58,53 @@ public class Sprin extends AppCompatActivity implements SprintAdapter.OnItemClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sprin);
-        apiService = ApiClient.getClient().create(ApiService.class);
-        databaseHelper = new DatabaseHelper(this);
-        networkChangeReceiver = new NetworkChangeReceiver();
-        recyclerView = findViewById(R.id.rvSprin);
-        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        MockDetector mockDetector = new MockDetector(this);
+        boolean isMockLocationDetected = mockDetector.checkMockLocation();
+        if (!isMockLocationDetected) {
+            apiService = ApiClient.getClient().create(ApiService.class);
+            databaseHelper = new DatabaseHelper(this);
+            networkChangeReceiver = new NetworkChangeReceiver();
+            recyclerView = findViewById(R.id.rvSprin);
+            swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        sprints = new ArrayList<>();
-        localSprints = new ArrayList<>();
+            sprints = new ArrayList<>();
+            localSprints = new ArrayList<>();
 
-        sprintOfflineAdapter = new SprintOfflineAdapter(this, localSprints);
-        sprintOfflineAdapter.setOnItemClickListener(this);
+            sprintOfflineAdapter = new SprintOfflineAdapter(this, localSprints);
+            sprintOfflineAdapter.setOnItemClickListener(this);
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-        isInternetAvailable = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+            isInternetAvailable = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
-        if (isInternetAvailable) {
-            fetchFromServer();
-        } else {
-            fetchLocal();
-        }
-
-        swipeRefreshLayout.setOnRefreshListener(() -> {
             if (isInternetAvailable) {
                 fetchFromServer();
             } else {
                 fetchLocal();
             }
-        });
 
-        ImageView profile = findViewById(R.id.profile);
+            swipeRefreshLayout.setOnRefreshListener(() -> {
+                if (isInternetAvailable) {
+                    fetchFromServer();
+                } else {
+                    fetchLocal();
+                }
+            });
 
-        profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Sprin.this, First.class);
-                startActivity(intent);
-            }
-        });
+            ImageView profile = findViewById(R.id.profile);
 
-        databaseHelper = new DatabaseHelper(this);
-        databaseHelper.startRepeatedNotification(this);
+            profile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Sprin.this, First.class);
+                    startActivity(intent);
+                }
+            });
+
+            databaseHelper = new DatabaseHelper(this);
+            databaseHelper.startRepeatedNotification(this);
+        }
     }
 
     public void fetchFromServer() {

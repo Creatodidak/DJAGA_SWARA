@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import id.creatodidak.djaga_swara.Dashboard.Sprin;
+import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.R;
 
 public class Loginpin extends AppCompatActivity implements View.OnClickListener {
@@ -32,43 +33,44 @@ public class Loginpin extends AppCompatActivity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loginpin);
-        sharedPreferences = getSharedPreferences("session", MODE_PRIVATE);
-        sisa = sharedPreferences.getInt("kesempatan", 0);
-        etPin1 = findViewById(R.id.etPin1);
-        etPin2 = findViewById(R.id.etPin2);
-        etPin3 = findViewById(R.id.etPin3);
-        etPin4 = findViewById(R.id.etPin4);
 
-        PIN1 = etPin1.getText().toString();
-        PIN2 = etPin2.getText().toString();
-        PIN3 = etPin3.getText().toString();
-        PIN4 = etPin4.getText().toString();
+            sharedPreferences = getSharedPreferences("session", MODE_PRIVATE);
+            sisa = sharedPreferences.getInt("kesempatan", 0);
+            etPin1 = findViewById(R.id.etPin1);
+            etPin2 = findViewById(R.id.etPin2);
+            etPin3 = findViewById(R.id.etPin3);
+            etPin4 = findViewById(R.id.etPin4);
 
-        pin1 = findViewById(R.id.pin1);
-        pin2 = findViewById(R.id.pin2);
-        pin3 = findViewById(R.id.pin3);
-        pin4 = findViewById(R.id.pin4);
-        pin5 = findViewById(R.id.pin5);
-        pin6 = findViewById(R.id.pin6);
-        pin7 = findViewById(R.id.pin7);
-        pin8 = findViewById(R.id.pin8);
-        pin9 = findViewById(R.id.pin9);
-        pin0 = findViewById(R.id.pin10);
-        pinDelete = findViewById(R.id.pinDelete);
+            PIN1 = etPin1.getText().toString();
+            PIN2 = etPin2.getText().toString();
+            PIN3 = etPin3.getText().toString();
+            PIN4 = etPin4.getText().toString();
 
-        pin1.setOnClickListener(this);
-        pin2.setOnClickListener(this);
-        pin3.setOnClickListener(this);
-        pin4.setOnClickListener(this);
-        pin5.setOnClickListener(this);
-        pin6.setOnClickListener(this);
-        pin7.setOnClickListener(this);
-        pin8.setOnClickListener(this);
-        pin9.setOnClickListener(this);
-        pin0.setOnClickListener(this);
-        pinDelete.setOnClickListener(this);
+            pin1 = findViewById(R.id.pin1);
+            pin2 = findViewById(R.id.pin2);
+            pin3 = findViewById(R.id.pin3);
+            pin4 = findViewById(R.id.pin4);
+            pin5 = findViewById(R.id.pin5);
+            pin6 = findViewById(R.id.pin6);
+            pin7 = findViewById(R.id.pin7);
+            pin8 = findViewById(R.id.pin8);
+            pin9 = findViewById(R.id.pin9);
+            pin0 = findViewById(R.id.pin10);
+            pinDelete = findViewById(R.id.pinDelete);
 
-    }
+            pin1.setOnClickListener(this);
+            pin2.setOnClickListener(this);
+            pin3.setOnClickListener(this);
+            pin4.setOnClickListener(this);
+            pin5.setOnClickListener(this);
+            pin6.setOnClickListener(this);
+            pin7.setOnClickListener(this);
+            pin8.setOnClickListener(this);
+            pin9.setOnClickListener(this);
+            pin0.setOnClickListener(this);
+            pinDelete.setOnClickListener(this);
+        }
+
 
     @SuppressLint("NonConstantResourceId")
     @Override

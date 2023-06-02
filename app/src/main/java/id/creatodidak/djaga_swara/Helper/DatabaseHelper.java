@@ -28,13 +28,14 @@ import id.creatodidak.djaga_swara.API.Models.Multi.Gubernur;
 import id.creatodidak.djaga_swara.API.Models.Multi.Kades;
 import id.creatodidak.djaga_swara.API.Models.Multi.Presiden;
 import id.creatodidak.djaga_swara.API.Models.Multi.SuaraData;
+import id.creatodidak.djaga_swara.API.Models.Multi.SuaraTidakSah;
 import id.creatodidak.djaga_swara.API.Models.SprintListOffline;
 import id.creatodidak.djaga_swara.API.Models.TpsActivity;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "djagaswara.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -76,23 +77,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String createdDraftdpt = "CREATE TABLE IF NOT EXISTS draftdpt (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT NOT NULL, dpt_final TEXT NOT NULL, keterangan TEXT NOT NULL, status TEXT NOT NULL)";
         db.execSQL(createdDraftdpt);
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS presiden (id INTEGER, id_calon TEXT, no_urut TEXT, capres TEXT, cawapres TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS presiden (id INTEGER PRIMARY KEY AUTOINCREMENT, id_calon TEXT, no_urut TEXT, capres TEXT, cawapres TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS dprri (id INTEGER, id_calon TEXT, id_dapil TEXT, id_partai TEXT, nomorurut TEXT, nama TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS dprri (id INTEGER PRIMARY KEY AUTOINCREMENT, id_calon TEXT, id_dapil TEXT, id_partai TEXT, nomorurut TEXT, nama TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS dpdri (id INTEGER, id_calon TEXT, id_prov TEXT, nomorurut TEXT, nama TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS dpdri (id INTEGER PRIMARY KEY AUTOINCREMENT, id_calon TEXT, id_prov TEXT, nomorurut TEXT, nama TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS dprdprov (id INTEGER, id_calon TEXT, id_dapil TEXT, id_partai TEXT, nomorurut TEXT, nama TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS dprdprov (id INTEGER PRIMARY KEY AUTOINCREMENT, id_calon TEXT, id_dapil TEXT, id_partai TEXT, nomorurut TEXT, nama TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS dprdkab (id INTEGER, id_calon TEXT, id_dapil TEXT, id_partai TEXT, nomorurut TEXT, nama TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS dprdkab (id INTEGER PRIMARY KEY AUTOINCREMENT, id_calon TEXT, id_dapil TEXT, id_partai TEXT, nomorurut TEXT, nama TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS gubernur (id INTEGER, id_prov TEXT, id_calon TEXT, no_urut TEXT, cagub TEXT, cawagub TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS gubernur (id INTEGER PRIMARY KEY AUTOINCREMENT, id_prov TEXT, id_calon TEXT, no_urut TEXT, cagub TEXT, cawagub TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS bupati (id INTEGER, id_kab TEXT, id_calon TEXT, no_urut TEXT, cabup TEXT, cawabup TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS bupati (id INTEGER PRIMARY KEY AUTOINCREMENT, id_kab TEXT, id_calon TEXT, no_urut TEXT, cabup TEXT, cawabup TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS kades (id INTEGER, id_des TEXT, id_calon TEXT, no_urut TEXT, cakades TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS kades (id INTEGER PRIMARY KEY AUTOINCREMENT, id_des TEXT, id_calon TEXT, no_urut TEXT, cakades TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS suaratidaksah (id INTEGER, id_tps TEXT, type TEXT, jumlah TEXT, status TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS suaratidaksah (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT, type TEXT, jumlah TEXT, status TEXT);");
 
     }
 
@@ -298,7 +299,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put("id", id);
+        
         values.put("latitude", latitude);
         values.put("longitude", longitude);
         values.put("id_prov", id_prov);
@@ -667,7 +668,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 int kadesj = getkades("LOCAL").size();
                 int dprdProvj = getdprdprov("LOCAL").size();
                 int dprdKabj = getdprdkab("LOCAL").size();
-                int totalJumlahData = jlokasi + jcektps + jlappam + jformc1 + jlapwal + jlapserah + jdraftdpt + presidenj + bupatij + gubernurj + dprrij + dpdrij + kadesj +dprdProvj + dprdKabj;
+                int suaratidaksahj = getsuaratidaksah("LOCAL").size();
+
+                int totalJumlahData = jlokasi + jcektps + jlappam + jformc1 + jlapwal + jlapserah + jdraftdpt + presidenj + bupatij + gubernurj + dprrij + dpdrij + kadesj +dprdProvj + dprdKabj+ suaratidaksahj;
                 
                 if (totalJumlahData != 0) {
                     String notificationTitle = "PERIKSA DRAFT ANDA!";
@@ -897,7 +900,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void insertPresiden(int id, String id_calon, String no_urut, String capres, String cawapres, String tahun, String periode, String created_at, String updated_at, String id_tps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("id", id);
+        
         values.put("id_calon", id_calon);
         values.put("no_urut", no_urut);
         values.put("capres", capres);
@@ -914,7 +917,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void insertDPRRI(int id, String id_calon, String id_dapil, String id_partai, String nomorurut, String nama, String tahun, String periode, String created_at, String updated_at, String id_tps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("id", id);
+        
         values.put("id_calon", id_calon);
         values.put("id_dapil", id_dapil);
         values.put("id_partai", id_partai);
@@ -932,7 +935,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void insertDPDRI(int id, String id_calon, String id_prov, String nomorurut, String nama, String tahun, String periode, String created_at, String updated_at, String id_tps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("id", id);
+        
         values.put("id_calon", id_calon);
         values.put("id_prov", id_prov);
         values.put("nomorurut", nomorurut);
@@ -949,7 +952,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void insertDPRDProv(int id, String id_calon, String id_dapil, String id_partai, String nomorurut, String nama, String tahun, String periode, String created_at, String updated_at, String id_tps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("id", id);
+        
         values.put("id_calon", id_calon);
         values.put("id_dapil", id_dapil);
         values.put("id_partai", id_partai);
@@ -967,7 +970,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void insertDPRDKab(int id, String id_calon, String id_dapil, String id_partai, String nomorurut, String nama, String tahun, String periode, String created_at, String updated_at, String id_tps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("id", id);
+        
         values.put("id_calon", id_calon);
         values.put("id_dapil", id_dapil);
         values.put("id_partai", id_partai);
@@ -985,7 +988,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void insertGubernur(int id, String id_prov, String id_calon, String no_urut, String cagub, String cawagub, String tahun, String periode, String created_at, String updated_at, String id_tps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("id", id);
+        
         values.put("id_prov", id_prov);
         values.put("id_calon", id_calon);
         values.put("no_urut", no_urut);
@@ -1003,7 +1006,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void insertBupati(int id, String id_kab, String id_calon, String no_urut, String cabup, String cawabup, String tahun, String periode, String created_at, String updated_at, String id_tps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("id", id);
+        
         values.put("id_kab", id_kab);
         values.put("id_calon", id_calon);
         values.put("no_urut", no_urut);
@@ -1021,7 +1024,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void insertKades(int id, String id_des, String id_calon, String no_urut, String cakades, String tahun, String periode, String created_at, String updated_at, String id_tps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("id", id);
+        
         values.put("id_des", id_des);
         values.put("id_calon", id_calon);
         values.put("no_urut", no_urut);
@@ -1934,6 +1937,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    @SuppressLint("Range")
+    public List<SuaraTidakSah> getsuaratidaksah(String status) {
+        List<SuaraTidakSah> suaraTidakSahList = new ArrayList<>();
 
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "status = ?";
+        String[] selectionArgs = {status};
+
+        Cursor cursor = db.query("suaratidaksah", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String idTps = cursor.getString(cursor.getColumnIndex("id_tps"));
+            String type = cursor.getString(cursor.getColumnIndex("type"));
+            String jumlah = cursor.getString(cursor.getColumnIndex("jumlah"));
+            String statuS = cursor.getString(cursor.getColumnIndex("status"));
+
+            SuaraTidakSah suaraTidakSah= new SuaraTidakSah(id, idTps, type, Integer.parseInt(jumlah), statuS);
+            suaraTidakSahList.add(suaraTidakSah);
+        }
+
+        cursor.close();
+
+        return suaraTidakSahList;
+    }
+
+    public boolean updateSuaraTidakSah(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("status", "SERVER");
+
+        int rowsAffected = db.update("suaratidaksah", values, "id = ?", new String[]{String.valueOf(id)});
+        db.close();
+
+        return rowsAffected > 0;
+    }
 
 }
