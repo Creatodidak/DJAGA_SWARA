@@ -68,6 +68,7 @@ public class Draft extends AppCompatActivity {
     private CektpsAdapter cektpsAdapter;
     private SuaraTidakSahAdapter suaraTidakSahAdapter;
     private LokasiAdapter lokasiAdapter;
+
     private FormC1Adapter formC1Adapter;
     private LappamAdapter lappamAdapter;
     private LapwalAdapter lapwalAdapter;
@@ -147,7 +148,7 @@ public class Draft extends AppCompatActivity {
             lokasiAdapter = new LokasiAdapter(lokasiList, this);
             dptAdapter = new DptAdapter(draftDptList, this);
             cektpsAdapter = new CektpsAdapter(cekTpsList, this);
-//        formc1Adapter = new Formc1Adapter(formC1List);
+            formC1Adapter = new FormC1Adapter(formC1List, this);
             lappamAdapter = new LappamAdapter(lappamList, this);
             lapwalAdapter = new LapwalAdapter(lapwalList, this);
             lapserahAdapter = new LapserahAdapter(lapserahList, this);
@@ -165,7 +166,7 @@ public class Draft extends AppCompatActivity {
             lokasi.setAdapter(lokasiAdapter);
             dpt.setAdapter(dptAdapter);
             cektps.setAdapter(cektpsAdapter);
-//        formc1.setAdapter(formc1Adapter);
+            formc1.setAdapter(formC1Adapter);
             lappam.setAdapter(lappamAdapter);
             lapwal.setAdapter(lapwalAdapter);
             lapserah.setAdapter(lapserahAdapter);
@@ -215,7 +216,7 @@ public class Draft extends AppCompatActivity {
         lokasiAdapter.setData(lokasiList);
         dptAdapter.setData(draftDptList);
         cektpsAdapter.setData(cekTpsList);
-//        formc1Adapter.setData(formC1List);
+        formC1Adapter.setData(formC1List);
         lappamAdapter.setData(lappamList);
         lapwalAdapter.setData(lapwalList);
         lapserahAdapter.setData(lapserahList);

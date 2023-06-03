@@ -302,7 +302,7 @@ public class Lappam extends AppCompatActivity implements View.OnClickListener {
             public void onLocationChanged(@NonNull Location location) {
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
-                String locationText = "Coordinate: " + latitude + " , " + longitude+"\n©DjagaSwara";
+                String locationText = "Coordinate: " + latitude + " , " + longitude+"\n©DjagaSwara | POLRES LANDAK";
                 wm5.setText(locationText);
             }
 

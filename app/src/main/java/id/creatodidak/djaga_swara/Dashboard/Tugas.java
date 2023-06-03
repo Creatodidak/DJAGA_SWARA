@@ -77,7 +77,6 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
             cv3.setOnClickListener(this);
             cv4.setOnClickListener(this);
             cv5.setOnClickListener(this);
-            cv6.setOnClickListener(this);
             cv7.setOnClickListener(this);
             cv8.setOnClickListener(this);
             cv9.setOnClickListener(this);
@@ -123,6 +122,28 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
             cv5.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
         }
 
+        String[] types = text.split(",");
+        boolean isDataExists = databaseHelper.isFormDataExists(getIntent().getStringExtra("id_tps"), types);
+        if (isDataExists) {
+            cv6.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
+            cv6.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    notifikasi("INFO", "ANDA SUDAH MENGISI TUGAS INI");
+                }
+            });
+        } else {
+            cv6.setCardBackgroundColor(Color.parseColor("#FAD5D5"));
+            cv6.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Tugas.this, FormC1.class);
+                    intent.putExtra("id_tps", id_tps);
+                    intent.putExtra("type", getIntent().getStringExtra("type"));
+                    startActivity(intent);
+                }
+            });
+        }
         switch (tpsActivity.getLokasi()) {
             case "NO":
                 cv1.setCardBackgroundColor(Color.parseColor("#FAD5D5"));
@@ -168,18 +189,6 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
                 break;
             case "YES, ALL":
                 cv4.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
-                break;
-        }
-
-        switch (tpsActivity.getFormc1()) {
-            case "NO":
-                cv6.setCardBackgroundColor(Color.parseColor("#FAD5D5"));
-                break;
-            case "YES, LOCAL":
-                cv6.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
-                break;
-            case "YES, ALL":
-                cv6.setCardBackgroundColor(Color.parseColor("#c5e8b7"));
                 break;
         }
 
@@ -276,16 +285,6 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
                     intent.putExtra("namatps", "TPS " + tpslist.getNomorTps() + " Desa " + tpslist.getNamaDes());
                     startActivity(intent);
                 } else {
-                    notifikasi("INFO", "ANDA SUDAH MENGISI TUGAS INI");
-                }
-                break;
-            case R.id.actformc1:
-                if(tpsActivity.getFormc1().equals("NO")){
-                    Intent intent = new Intent(Tugas.this, FormC1.class);
-                    intent.putExtra("id_tps", id_tps);
-                    intent.putExtra("type", getIntent().getStringExtra("type"));
-                    startActivity(intent);
-                }else{
                     notifikasi("INFO", "ANDA SUDAH MENGISI TUGAS INI");
                 }
                 break;

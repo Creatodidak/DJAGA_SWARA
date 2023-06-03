@@ -62,7 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String createCekTps = "CREATE TABLE IF NOT EXISTS cektps (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL, status TEXT, created_at TEXT)";
         db.execSQL(createCekTps);
 
-        String createFormc1 = "CREATE TABLE IF NOT EXISTS formc1 (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL, status TEXT, created_at TEXT)";
+        String createFormc1 = "CREATE TABLE IF NOT EXISTS formc1 (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT NOT NULL, foto TEXT NOT NULL, type TEXT NOT NULL, status TEXT)";
         db.execSQL(createFormc1);
 
         String createLappam = "CREATE TABLE IF NOT EXISTS lappam (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT NOT NULL, foto TEXT NOT NULL, situasi TEXT NOT NULL, prediksi TEXT NOT NULL, status TEXT, created_at TEXT)";
@@ -94,6 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS kades (id INTEGER PRIMARY KEY AUTOINCREMENT, id_des TEXT, id_calon TEXT, no_urut TEXT, cakades TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, id_tps TEXT, suara TEXT, status TEXT);");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS suaratidaksah (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT, type TEXT, jumlah TEXT, status TEXT);");
+
 
     }
 
@@ -556,15 +557,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    public boolean addFormc1(String idTps, String foto, String situasi, String prediksi, String status, String created_at) {
+    public boolean addFormc1(String idTps, String foto, String type, String status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("id_tps", idTps);
         values.put("foto", foto);
-        values.put("situasi", situasi);
-        values.put("prediksi", prediksi);
+        values.put("type", type);
         values.put("status", status);
-        values.put("created_at", created_at);
         long result = db.insert("formc1", null, values);
         db.close();
         return result != -1;
@@ -760,12 +759,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 int id = cursor.getInt(cursor.getColumnIndex("id"));
                 String id_tps = cursor.getString(cursor.getColumnIndex("id_tps"));
                 String foto = cursor.getString(cursor.getColumnIndex("foto"));
-                String situasi = cursor.getString(cursor.getColumnIndex("situasi"));
-                String prediksi = cursor.getString(cursor.getColumnIndex("prediksi"));
+                String type = cursor.getString(cursor.getColumnIndex("type"));
                 String status = cursor.getString(cursor.getColumnIndex("status"));
-                String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
 
-                FormC1 formC1 = new FormC1(id, id_tps, foto, situasi, prediksi, status, created_at);
+                FormC1 formC1 = new FormC1(id, id_tps, foto, type, status);
                 formC1List.add(formC1);
             } while (cursor.moveToNext());
         }
@@ -774,6 +771,116 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
 
         return formC1List;
+    }
+
+    @SuppressLint("Range")
+    public List<FormC1> getFormC1bytypeandtps(String tipe, String tpsId, String stats) {
+        List<FormC1> formC1List = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("formc1", null, "type = ? And id_tps = ? And status=?", new String[]{tipe, tpsId, stats}, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String id_tps = cursor.getString(cursor.getColumnIndex("id_tps"));
+                String foto = cursor.getString(cursor.getColumnIndex("foto"));
+                String type = cursor.getString(cursor.getColumnIndex("type"));
+                String status = cursor.getString(cursor.getColumnIndex("status"));
+                String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+
+                FormC1 formC1 = new FormC1(id, id_tps, foto, type, status);
+                formC1List.add(formC1);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return formC1List;
+    }
+
+    public boolean cekformc1(String tipe, String tpsId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "type = ? AND id_tps = ?";
+        String[] selectionArgs = {tipe, tpsId};
+
+        Cursor cursor = db.query("formc1", null, selection, selectionArgs, null, null, null);
+
+        boolean dataExists = false;
+        if (cursor != null && cursor.getCount() > 0) {
+            dataExists = true;
+            cursor.close();
+        }
+
+        return dataExists;
+    }
+    public boolean isFormDataExists(String idTps, String[] types) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Menyiapkan klausul WHERE untuk mengambil data dengan id_tps dan type tertentu
+        StringBuilder whereClause = new StringBuilder();
+        whereClause.append("id_tps = ? AND (");
+        String[] whereArgs = new String[types.length + 1];
+        whereArgs[0] = idTps;
+
+        for (int i = 0; i < types.length; i++) {
+            whereClause.append("type = ?");
+            whereArgs[i + 1] = types[i];
+
+            if (i != types.length - 1) {
+                whereClause.append(" OR ");
+            }
+        }
+        whereClause.append(")");
+
+        // Mengeksekusi query ke database
+        Cursor cursor = db.query("formc1", null, whereClause.toString(), whereArgs, null, null, null);
+
+        // Memeriksa apakah ada data yang ditemukan
+        boolean isExists = cursor != null && cursor.getCount() == types.length;
+
+        // Menutup cursor dan database
+        if (cursor != null) {
+            cursor.close();
+        }
+        db.close();
+
+        return isExists;
+    }
+
+    public boolean[] checkFormDataExists(String idTps, String types) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String[] typeArr = types.split(",");
+        boolean[] results = new boolean[typeArr.length];
+
+        for (int i = 0; i < typeArr.length; i++) {
+            String type = typeArr[i];
+            String query = "SELECT COUNT(*) FROM formc1 WHERE id_tps = ? AND type = ?";
+            String[] selectionArgs = {idTps, type};
+            Cursor cursor = db.rawQuery(query, selectionArgs);
+
+            if (cursor.moveToFirst()) {
+                int count = cursor.getInt(0);
+                results[i] = count > 0;
+            }
+
+            cursor.close();
+        }
+
+        db.close();
+        return results;
+    }
+
+
+    public boolean updateformc1(String tipe, String idTps) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("status", "SERVER");
+        int rowsAffected = db.update("formc1", values, "id_tps=? AND type=?", new String[]{idTps, tipe});
+        db.close();
+        return rowsAffected > 0;
     }
 
     @SuppressLint("Range")

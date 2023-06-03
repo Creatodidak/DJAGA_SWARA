@@ -3,17 +3,21 @@ package id.creatodidak.djaga_swara.Dashboard.TugasForm;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.gridlayout.widget.GridLayout;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
 import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.R;
 
 public class FormC1 extends AppCompatActivity {
 
+    DatabaseHelper databaseHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +25,7 @@ public class FormC1 extends AppCompatActivity {
         MockDetector mockDetector = new MockDetector(this);
         boolean isMockLocationDetected = mockDetector.checkMockLocation();
         if (!isMockLocationDetected) {
+            databaseHelper = new DatabaseHelper(FormC1.this);
             String text = getIntent().getStringExtra("type");
 
             text = text.substring(1, text.length() - 1);
@@ -52,9 +57,14 @@ public class FormC1 extends AppCompatActivity {
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            // Aksi yang ingin Anda lakukan saat ImageView diklik
-                            // Misalnya, tampilkan pesan Toast
-                            Toast.makeText(FormC1.this, item, Toast.LENGTH_SHORT).show();
+                            if(!databaseHelper.cekformc1(item, getIntent().getStringExtra("id_tps"))){
+                                Intent intent = new Intent(FormC1.this, CamFormC1.class);
+                                intent.putExtra("type", item);
+                                intent.putExtra("id_tps", getIntent().getStringExtra("id_tps"));
+                                startActivity(intent);
+                            }else{
+                                notifikasi("INFO", "Anda sudah mengisi data ini!", true, false);
+                            }
                         }
                     });
                     gridLayout.addView(imageView);
@@ -84,5 +94,40 @@ public class FormC1 extends AppCompatActivity {
             default:
                 return 0;
         }
+    }
+
+    private void notifikasi(String info, String s, Boolean cancel, Boolean close) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(FormC1.this);
+        if(cancel){
+            if(close){
+                builder.setTitle(info)
+                        .setMessage(s)
+                        .setIcon(R.drawable.logosmall)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        })
+                        .show();
+            }else{
+                builder.setTitle(info)
+                        .setMessage(s)
+                        .setIcon(R.drawable.logosmall)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+            }
+        }else{
+            builder.setTitle(info)
+                    .setMessage(s)
+                    .setIcon(R.drawable.logosmall)
+                    .setCancelable(false)
+                    .show();
+        }
+
     }
 }

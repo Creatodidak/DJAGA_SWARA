@@ -77,14 +77,6 @@ public interface ApiService {
             @Field("longitude") String longitude
     );
 
-    @Multipart
-    @POST("android/uploadfoto")
-    Call<UpdResponse> uploadFoto(@Part("id_tps") String id_tps,
-                                 @Part("cat") String cat,
-                                 @Part("situasi") String situasi,
-                                 @Part("prediksi") String prediksi,
-                                 @Part MultipartBody.Part image);
-
     @FormUrlEncoded
     @POST("android/updatetps")
     Call<UpdResponse> updatetps(
@@ -137,5 +129,20 @@ public interface ApiService {
     @POST("android/mock/del")
     Call<UpdResponse> resetmock(
             @Field("nrp") String nrp);
+
+    @Multipart
+    @POST("android/uploadfoto")
+    Call<UpdResponse> uploadFoto(@Part("id_tps") String id_tps,
+                                 @Part("cat") String cat,
+                                 @Part("situasi") String situasi,
+                                 @Part("prediksi") String prediksi,
+                                 @Part MultipartBody.Part image);
+
+    @Multipart
+    @POST("android/uploadformc")
+    Call<UpdResponse> uploadFormC1(
+            @Part("idTps") String idTps,
+            @Part("type") String type,
+            @Part MultipartBody.Part image);
 }
 

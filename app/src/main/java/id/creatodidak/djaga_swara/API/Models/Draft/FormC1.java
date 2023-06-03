@@ -4,19 +4,15 @@ public class FormC1 {
     private final int id;
     private final String id_tps;
     private final String foto;
-    private final String situasi;
-    private final String prediksi;
+    private final String type;
     private final String status;
-    private final String created_at;
 
-    public FormC1(int id, String id_tps, String foto, String situasi, String prediksi, String status, String created_at) {
+    public FormC1(int id, String id_tps, String foto, String type, String status) {
         this.id = id;
         this.id_tps = id_tps;
         this.foto = foto;
-        this.situasi = situasi;
-        this.prediksi = prediksi;
+        this.type = type;
         this.status = status;
-        this.created_at = created_at;
     }
 
     public int getId() {
@@ -31,19 +27,12 @@ public class FormC1 {
         return foto;
     }
 
-    public String getSituasi() {
-        return situasi;
-    }
-
-    public String getPrediksi() {
-        return prediksi;
+    public String getType() {
+        return type;
     }
 
     public String getStatus() {
         return status;
     }
 
-    public String getCreated_at() {
-        return created_at;
-    }
 }
