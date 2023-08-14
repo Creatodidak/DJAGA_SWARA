@@ -10,8 +10,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
-import android.provider.Settings;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
@@ -25,8 +23,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MockDetector {
-    private Context context;
-    private SharedPreferences sharedPreferences;
+    private final Context context;
+    private final SharedPreferences sharedPreferences;
     private boolean isMockLocationDetected;
 
     public MockDetector(Context context) {

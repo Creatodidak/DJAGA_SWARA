@@ -16,7 +16,7 @@ import id.creatodidak.djaga_swara.Dashboard.TugasForm.FormInputSuara;
 import id.creatodidak.djaga_swara.R;
 
 public class DpdriAdapter extends RecyclerView.Adapter<DpdriAdapter.ViewHolder> {
-    private List<DPDRI> dpdriList;
+    private final List<DPDRI> dpdriList;
 
     public DpdriAdapter(FormInputSuara formInputSuara, List<DPDRI> dpdriList) {
         this.dpdriList = dpdriList;

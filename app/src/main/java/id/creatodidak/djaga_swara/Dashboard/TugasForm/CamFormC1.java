@@ -1,16 +1,5 @@
 package id.creatodidak.djaga_swara.Dashboard.TugasForm;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -35,6 +24,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+
 import com.bumptech.glide.Glide;
 
 import java.io.ByteArrayOutputStream;
@@ -49,8 +47,6 @@ import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
 import id.creatodidak.djaga_swara.API.Interface.ApiService;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
 import id.creatodidak.djaga_swara.API.Models.UpdResponse;
-import id.creatodidak.djaga_swara.API.Models.UpdateFoto;
-import id.creatodidak.djaga_swara.Dashboard.First;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
 import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.R;

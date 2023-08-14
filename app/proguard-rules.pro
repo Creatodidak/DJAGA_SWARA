@@ -19,3 +19,14 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.example.mypackage.** { *; }
+-keep class id.creatodidak.djaga_swara.API.Models.UpdateApp { *; }
+-keepclassmembers,allowobfuscation class id.creatodidak.djaga_swara.API.Models.LoginResponse {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+-keep class com.google.protobuf.** { *; }
+-keep class org.bouncycastle.** { *; }
+-keep class org.conscrypt.** { *; }
+-keep class org.openjsse.** { *; }

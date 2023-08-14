@@ -18,8 +18,6 @@ import java.util.List;
 import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
 import id.creatodidak.djaga_swara.API.Interface.ApiService;
 import id.creatodidak.djaga_swara.API.Models.Multi.SuaraTidakSah;
-import id.creatodidak.djaga_swara.API.Models.Multi.SuaraData;
-import id.creatodidak.djaga_swara.API.Models.Multi.SuaraTidakSah;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
 import id.creatodidak.djaga_swara.API.Models.UpdResponse;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;

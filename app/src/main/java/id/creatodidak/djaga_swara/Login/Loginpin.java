@@ -15,7 +15,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import id.creatodidak.djaga_swara.Dashboard.Sprin;
-import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.R;
 
 public class Loginpin extends AppCompatActivity implements View.OnClickListener {

@@ -1,5 +1,6 @@
 package id.creatodidak.djaga_swara.API.Adapter.Multi;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import id.creatodidak.djaga_swara.API.Models.Multi.DPRDKab;
-import id.creatodidak.djaga_swara.Dashboard.TugasForm.FormInputSuara;
 import id.creatodidak.djaga_swara.R;
 
 public class DPRDKabAdapter extends RecyclerView.Adapter<DPRDKabAdapter.ViewHolder> {
-    private List<DPRDKab> dprdKabList;
+    private final List<DPRDKab> dprdKabList;
+    private final Context context;
 
-    public DPRDKabAdapter(FormInputSuara formInputSuara, List<DPRDKab> dprdKabList) {
+    public DPRDKabAdapter(Context context, List<DPRDKab> dprdKabList) {
         this.dprdKabList = dprdKabList;
+        this.context = context;
     }
 
     @NonNull

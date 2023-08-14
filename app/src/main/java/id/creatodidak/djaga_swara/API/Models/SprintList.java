@@ -1,7 +1,6 @@
 package id.creatodidak.djaga_swara.API.Models;
 
 import java.util.Date;
-import java.util.List;
 
 public class SprintList {
     private int id;

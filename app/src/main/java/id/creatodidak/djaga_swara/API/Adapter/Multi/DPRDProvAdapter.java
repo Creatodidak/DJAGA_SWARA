@@ -1,5 +1,6 @@
 package id.creatodidak.djaga_swara.API.Adapter.Multi;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import id.creatodidak.djaga_swara.API.Models.Multi.DPRDProv;
-import id.creatodidak.djaga_swara.Dashboard.TugasForm.FormInputSuara;
 import id.creatodidak.djaga_swara.R;
 
 public class DPRDProvAdapter extends RecyclerView.Adapter<DPRDProvAdapter.ViewHolder> {
-    private List<DPRDProv> dprdProvList;
+    private final List<DPRDProv> dprdProvList;
+    private final Context context;
 
-    public DPRDProvAdapter(FormInputSuara formInputSuara, List<DPRDProv> dprdProvList) {
+    public DPRDProvAdapter(Context context, List<DPRDProv> dprdProvList) {
+        this.context = context;
         this.dprdProvList = dprdProvList;
     }
 

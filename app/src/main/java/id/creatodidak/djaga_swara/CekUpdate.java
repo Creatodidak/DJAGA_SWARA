@@ -1,8 +1,5 @@
 package id.creatodidak.djaga_swara;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
@@ -13,13 +10,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -77,13 +75,13 @@ public class CekUpdate extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     UpdateApp updateApp = response.body();
                     if (updateApp != null) {
-                        int latestVersionCode = Integer.parseInt(updateApp.getVersionCode());
+                        int latestVersionCode = updateApp.getVersionCode();
                         int currentVersionCode = BuildConfig.VERSION_CODE;
 
                         if (latestVersionCode > currentVersionCode) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(CekUpdate.this);
                             builder.setTitle("Versi Baru Ditemukan");
-                            builder.setMessage("Release Beta v" + response.body().getVersionName() + "\n\nRINCIAN UPDATE:\n" + response.body().getDescription());
+                            builder.setMessage("Versi Release v" + response.body().getVersionName() + "\n\nRINCIAN UPDATE:\n" + response.body().getDescription());
 
                             builder.setPositiveButton("PERBARUI", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
@@ -94,19 +92,21 @@ public class CekUpdate extends AppCompatActivity {
                                     DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
                                     DownloadManager.Request request = new DownloadManager.Request(Uri.parse(updateUrl));
 
-                                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
+                                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
                                     request.setTitle("Pembaruan Aplikasi");
                                     request.setDescription("Mengunduh pembaruan aplikasi...");
 
                                     DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
                                     String todayDate = dateFormat.format(new Date());
                                     String fileName = "djagaswara-" + todayDate + "-upd.apk";
-                                    String folderName = "Djaga Swara/release";
+                                    String folderName = "Djaga Swara" + File.separator + "release";
 
-                                    File folder = new File(Environment.getExternalStorageDirectory(), folderName);
-                                    if (!folder.exists()) {
-                                        folder.mkdirs();
+                                    File folder = new File(getExternalFilesDir(null), folderName);
+                                    if (!folder.exists() && folder.mkdirs()) {
+                                        File file = new File(folder, fileName);
+                                        request.setDestinationUri(Uri.fromFile(file));
                                     }
+
                                     File file = new File(folder, fileName);
                                     request.setDestinationUri(Uri.fromFile(file));
 
@@ -165,7 +165,8 @@ public class CekUpdate extends AppCompatActivity {
                                     dialog.dismiss();
                                 }
                             });
-
+                            builder.setCancelable(false);
+                            builder.setIcon(R.drawable.logosmall);
 
                             AlertDialog alertDialog = builder.create();
                             alertDialog.show();

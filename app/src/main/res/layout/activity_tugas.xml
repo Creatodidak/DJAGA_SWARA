@@ -61,7 +61,6 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView27"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -84,7 +83,6 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView29"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -108,7 +106,6 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView30"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -149,7 +146,6 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imageView3"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
@@ -157,7 +153,6 @@
                 app:srcCompat="@drawable/logosmall" />
 
             <TextView
-                android:id="@+id/textView5"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="6"
@@ -209,14 +204,12 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView151"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:background="@android:color/transparent"
                     app:srcCompat="@drawable/lokasi" />
 
                 <TextView
-                    android:id="@+id/textView121"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
@@ -244,14 +237,12 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView153"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:background="@android:color/transparent"
                     app:srcCompat="@drawable/cektkp" />
 
                 <TextView
-                    android:id="@+id/textView123"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
@@ -279,14 +270,12 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView152"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:background="@android:color/transparent"
                     app:srcCompat="@drawable/dpt" />
 
                 <TextView
-                    android:id="@+id/textView122"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
@@ -314,14 +303,12 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView154"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:background="@android:color/transparent"
                     app:srcCompat="@drawable/lappam" />
 
                 <TextView
-                    android:id="@+id/textView124"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
@@ -349,14 +336,12 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView155"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:background="@android:color/transparent"
                     app:srcCompat="@drawable/hitungsuara" />
 
                 <TextView
-                    android:id="@+id/textView125"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
@@ -384,14 +369,12 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView156"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:background="@android:color/transparent"
                     app:srcCompat="@drawable/formc1" />
 
                 <TextView
-                    android:id="@+id/textView126"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
@@ -419,14 +402,12 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView157"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:background="@android:color/transparent"
                     app:srcCompat="@drawable/pengawalan" />
 
                 <TextView
-                    android:id="@+id/textView127"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
@@ -454,14 +435,12 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView158"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:background="@android:color/transparent"
                     app:srcCompat="@drawable/penyerahan" />
 
                 <TextView
-                    android:id="@+id/textView128"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
@@ -489,20 +468,11 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView159"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="70dp"
                     android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/calls" />
+                    app:srcCompat="@drawable/panic" />
 
-                <TextView
-                    android:id="@+id/textView129"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:fontFamily="@font/bold"
-                    android:text="HUB. KETUA KPPS"
-                    android:textSize="8sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

@@ -1,9 +1,5 @@
 package id.creatodidak.djaga_swara.Dashboard.TugasForm;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -14,26 +10,30 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
 import id.creatodidak.djaga_swara.API.Adapter.Multi.BupatiAdapter;
-import id.creatodidak.djaga_swara.API.Adapter.Multi.DPRDKabAdapter;
-import id.creatodidak.djaga_swara.API.Adapter.Multi.DPRDProvAdapter;
 import id.creatodidak.djaga_swara.API.Adapter.Multi.DpdriAdapter;
-import id.creatodidak.djaga_swara.API.Adapter.Multi.DprriAdapter;
 import id.creatodidak.djaga_swara.API.Adapter.Multi.GubernurAdapter;
 import id.creatodidak.djaga_swara.API.Adapter.Multi.KadesAdapter;
+import id.creatodidak.djaga_swara.API.Adapter.Multi.PartaiKabAdapter;
+import id.creatodidak.djaga_swara.API.Adapter.Multi.PartaiNasAdapter;
+import id.creatodidak.djaga_swara.API.Adapter.Multi.PartaiProvAdapter;
 import id.creatodidak.djaga_swara.API.Adapter.Multi.PresidenAdapter;
 import id.creatodidak.djaga_swara.API.Interface.ApiService;
 import id.creatodidak.djaga_swara.API.Models.Multi.Bupati;
 import id.creatodidak.djaga_swara.API.Models.Multi.DPDRI;
-import id.creatodidak.djaga_swara.API.Models.Multi.DPRDKab;
-import id.creatodidak.djaga_swara.API.Models.Multi.DPRDProv;
-import id.creatodidak.djaga_swara.API.Models.Multi.DPRRI;
 import id.creatodidak.djaga_swara.API.Models.Multi.Gubernur;
 import id.creatodidak.djaga_swara.API.Models.Multi.Kades;
+import id.creatodidak.djaga_swara.API.Models.Multi.PartaiKab;
+import id.creatodidak.djaga_swara.API.Models.Multi.PartaiNas;
+import id.creatodidak.djaga_swara.API.Models.Multi.PartaiProv;
 import id.creatodidak.djaga_swara.API.Models.Multi.Presiden;
 import id.creatodidak.djaga_swara.API.Models.Multi.SuaraData;
 import id.creatodidak.djaga_swara.API.Models.UpdResponse;
@@ -54,21 +54,21 @@ public class FormInputSuara extends AppCompatActivity {
     List<Gubernur> gubernurs;
     List<Bupati> bupatis;
     List<Kades> kadess;
-    List<DPRRI> dprris;
     List<DPDRI> dpdris;
-    List<DPRDKab> dprdKabs;
-    List<DPRDProv> dprdProvs;
+    List<PartaiNas> partaiNas;
+    List<PartaiKab> partaiKabs;
+    List<PartaiProv> partaiProvs;
     PresidenAdapter presidenAdapter;
     GubernurAdapter gubernurAdapter;
     BupatiAdapter bupatiAdapter;
-    DprriAdapter dprriAdapter;
     DpdriAdapter dpdriAdapter;
-    DPRDProvAdapter dprdprovAdapter;
-    DPRDKabAdapter dprdkabAdapter;
+    PartaiNasAdapter partaiNasAdapter;
+    PartaiProvAdapter partaiProvAdapter;
+    PartaiKabAdapter partaiKabAdapter;
     KadesAdapter kadesAdapter;
     ProgressDialog progressDialog;
 
-    private int totalSuara = 0;
+    private final int totalSuara = 0;
     ApiService apiService;
     Button kirim;
     @Override
@@ -87,13 +87,13 @@ public class FormInputSuara extends AppCompatActivity {
             namaTps = getIntent().getStringExtra("namatps");
 
             presidens = new ArrayList<>();
-            dprris = new ArrayList<>();
             dpdris = new ArrayList<>();
             gubernurs = new ArrayList<>();
             bupatis = new ArrayList<>();
-            dprdProvs = new ArrayList<>();
-            dprdKabs = new ArrayList<>();
             kadess = new ArrayList<>();
+            partaiKabs = new ArrayList<>();
+            partaiNas = new ArrayList<>();
+            partaiProvs = new ArrayList<>();
 
             tvType = findViewById(R.id.tvType);
             tvTps = findViewById(R.id.tvTps);
@@ -108,7 +108,7 @@ public class FormInputSuara extends AppCompatActivity {
                 fetchPresiden(idTps);
             } else if (type.equals("DPRRI")) {
                 tvType.setText("DATA SUARA PEMILIHAN DPR-RI");
-                dprriAdapter = new DprriAdapter(this, dprris);
+                partaiNasAdapter = new PartaiNasAdapter(this, partaiNas);
                 fetchDprri(idTps);
             } else if (type.equals("DPDRI")) {
                 tvType.setText("DATA SUARA PEMILIHAN DPD-RI");
@@ -120,7 +120,7 @@ public class FormInputSuara extends AppCompatActivity {
                 fetchGubernur(idTps);
             } else if (type.equals("DPRDPROV")) {
                 tvType.setText("DATA SUARA PEMILIHAN DPRD PROVINSI");
-                dprdprovAdapter = new DPRDProvAdapter(this, dprdProvs);
+                partaiProvAdapter = new PartaiProvAdapter(this, partaiProvs);
                 fetchDprdprov(idTps);
             } else if (type.equals("BUPATI")) {
                 tvType.setText("DATA SUARA PEMILIHAN BUPATI");
@@ -128,7 +128,7 @@ public class FormInputSuara extends AppCompatActivity {
                 fetchBupati(idTps);
             } else if (type.equals("DPRDKAB")) {
                 tvType.setText("DATA SUARA PEMILIHAN DPRD KABUPATEN");
-                dprdkabAdapter = new DPRDKabAdapter(this, dprdKabs);
+                partaiKabAdapter = new PartaiKabAdapter(this, partaiKabs);
                 fetchDprdkab(idTps);
             } else if (type.equals("KADES")) {
                 tvType.setText("DATA SUARA PEMILIHAN KEPALA DESA");
@@ -153,16 +153,16 @@ public class FormInputSuara extends AppCompatActivity {
                             }
                         }
                     } else if (type.equals("DPRRI")) {
-                        for (DPRRI dprri : dprris) {
-                            View view = listform.findViewWithTag(dprri.getId());
-                            EditText suaraEditText = view.findViewById(R.id.etSuara);
-                            String suaraText = suaraEditText.getText().toString().trim();
-                            if (!suaraText.isEmpty()) {
-                                int suara = Integer.parseInt(suaraText);
-                                SuaraData suaraData = new SuaraData(idTps, dprri.getId_calon(), suara, "dprri");
-                                suaraDataList.add(suaraData);
-                            }
-                        }
+//                        for (DPRRI dprri : dprris) {
+//                            View view = listform.findViewWithTag(dprri.getId());
+//                            EditText suaraEditText = view.findViewById(R.id.etSuara);
+//                            String suaraText = suaraEditText.getText().toString().trim();
+//                            if (!suaraText.isEmpty()) {
+//                                int suara = Integer.parseInt(suaraText);
+//                                SuaraData suaraData = new SuaraData(idTps, dprri.getId_calon(), suara, "dprri");
+//                                suaraDataList.add(suaraData);
+//                            }
+//                        }
                     } else if (type.equals("DPDRI")) {
                         for (DPDRI dpdri : dpdris) {
                             View view = listform.findViewWithTag(dpdri.getId());
@@ -186,16 +186,16 @@ public class FormInputSuara extends AppCompatActivity {
                             }
                         }
                     } else if (type.equals("DPRDPROV")) {
-                        for (DPRDProv dprdProv : dprdProvs) {
-                            View view = listform.findViewWithTag(dprdProv.getId());
-                            EditText suaraEditText = view.findViewById(R.id.etSuara);
-                            String suaraText = suaraEditText.getText().toString().trim();
-                            if (!suaraText.isEmpty()) {
-                                int suara = Integer.parseInt(suaraText);
-                                SuaraData suaraData = new SuaraData(idTps, dprdProv.getId_calon(), suara, "dprdprov");
-                                suaraDataList.add(suaraData);
-                            }
-                        }
+//                        for (DPRDProv dprdProv : dprdProvs) {
+//                            View view = listform.findViewWithTag(dprdProv.getId());
+//                            EditText suaraEditText = view.findViewById(R.id.etSuara);
+//                            String suaraText = suaraEditText.getText().toString().trim();
+//                            if (!suaraText.isEmpty()) {
+//                                int suara = Integer.parseInt(suaraText);
+//                                SuaraData suaraData = new SuaraData(idTps, dprdProv.getId_calon(), suara, "dprdprov");
+//                                suaraDataList.add(suaraData);
+//                            }
+//                        }
                     } else if (type.equals("BUPATI")) {
                         for (Bupati bupati : bupatis) {
                             View view = listform.findViewWithTag(bupati.getId());
@@ -208,16 +208,16 @@ public class FormInputSuara extends AppCompatActivity {
                             }
                         }
                     } else if (type.equals("DPRDKAB")) {
-                        for (DPRDKab dprdKab : dprdKabs) {
-                            View view = listform.findViewWithTag(dprdKab.getId());
-                            EditText suaraEditText = view.findViewById(R.id.etSuara);
-                            String suaraText = suaraEditText.getText().toString().trim();
-                            if (!suaraText.isEmpty()) {
-                                int suara = Integer.parseInt(suaraText);
-                                SuaraData suaraData = new SuaraData(idTps, dprdKab.getId_calon(), suara, "dprdkab");
-                                suaraDataList.add(suaraData);
-                            }
-                        }
+//                        for (DPRDKab dprdKab : dprdKabs) {
+//                            View view = listform.findViewWithTag(dprdKab.getId());
+//                            EditText suaraEditText = view.findViewById(R.id.etSuara);
+//                            String suaraText = suaraEditText.getText().toString().trim();
+//                            if (!suaraText.isEmpty()) {
+//                                int suara = Integer.parseInt(suaraText);
+//                                SuaraData suaraData = new SuaraData(idTps, dprdKab.getId_calon(), suara, "dprdkab");
+//                                suaraDataList.add(suaraData);
+//                            }
+//                        }
                     } else if (type.equals("KADES")) {
                         for (Kades kades : kadess) {
                             View view = listform.findViewWithTag(kades.getId());
@@ -379,10 +379,10 @@ public class FormInputSuara extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void fetchDprri(String idTps) {
-        dprris.addAll(databaseHelper.getDPRRIdata(idTps));
-        listform.setAdapter(dprriAdapter);
+        partaiNas.addAll(databaseHelper.getAllPartaiNas(idTps));
+        listform.setAdapter(partaiNasAdapter);
         listform.setHasFixedSize(true);
-        dprriAdapter.notifyDataSetChanged();
+        partaiNasAdapter.notifyDataSetChanged();
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -403,10 +403,10 @@ public class FormInputSuara extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void fetchDprdprov(String idTps) {
-        dprdProvs.addAll(databaseHelper.getDPRDProvData(idTps));
-        listform.setAdapter(dprdprovAdapter);
+        partaiProvs.addAll(databaseHelper.getAllPartaiProv(idTps));
+        listform.setAdapter(partaiProvAdapter);
         listform.setHasFixedSize(true);
-        dprdprovAdapter.notifyDataSetChanged();
+        partaiProvAdapter.notifyDataSetChanged();
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -419,10 +419,10 @@ public class FormInputSuara extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void fetchDprdkab(String idTps) {
-        dprdKabs.addAll(databaseHelper.getDPRDKabData(idTps));
-        listform.setAdapter(dprdkabAdapter);
+        partaiKabs.addAll(databaseHelper.getAllPartaiKab(idTps));
+        listform.setAdapter(partaiKabAdapter);
         listform.setHasFixedSize(true);
-        dprdkabAdapter.notifyDataSetChanged();
+        partaiKabAdapter.notifyDataSetChanged();
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -435,22 +435,3 @@ public class FormInputSuara extends AppCompatActivity {
 
 
 }
-
-//
-//if(type.equals("PRESIDEN")){
-//
-//        }else if(type.equals("DPRRI")){
-//
-//        }else if(type.equals("DPDRI")){
-//
-//        }else if(type.equals("GUBERNUR")){
-//
-//        }else if(type.equals("DPRDPROV")){
-//
-//        }else if(type.equals("BUPATI")){
-//
-//        }else if(type.equals("DPRDKAB")){
-//
-//        }else if(type.equals("KADES")){
-//
-//        }

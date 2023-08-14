@@ -3,15 +3,20 @@ package id.creatodidak.djaga_swara.API.Interface;
 import java.util.List;
 
 import id.creatodidak.djaga_swara.API.Models.Alluser;
+import id.creatodidak.djaga_swara.API.Models.Bigdata.Calon;
+import id.creatodidak.djaga_swara.API.Models.Bigdata.Ringkasan;
 import id.creatodidak.djaga_swara.API.Models.DataCalon;
+import id.creatodidak.djaga_swara.API.Models.LoginResponse;
 import id.creatodidak.djaga_swara.API.Models.Multi.SuaraData;
 import id.creatodidak.djaga_swara.API.Models.Profile;
+import id.creatodidak.djaga_swara.API.Models.RmKab;
+import id.creatodidak.djaga_swara.API.Models.RmProv;
+import id.creatodidak.djaga_swara.API.Models.RmRI;
 import id.creatodidak.djaga_swara.API.Models.SprintListOffline;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
 import id.creatodidak.djaga_swara.API.Models.UpdResponse;
 import id.creatodidak.djaga_swara.API.Models.UpdateApp;
 import id.creatodidak.djaga_swara.API.Models.UpdateFoto;
-import id.creatodidak.djaga_swara.API.Models.ValidationLoginResponse;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -30,9 +35,23 @@ public interface ApiService {
     @GET("profile/{nrp}")
     Call<Profile> getProfile(@Path("nrp") String nrp);
 
+    @GET("android/all/{idprov}/{idkab}/{idkec}/{iddes}")
+    Call<Ringkasan> getAllCalon(
+            @Path("idprov") String idProv,
+            @Path("idkab") String idKab,
+            @Path("idkec") String idKec,
+            @Path("iddes") String idDes);
+
+    @GET("android/semua/{idprov}/{idkab}/{idkec}/{iddes}")
+    Call<Calon> getSemuaCalon(
+            @Path("idprov") String idProv,
+            @Path("idkab") String idKab,
+            @Path("idkec") String idKec,
+            @Path("iddes") String idDes);
+
     @FormUrlEncoded
-    @POST("login")
-    Call<ValidationLoginResponse> loginUser(
+    @POST("android/login")
+    Call<LoginResponse> loginUser(
             @Field("nrp") String nrp,
             @Field("password") String password,
             @Field("token") String token
@@ -88,18 +107,26 @@ public interface ApiService {
     @GET("android/peserta/{type}/{id}")
     Call<List<DataCalon.Presiden>> datapresiden(@Path("id") String id, @Path("type") String type);
 
+//    @GET("android/peserta/{type}/{id}")
+//    Call<List<DataCalon.DPRRI>> datadprri(@Path("id") String id, @Path("type") String type);
+
     @GET("android/peserta/{type}/{id}")
-    Call<List<DataCalon.DPRRI>> datadprri(@Path("id") String id, @Path("type") String type);
+    Call<RmRI> datadprri(@Path("id") String id, @Path("type") String type);
 
     @GET("android/peserta/{type}/{id}")
     Call<List<DataCalon.DPDRI>> datadpdri(@Path("id") String id, @Path("type") String type);
 
-    @GET("android/peserta/{type}/{id}")
-    Call<List<DataCalon.DPRDProv>> datadprdprov(@Path("id") String id, @Path("type") String type);
+//    @GET("android/peserta/{type}/{id}")
+//    Call<List<DataCalon.DPRDProv>> datadprdprov(@Path("id") String id, @Path("type") String type);
+//
+//    @GET("android/peserta/{type}/{id}")
+//    Call<List<DataCalon.DPRDKab>> datadprdkab(@Path("id") String id, @Path("type") String type);
 
     @GET("android/peserta/{type}/{id}")
-    Call<List<DataCalon.DPRDKab>> datadprdkab(@Path("id") String id, @Path("type") String type);
+    Call<RmProv> datadprdprov(@Path("id") String id, @Path("type") String type);
 
+    @GET("android/peserta/{type}/{id}")
+    Call<RmKab> datadprdkab(@Path("id") String id, @Path("type") String type);
     @GET("android/peserta/{type}/{id}")
     Call<List<DataCalon.Gubernur>> datagubernur(@Path("id") String id, @Path("type") String type);
 
@@ -144,5 +171,12 @@ public interface ApiService {
             @Part("idTps") String idTps,
             @Part("type") String type,
             @Part MultipartBody.Part image);
+
+    @GET("panic/{nrp}/{idtps}/{lokasi}/{kec}")
+    Call<UpdResponse> panic(
+            @Path("nrp") String nrp,
+            @Path("idtps") String idtps,
+            @Path("lokasi") String lokasi,
+            @Path("kec") String kec);
 }
 

@@ -17,7 +17,6 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,9 +28,6 @@ import java.util.Date;
 import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
 import id.creatodidak.djaga_swara.API.Interface.ApiService;
 import id.creatodidak.djaga_swara.API.Models.UpdResponse;
-import id.creatodidak.djaga_swara.Dashboard.Dashboard;
-import id.creatodidak.djaga_swara.Dashboard.Sprin;
-import id.creatodidak.djaga_swara.Dashboard.Tugas;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
 import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.R;

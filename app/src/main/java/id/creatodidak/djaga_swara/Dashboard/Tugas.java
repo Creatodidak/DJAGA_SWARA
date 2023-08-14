@@ -1,36 +1,36 @@
 package id.creatodidak.djaga_swara.Dashboard;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.gridlayout.widget.GridLayout;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import java.util.Calendar;
-import java.util.List;
 
 import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
 import id.creatodidak.djaga_swara.API.Interface.ApiService;
-import id.creatodidak.djaga_swara.API.Models.DataCalon;
 import id.creatodidak.djaga_swara.API.Models.TpsActivity;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
+import id.creatodidak.djaga_swara.API.Models.UpdResponse;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Cektps;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Dpt;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.FormC1;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Hasilsuara;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lappam;
-import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lapwal;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lapserah;
+import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lapwal;
 import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lokasi;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
 import id.creatodidak.djaga_swara.Helper.MockDetector;
@@ -44,11 +44,12 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
     String id_tps;
     TextView namatps, lokasitps, dpttpss, dpttpst, dpttpsf;
     TpsList tpslist;
-    ApiService apiService;
     TpsActivity tpsActivity;
     CardView cv1, cv2, cv3, cv4, cv5, cv6, cv7, cv8, cv9;
+    int buttonPressCount = 0;
 
     ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -309,9 +310,51 @@ public class Tugas extends AppCompatActivity implements View.OnClickListener {
                 }
                 break;
             case R.id.actcall:
-                showPilihanAksi(tpslist.getHpKpps());
+                buttonPressCount++;
+
+                if (buttonPressCount == 3) {
+                    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+                    boolean isInternetAvailable = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+                    if(isInternetAvailable){
+                        callposko(tpslist.getLatitude(), tpslist.getLongitude());
+                    }else{
+                        panggilViaSeluler("08115664145");
+                    }
+
+                    // Reset jumlah kali tombol ditekan
+                    buttonPressCount = 0;
+                }
                 break;
         }
+    }
+
+    private void callposko(String latitude, String longitude) {
+        SharedPreferences sharedPreferences = getSharedPreferences("session", MODE_PRIVATE);
+        String nrp = sharedPreferences.getString("nrp", "");
+
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        Call<UpdResponse> call = apiService.panic(nrp, tpslist.getIdTps(),latitude+","+longitude, tpslist.getNamaKec());
+        showDialog("Menghubungi Posko!");
+        call.enqueue(new Callback<UpdResponse>() {
+            @Override
+            public void onResponse(Call<UpdResponse> call, Response<UpdResponse> response) {
+                if (response.body().getMsg().equals("ok")){
+                    progressDialog.dismiss();
+                    notifikasi("Berhasil", "Data anda berhasil dikirimkan kepada posko!");
+                }else{
+                    progressDialog.dismiss();
+                    panggilViaSeluler("08115664145");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UpdResponse> call, Throwable t) {
+                progressDialog.dismiss();
+                panggilViaSeluler("08115664145");
+            }
+        });
     }
 
     private void notifikasi(String title, String msg) {

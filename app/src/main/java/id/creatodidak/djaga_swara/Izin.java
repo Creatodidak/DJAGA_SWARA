@@ -1,7 +1,4 @@
 package id.creatodidak.djaga_swara;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -12,7 +9,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.Settings;
 import android.view.Display;
 import android.view.View;
@@ -20,7 +16,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import id.creatodidak.djaga_swara.Helper.MockDetector;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import id.creatodidak.djaga_swara.Login.Login;
 
 public class Izin extends AppCompatActivity {
@@ -135,23 +134,25 @@ public class Izin extends AppCompatActivity {
                 b6.setBackgroundTintList(disabled);
                 b6.setEnabled(false);
             }
-        } else {
-            b6.setVisibility(View.GONE);
-            if (!checkPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE)) {
-                b5.setText("BERIKAN AKSES BACA PENYIMPANAN");
-                b5.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        checkAndRequestManage();
-                    }
-                });
-            } else {
-                b5.setText("AKSES MANAJEMEN PENYIMPANAN DIBERIKAN");
-                b5.setBackgroundTintList(disabled);
-                b5.setEnabled(false);
-            }
         }
-
+        else {
+            b6.setVisibility(View.GONE);
+            b5.setVisibility(View.GONE);
+//            if (!checkPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE)) {
+//                b5.setText("BERIKAN AKSES BACA PENYIMPANAN");
+//                b5.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        checkAndRequestManage();
+//                    }
+//                });
+//            } else {
+//                b5.setText("AKSES MANAJEMEN PENYIMPANAN DIBERIKAN");
+//                b5.setBackgroundTintList(disabled);
+//                b5.setEnabled(false);
+//            }
+        }
+//
         if (!checkPermission(Manifest.permission.USE_BIOMETRIC)) {
             b7.setText("BERIKAN IZIN SIDIK JARI");
             b7.setOnClickListener(new View.OnClickListener() {
@@ -347,24 +348,20 @@ public class Izin extends AppCompatActivity {
             }
             return true;
         } else {
-            if (Environment.isExternalStorageManager()) {
-                String[] permissions = {
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.READ_CONTACTS,
-                        Manifest.permission.RECORD_AUDIO,
-                        Manifest.permission.POST_NOTIFICATIONS
-                };
+            String[] permissions = {
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.READ_CONTACTS,
+                    Manifest.permission.RECORD_AUDIO,
+                    Manifest.permission.POST_NOTIFICATIONS
+            };
 
-                for (String permission : permissions) {
-                    if (!checkPermission(permission)) {
-                        return false;
-                    }
+            for (String permission : permissions) {
+                if (!checkPermission(permission)) {
+                    return false;
                 }
-                return true;
-            } else {
-                return false;
             }
+            return true;
 
         }
     }
@@ -388,15 +385,15 @@ public class Izin extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                if (Environment.isExternalStorageManager()) {
-                    b5.setBackgroundTintList(disabled);
-                    b5.setEnabled(false);
-                } else {
-                    Toast.makeText(this, "IZIN PENYIMPANAN WAJIB DIBERIKAN!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
+//        if (requestCode == PERMISSION_REQUEST_CODE) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//                if (Environment.isExternalStorageManager()) {
+//                    b5.setBackgroundTintList(disabled);
+//                    b5.setEnabled(false);
+//                } else {
+//                    Toast.makeText(this, "IZIN PENYIMPANAN WAJIB DIBERIKAN!", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        }
     }
 }

@@ -16,7 +16,7 @@ import id.creatodidak.djaga_swara.Dashboard.TugasForm.FormInputSuara;
 import id.creatodidak.djaga_swara.R;
 
 public class GubernurAdapter extends RecyclerView.Adapter<GubernurAdapter.ViewHolder> {
-    private List<Gubernur> gubernurList;
+    private final List<Gubernur> gubernurList;
 
     public GubernurAdapter(FormInputSuara formInputSuara, List<Gubernur> gubernurList) {
         this.gubernurList = gubernurList;

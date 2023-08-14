@@ -37,7 +37,6 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imageView3"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
@@ -163,7 +162,6 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView13"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
@@ -184,7 +182,6 @@
                     android:orientation="vertical">
 
                     <ImageView
-                        android:id="@+id/imageView16"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:tint="@color/primary"
@@ -192,7 +189,6 @@
                         tools:ignore="UseAppTint" />
 
                     <TextView
-                        android:id="@+id/textView20"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="KAMERA" />
@@ -213,7 +209,6 @@
                     android:orientation="vertical">
 
                     <ImageView
-                        android:id="@+id/imageView17"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:tint="@color/primary"
@@ -221,7 +216,6 @@
                         tools:ignore="UseAppTint" />
 
                     <TextView
-                        android:id="@+id/textView28"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="GALERI" />

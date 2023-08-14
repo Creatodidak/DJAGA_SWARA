@@ -16,7 +16,7 @@ import id.creatodidak.djaga_swara.Dashboard.TugasForm.FormInputSuara;
 import id.creatodidak.djaga_swara.R;
 
 public class KadesAdapter extends RecyclerView.Adapter<KadesAdapter.ViewHolder> {
-    private List<Kades> kadesList;
+    private final List<Kades> kadesList;
 
     public KadesAdapter(FormInputSuara formInputSuara, List<Kades> kadesList) {
         this.kadesList = kadesList;

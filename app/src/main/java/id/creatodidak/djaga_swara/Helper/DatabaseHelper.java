@@ -26,6 +26,9 @@ import id.creatodidak.djaga_swara.API.Models.Multi.DPRDProv;
 import id.creatodidak.djaga_swara.API.Models.Multi.DPRRI;
 import id.creatodidak.djaga_swara.API.Models.Multi.Gubernur;
 import id.creatodidak.djaga_swara.API.Models.Multi.Kades;
+import id.creatodidak.djaga_swara.API.Models.Multi.PartaiKab;
+import id.creatodidak.djaga_swara.API.Models.Multi.PartaiNas;
+import id.creatodidak.djaga_swara.API.Models.Multi.PartaiProv;
 import id.creatodidak.djaga_swara.API.Models.Multi.Presiden;
 import id.creatodidak.djaga_swara.API.Models.Multi.SuaraData;
 import id.creatodidak.djaga_swara.API.Models.Multi.SuaraTidakSah;
@@ -35,7 +38,7 @@ import id.creatodidak.djaga_swara.API.Models.TpsList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "djagaswara.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 1;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -95,7 +98,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE IF NOT EXISTS suaratidaksah (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT, type TEXT, jumlah TEXT, status TEXT);");
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS partaikab(id INTEGER PRIMARY KEY AUTOINCREMENT, id_partai TEXT, id_kab TEXT, nomorurut TEXT, nama TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, suara TEXT, idtps TEXT, status TEXT);");
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS partaiprov(id INTEGER PRIMARY KEY AUTOINCREMENT, id_partai TEXT, id_prov TEXT, nomorurut TEXT, nama TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, suara TEXT, idtps TEXT, status TEXT);");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS partainas(id INTEGER PRIMARY KEY AUTOINCREMENT, id_partai TEXT, nomorurut TEXT, nama TEXT, tahun TEXT, periode TEXT, created_at TEXT, updated_at TEXT, suara TEXT, idtps TEXT, status TEXT);");
     }
 
     @Override
@@ -120,10 +127,397 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS bupati");
         db.execSQL("DROP TABLE IF EXISTS kades");
         db.execSQL("DROP TABLE IF EXISTS suaratidaksah");
+        db.execSQL("DROP TABLE IF EXISTS partaikab");
+        db.execSQL("DROP TABLE IF EXISTS partaiprov");
+        db.execSQL("DROP TABLE IF EXISTS partainas");
 
         // Recreate the tables
         onCreate(db);
     }
+
+    public boolean resetDb() {
+        try {
+            // Drop existing tables if they exist
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            db.execSQL("DROP TABLE IF EXISTS sprinlist");
+            db.execSQL("DROP TABLE IF EXISTS sprindetail");
+            db.execSQL("DROP TABLE IF EXISTS tpsactivity");
+            db.execSQL("DROP TABLE IF EXISTS lokasi");
+            db.execSQL("DROP TABLE IF EXISTS cektps");
+            db.execSQL("DROP TABLE IF EXISTS formc1");
+            db.execSQL("DROP TABLE IF EXISTS lappam");
+            db.execSQL("DROP TABLE IF EXISTS lapwal");
+            db.execSQL("DROP TABLE IF EXISTS lapserah");
+            db.execSQL("DROP TABLE IF EXISTS draftdpt");
+            db.execSQL("DROP TABLE IF EXISTS presiden");
+            db.execSQL("DROP TABLE IF EXISTS dprri");
+            db.execSQL("DROP TABLE IF EXISTS dpdri");
+            db.execSQL("DROP TABLE IF EXISTS dprdprov");
+            db.execSQL("DROP TABLE IF EXISTS dprdkab");
+            db.execSQL("DROP TABLE IF EXISTS gubernur");
+            db.execSQL("DROP TABLE IF EXISTS bupati");
+            db.execSQL("DROP TABLE IF EXISTS kades");
+            db.execSQL("DROP TABLE IF EXISTS suaratidaksah");
+            db.execSQL("DROP TABLE IF EXISTS partainas");
+            db.execSQL("DROP TABLE IF EXISTS partaiprov");
+            db.execSQL("DROP TABLE IF EXISTS partaikab");
+
+            // Recreate the tables
+            onCreate(db);
+
+            return true; // Operasi berhasil
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // Operasi gagal
+        }
+    }
+
+    public int totaldata(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String[] tables = {
+                "presiden",
+                "dprri",
+                "dpdri",
+                "dprdprov",
+                "dprdkab",
+                "gubernur",
+                "bupati",
+                "kades",
+                "partaikab",
+                "partainas",
+                "partaiprov"
+        };
+
+        int totalData = 0;
+
+        for (String tableName : tables) {
+            String countQuery = "SELECT COUNT(*) FROM " + tableName;
+            Cursor cursor = db.rawQuery(countQuery, null);
+            int rowCount = 0;
+            if (cursor != null) {
+                cursor.moveToFirst();
+                rowCount = cursor.getInt(0);
+                cursor.close();
+            }
+            totalData += rowCount;
+        }
+        return totalData;
+    }
+
+    public boolean insertPartainas(String idpartai, String nourut, String nama, String tahun, String periode, String created_at, String updated_at, String idtps) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+
+            ContentValues values = new ContentValues();
+            values.put("id_partai", idpartai);
+            values.put("nomorurut", nourut);
+            values.put("nama", nama);
+            values.put("tahun", tahun);
+            values.put("periode", periode);
+            values.put("created_at", created_at);
+            values.put("updated_at", updated_at);
+            values.put("idtps", idtps);
+
+            long result = db.insert("partainas", null, values);
+
+            db.setTransactionSuccessful();
+
+            return result != -1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+    public boolean deleteAllPartainas() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+
+            db.execSQL("DELETE FROM partainas");
+
+            db.setTransactionSuccessful();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+    public boolean insertPartaiprov(String idpartai, String nourut, String nama, String id_prov, String tahun, String periode, String created_at, String updated_at, String idtps) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+
+            ContentValues values = new ContentValues();
+            values.put("id_partai", idpartai);
+            values.put("nomorurut", nourut);
+            values.put("nama", nama);
+            values.put("id_prov", id_prov);
+            values.put("tahun", tahun);
+            values.put("periode", periode);
+            values.put("created_at", created_at);
+            values.put("updated_at", updated_at);
+            values.put("idtps", idtps);
+
+            long result = db.insert("partaiprov", null, values);
+
+            db.setTransactionSuccessful();
+
+            return result != -1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+    public boolean emptyPartaiprov() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+
+            db.execSQL("DELETE FROM partaiprov");
+
+            db.setTransactionSuccessful();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+    public boolean insertPartaikab(String idpartai, String nourut, String nama, String id_kab, String tahun, String periode, String created_at, String updated_at, String idtps) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+
+
+            ContentValues values = new ContentValues();
+            values.put("id_partai", idpartai);
+            values.put("nomorurut", nourut);
+            values.put("nama", nama);
+            values.put("id_kab", id_kab);
+            values.put("tahun", tahun);
+            values.put("periode", periode);
+            values.put("created_at", created_at);
+            values.put("updated_at", updated_at);
+            values.put("idtps", idtps);
+
+            long result = db.insert("partaikab", null, values);
+
+            db.setTransactionSuccessful();
+
+            return result != -1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+    public boolean emptyPartaikab() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+
+            db.execSQL("DELETE FROM partaikab");
+
+            db.setTransactionSuccessful();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+    public boolean emptyPresiden() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+
+            db.execSQL("DELETE FROM presiden");
+
+            db.setTransactionSuccessful();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+    public boolean emptyGubernur() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+
+            db.execSQL("DELETE FROM gubernur");
+
+            db.setTransactionSuccessful();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+    public boolean emptyBupati() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+
+            db.execSQL("DELETE FROM bupati");
+
+            db.setTransactionSuccessful();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+    public boolean emptyKades() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+
+            db.execSQL("DELETE FROM kades");
+
+            db.setTransactionSuccessful();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+    public boolean emptyDprri() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+
+            db.execSQL("DELETE FROM dprri");
+
+            db.setTransactionSuccessful();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+    public boolean emptyDpdri() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+
+            db.execSQL("DELETE FROM dpdri");
+
+            db.setTransactionSuccessful();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+    public boolean emptyDprdprov() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+
+            db.execSQL("DELETE FROM dprdprov");
+
+            db.setTransactionSuccessful();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+    public boolean emptyDprdkab() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+
+            db.execSQL("DELETE FROM dprdkab");
+
+            db.setTransactionSuccessful();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
 
     public void resetTables() {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -1004,10 +1398,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return rowsAffected > 0;
     }
 
-    public void insertPresiden(int id, String id_calon, String no_urut, String capres, String cawapres, String tahun, String periode, String created_at, String updated_at, String id_tps) {
+//    public void insertPresiden(int id, String id_calon, String no_urut, String capres, String cawapres, String tahun, String periode, String created_at, String updated_at, String id_tps) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        ContentValues values = new ContentValues();
+//
+//        values.put("id_calon", id_calon);
+//        values.put("no_urut", no_urut);
+//        values.put("capres", capres);
+//        values.put("cawapres", cawapres);
+//        values.put("tahun", tahun);
+//        values.put("periode", periode);
+//        values.put("created_at", created_at);
+//        values.put("updated_at", updated_at);
+//        values.put("id_tps", id_tps);
+//        db.insert("presiden", null, values);
+//        db.close();
+//    }
+
+    public boolean insertPresiden(int id, String id_calon, String no_urut, String capres, String cawapres, String tahun, String periode, String created_at, String updated_at, String id_tps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        
+
         values.put("id_calon", id_calon);
         values.put("no_urut", no_urut);
         values.put("capres", capres);
@@ -1017,14 +1428,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("created_at", created_at);
         values.put("updated_at", updated_at);
         values.put("id_tps", id_tps);
-        db.insert("presiden", null, values);
+
+        long result = db.insert("presiden", null, values);
         db.close();
+
+        return result != -1;
     }
 
-    public void insertDPRRI(int id, String id_calon, String id_dapil, String id_partai, String nomorurut, String nama, String tahun, String periode, String created_at, String updated_at, String id_tps) {
+
+    public boolean insertDPRRI(int id, String id_calon, String id_dapil, String id_partai, String nomorurut, String nama, String tahun, String periode, String created_at, String updated_at, String id_tps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        
+
         values.put("id_calon", id_calon);
         values.put("id_dapil", id_dapil);
         values.put("id_partai", id_partai);
@@ -1035,14 +1450,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("created_at", created_at);
         values.put("updated_at", updated_at);
         values.put("id_tps", id_tps);
-        db.insert("dprri", null, values);
+
+        long result = db.insert("dprri", null, values);
         db.close();
+
+        // Cek apakah penyisipan berhasil (result != -1)
+        return result != -1;
     }
 
-    public void insertDPDRI(int id, String id_calon, String id_prov, String nomorurut, String nama, String tahun, String periode, String created_at, String updated_at, String id_tps) {
+    public boolean insertDPDRI(int id, String id_calon, String id_prov, String nomorurut, String nama, String tahun, String periode, String created_at, String updated_at, String id_tps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        
+
         values.put("id_calon", id_calon);
         values.put("id_prov", id_prov);
         values.put("nomorurut", nomorurut);
@@ -1052,14 +1471,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("created_at", created_at);
         values.put("updated_at", updated_at);
         values.put("id_tps", id_tps);
-        db.insert("dpdri", null, values);
+
+        long result = db.insert("dpdri", null, values);
         db.close();
+
+        // Cek apakah penyisipan berhasil (result != -1)
+        return result != -1;
     }
 
-    public void insertDPRDProv(int id, String id_calon, String id_dapil, String id_partai, String nomorurut, String nama, String tahun, String periode, String created_at, String updated_at, String id_tps) {
+    public boolean insertDPRDProv(int id, String id_calon, String id_dapil, String id_partai, String nomorurut, String nama, String tahun, String periode, String created_at, String updated_at, String id_tps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        
+
         values.put("id_calon", id_calon);
         values.put("id_dapil", id_dapil);
         values.put("id_partai", id_partai);
@@ -1070,14 +1493,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("created_at", created_at);
         values.put("updated_at", updated_at);
         values.put("id_tps", id_tps);
-        db.insert("dprdprov", null, values);
+
+        long result = db.insert("dprdprov", null, values);
         db.close();
+
+        // Cek apakah penyisipan berhasil (result != -1)
+        return result != -1;
     }
 
-    public void insertDPRDKab(int id, String id_calon, String id_dapil, String id_partai, String nomorurut, String nama, String tahun, String periode, String created_at, String updated_at, String id_tps) {
+    public boolean insertDPRDKab(int id, String id_calon, String id_dapil, String id_partai, String nomorurut, String nama, String tahun, String periode, String created_at, String updated_at, String id_tps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        
+
         values.put("id_calon", id_calon);
         values.put("id_dapil", id_dapil);
         values.put("id_partai", id_partai);
@@ -1088,14 +1515,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("created_at", created_at);
         values.put("updated_at", updated_at);
         values.put("id_tps", id_tps);
-        db.insert("dprdkab", null, values);
+
+        long result = db.insert("dprdkab", null, values);
         db.close();
+
+        // Cek apakah penyisipan berhasil (result != -1)
+        return result != -1;
     }
 
-    public void insertGubernur(int id, String id_prov, String id_calon, String no_urut, String cagub, String cawagub, String tahun, String periode, String created_at, String updated_at, String id_tps) {
+    public boolean insertGubernur(int id, String id_prov, String id_calon, String no_urut, String cagub, String cawagub, String tahun, String periode, String created_at, String updated_at, String id_tps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        
+
         values.put("id_prov", id_prov);
         values.put("id_calon", id_calon);
         values.put("no_urut", no_urut);
@@ -1106,14 +1537,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("created_at", created_at);
         values.put("updated_at", updated_at);
         values.put("id_tps", id_tps);
-        db.insert("gubernur", null, values);
+
+        long result = db.insert("gubernur", null, values);
         db.close();
+
+        // Cek apakah penyisipan berhasil (result != -1)
+        return result != -1;
     }
 
-    public void insertBupati(int id, String id_kab, String id_calon, String no_urut, String cabup, String cawabup, String tahun, String periode, String created_at, String updated_at, String id_tps) {
+
+    public boolean insertBupati(int id, String id_kab, String id_calon, String no_urut, String cabup, String cawabup, String tahun, String periode, String created_at, String updated_at, String id_tps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        
+
         values.put("id_kab", id_kab);
         values.put("id_calon", id_calon);
         values.put("no_urut", no_urut);
@@ -1124,14 +1560,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("created_at", created_at);
         values.put("updated_at", updated_at);
         values.put("id_tps", id_tps);
-        db.insert("bupati", null, values);
+
+        long result = db.insert("bupati", null, values);
         db.close();
+
+        // Cek apakah penyisipan berhasil (result != -1)
+        return result != -1;
     }
 
-    public void insertKades(int id, String id_des, String id_calon, String no_urut, String cakades, String tahun, String periode, String created_at, String updated_at, String id_tps) {
+
+    public boolean insertKades(int id, String id_des, String id_calon, String no_urut, String cakades, String tahun, String periode, String created_at, String updated_at, String id_tps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        
+
         values.put("id_des", id_des);
         values.put("id_calon", id_calon);
         values.put("no_urut", no_urut);
@@ -1141,9 +1582,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("created_at", created_at);
         values.put("updated_at", updated_at);
         values.put("id_tps", id_tps);
-        db.insert("kades", null, values);
+
+        long result = db.insert("kades", null, values);
         db.close();
+
+        // Cek apakah penyisipan berhasil (result != -1)
+        return result != -1;
     }
+
 
     @SuppressLint("Range")
     public List<DataCalon.Presiden> getAllPresiden(String id_tps) {
@@ -1461,13 +1907,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public List<DPRRI> getDPRRIdata(String id_tps) {
+    public List<DPRRI> getDPRRIdata(String id_tps, String idpartai) {
         List<DPRRI> dprriList = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selection = "id_tps = ?";
-        String[] selectionArgs = {id_tps};
+        String selection = "id_tps = ? AND id_partai = ?";
+        String[] selectionArgs = {id_tps, idpartai};
 
         Cursor cursor = db.query("dprri", null, selection, selectionArgs, null, null, null);
 
@@ -1487,6 +1933,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String status = cursor.getString(cursor.getColumnIndex("status"));
 
             DPRRI dprri = new DPRRI(id, id_calon, id_dapil, id_partai, nomorurut, nama, tahun, periode, created_at, updated_at, tps_id, suara, status);
+//            DPRRI dprri1 = new DPRRI(id, id_calon, id_dapil, id_partai, nomorurut, nama, tahun, periode, created_at, updated_at, tps_id, suara, status);
             dprriList.add(dprri);
         }
 
@@ -1528,13 +1975,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public List<DPRDProv> getDPRDProvData(String id_tps) {
+    public List<DPRDProv> getDPRDProvData(String id_tps, String idpartai) {
         List<DPRDProv> dprdProvList = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selection = "id_tps = ?";
-        String[] selectionArgs = {id_tps};
+        String selection = "id_tps = ? AND id_partai = ?"; // Menggabungkan kondisi untuk id_tps dan id_partai
+        String[] selectionArgs = {id_tps, idpartai}; // Mengatur argumen untuk kondisi WHERE
 
         Cursor cursor = db.query("dprdprov", null, selection, selectionArgs, null, null, null);
 
@@ -1561,14 +2008,110 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return dprdProvList;
     }
 
+
     @SuppressLint("Range")
-    public List<DPRDKab> getDPRDKabData(String id_tps) {
+    public List<PartaiProv> getAllPartaiProv(String id_tps) {
+        List<PartaiProv> partaiProvList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "idtps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("partaiprov", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String id_partai = cursor.getString(cursor.getColumnIndex("id_partai"));
+            String id_prov = cursor.getString(cursor.getColumnIndex("id_prov"));
+            String nomorurut = cursor.getString(cursor.getColumnIndex("nomorurut"));
+            String nama = cursor.getString(cursor.getColumnIndex("nama"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara")); // tambahan suara
+            String idtps = cursor.getString(cursor.getColumnIndex("idtps"));
+
+            PartaiProv partaiProv = new PartaiProv(id, id_partai, id_prov, nomorurut, nama, tahun, periode, created_at, updated_at, suara, idtps);
+            partaiProvList.add(partaiProv);
+        }
+
+        cursor.close();
+        return partaiProvList;
+    }
+
+    @SuppressLint("Range")
+    public List<PartaiNas> getAllPartaiNas(String id_tps) {
+        List<PartaiNas> partaiNasList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "idtps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("partainas", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String id_partai = cursor.getString(cursor.getColumnIndex("id_partai"));
+            String nomorurut = cursor.getString(cursor.getColumnIndex("nomorurut"));
+            String nama = cursor.getString(cursor.getColumnIndex("nama"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara")); // tambahan suara
+            String idtps = cursor.getString(cursor.getColumnIndex("idtps"));
+
+            PartaiNas partaiNas = new PartaiNas(id, id_partai, nomorurut, nama, tahun, periode, created_at, updated_at, suara, idtps);
+            partaiNasList.add(partaiNas);
+        }
+
+        cursor.close();
+        return partaiNasList;
+    }
+
+    @SuppressLint("Range")
+    public List<PartaiKab> getAllPartaiKab(String id_tps) {
+        List<PartaiKab> partaiKabList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selection = "idtps = ?";
+        String[] selectionArgs = {id_tps};
+
+        Cursor cursor = db.query("partaikab", null, selection, selectionArgs, null, null, null);
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String id_partai = cursor.getString(cursor.getColumnIndex("id_partai"));
+            String id_kab = cursor.getString(cursor.getColumnIndex("id_kab"));
+            String nomorurut = cursor.getString(cursor.getColumnIndex("nomorurut"));
+            String nama = cursor.getString(cursor.getColumnIndex("nama"));
+            String tahun = cursor.getString(cursor.getColumnIndex("tahun"));
+            String periode = cursor.getString(cursor.getColumnIndex("periode"));
+            String created_at = cursor.getString(cursor.getColumnIndex("created_at"));
+            String updated_at = cursor.getString(cursor.getColumnIndex("updated_at"));
+            String suara = cursor.getString(cursor.getColumnIndex("suara")); // tambahan suara
+            String idtps = cursor.getString(cursor.getColumnIndex("idtps"));
+
+            PartaiKab partaiKab = new PartaiKab(id, id_partai, id_kab, nomorurut, nama, tahun, periode, created_at, updated_at, suara, idtps);
+            partaiKabList.add(partaiKab);
+        }
+
+        cursor.close();
+        return partaiKabList;
+    }
+
+    @SuppressLint("Range")
+    public List<DPRDKab> getDPRDKabData(String id_tps, String idpartai) {
         List<DPRDKab> dprdkabList = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selection = "id_tps = ?";
-        String[] selectionArgs = {id_tps};
+        String selection = "id_tps = ? AND id_partai = ?"; // Menggabungkan kondisi untuk id_tps dan id_partai
+        String[] selectionArgs = {id_tps, idpartai}; // Mengatur argumen untuk kondisi WHERE
 
         Cursor cursor = db.query("dprdkab", null, selection, selectionArgs, null, null, null);
 

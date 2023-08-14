@@ -3,7 +3,6 @@ package id.creatodidak.djaga_swara.Dashboard;
 // import statements
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +13,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,16 +24,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.List;
 
 import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
 import id.creatodidak.djaga_swara.API.Adapter.TpsAdapter;
 import id.creatodidak.djaga_swara.API.Interface.ApiService;
 import id.creatodidak.djaga_swara.API.Models.DataCalon;
+import id.creatodidak.djaga_swara.API.Models.Multi.PartaiNas;
+import id.creatodidak.djaga_swara.API.Models.RmKab;
+import id.creatodidak.djaga_swara.API.Models.RmProv;
+import id.creatodidak.djaga_swara.API.Models.RmRI;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
-import id.creatodidak.djaga_swara.Dashboard.TugasForm.Lappam;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
 import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.R;
@@ -51,6 +52,7 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
     String id_sprint, nrp;
     int jlokasi, jcektps, jlappam, jformc1, jlapwal, jlapserah, totalJumlahData, jdraftdpt;
     private boolean isInternetAvailable;
+    Button resData;
 
     LinearLayout btndraft;
     TextView judul;
@@ -81,11 +83,44 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
             btndraft = findViewById(R.id.draftbtn);
             judul = findViewById(R.id.jumlahdraft);
 
+            resData = findViewById(R.id.resetdata);
+
             if (isInternetAvailable) {
                 loadDataFromServer();
             } else {
                 loadDataFromLocalDatabase();
             }
+
+            resData.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isInternetAvailable) {
+                        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(Dashboard.this);
+                        builder.setTitle("Peringatan")
+                                .setMessage("Mereset data akan menghapus seluruh data yang sudah anda input, lanjutkan?")
+                                .setIcon(R.drawable.logosmall)
+                                .setPositiveButton("Lanjutkan", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if(databaseHelper.resetDb()){
+                                            Toast.makeText(Dashboard.this, "Berhasil Hapus Data", Toast.LENGTH_SHORT).show();
+                                            loadDataFromServer();
+                                        }else{
+                                            Toast.makeText(Dashboard.this, "Gagal Hapus Data", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                })
+                                .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .show();
+                    } else {
+                        notifikasi("Peringatan", "Reset data hanya dapat digunakan jika anda mendapatkan layanan internet", true, false);
+                    }
+                }
+            });
 
             btndraft.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -239,42 +274,77 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
                 }
                 @Override
                 public void onFailure(Call<List<DataCalon.Presiden>> call, Throwable t) {
-                    Log.i("MENGAMBIL DATA "+type, "Error: "+t.getLocalizedMessage());;
+                    Log.i("MENGAMBIL DATA "+type, "Error: "+t.getLocalizedMessage());
                 }
             });
         }else if(type.equals("dprri")){
-            Call<List<DataCalon.DPRRI>> call = apiService.datadprri(id, type);
-            call.enqueue(new Callback<List<DataCalon.DPRRI>>() {
+//            Call<List<DataCalon.DPRRI>> call = apiService.datadprri(id, type);
+//            call.enqueue(new Callback<List<DataCalon.DPRRI>>() {
+//                @Override
+//                public void onResponse(Call<List<DataCalon.DPRRI>> call, Response<List<DataCalon.DPRRI>> response) {
+//                    List<DataCalon.DPRRI> dprriList = databaseHelper.getAllDprri(id);
+//                    List<DataCalon.DPRRI> dprris = response.body();
+//
+//
+//                    if(dprris != null && !dprris.isEmpty()){
+//                        if(dprriList.isEmpty()){
+//                            for(DataCalon.DPRRI dprri : dprris){
+//                                databaseHelper.insertDPRRI(
+//                                        dprri.getId(), dprri.getId_calon(), dprri.getId_dapil(), dprri.getId_partai(), dprri.getNomorurut(), dprri.getNama(), dprri.getTahun(), dprri.getPeriode(), dprri.getCreated_at(), dprri.getUpdated_at(), id
+//                                );
+//                            }
+//                        }else{
+//                            if(dprriList.size() != dprris.size()){
+//                                databaseHelper.resetDPRRI();
+//                                for(DataCalon.DPRRI dprri : dprris){
+//                                    databaseHelper.insertDPRRI(
+//                                            dprri.getId(), dprri.getId_calon(), dprri.getId_dapil(), dprri.getId_partai(), dprri.getNomorurut(), dprri.getNama(), dprri.getTahun(), dprri.getPeriode(), dprri.getCreated_at(), dprri.getUpdated_at(), id
+//                                    );
+//                                }
+//                            }
+//                        }
+//                    }else{
+//                        Toast.makeText(Dashboard.this, "TIdak ada data "+type+" di server!", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//                @Override
+//                public void onFailure(Call<List<DataCalon.DPRRI>> call, Throwable t) {
+//                    Log.i("MENGAMBIL DATA "+type, "Error: "+t.getLocalizedMessage());
+//                }
+//            });
+            Call<RmRI> call = apiService.datadprri(id, type);
+            call.enqueue(new Callback<RmRI>() {
                 @Override
-                public void onResponse(Call<List<DataCalon.DPRRI>> call, Response<List<DataCalon.DPRRI>> response) {
-                    List<DataCalon.DPRRI> dprriList = databaseHelper.getAllDprri(id);
-                    List<DataCalon.DPRRI> dprris = response.body();
+                public void onResponse(Call<RmRI> call, Response<RmRI> response) {
+                    if (response.isSuccessful()) {
+                        RmRI responseData = response.body();
+                        if (responseData != null) {
+                            List<DataCalon.DPRRI> dprris = responseData.getCalon();
+                            List<PartaiNas> partaiList = responseData.getPartai();
 
-
-                    if(dprris != null && !dprris.isEmpty()){
-                        if(dprriList.isEmpty()){
-                            for(DataCalon.DPRRI dprri : dprris){
-                                databaseHelper.insertDPRRI(
-                                        dprri.getId(), dprri.getId_calon(), dprri.getId_dapil(), dprri.getId_partai(), dprri.getNomorurut(), dprri.getNama(), dprri.getTahun(), dprri.getPeriode(), dprri.getCreated_at(), dprri.getUpdated_at(), id
-                                );
-                            }
-                        }else{
-                            if(dprriList.size() != dprris.size()){
-                                databaseHelper.resetDPRRI();
-                                for(DataCalon.DPRRI dprri : dprris){
-                                    databaseHelper.insertDPRRI(
-                                            dprri.getId(), dprri.getId_calon(), dprri.getId_dapil(), dprri.getId_partai(), dprri.getNomorurut(), dprri.getNama(), dprri.getTahun(), dprri.getPeriode(), dprri.getCreated_at(), dprri.getUpdated_at(), id
-                                    );
+                            if (!dprris.isEmpty()) {
+                                List<DataCalon.DPRRI> dprriList = databaseHelper.getAllDprri(id);
+                                if (dprriList.isEmpty() || dprriList.size() != dprris.size()) {
+                                    databaseHelper.resetDPRRI();
+                                    for (DataCalon.DPRRI dprri : dprris) {
+                                        databaseHelper.insertDPRRI(dprri.getId(), dprri.getId_calon(), dprri.getId_dapil(),
+                                                dprri.getId_partai(), dprri.getNomorurut(), dprri.getNama(), dprri.getTahun(),
+                                                dprri.getPeriode(), dprri.getCreated_at(), dprri.getUpdated_at(), id);
+                                    }
                                 }
+                            } else {
+                                Toast.makeText(Dashboard.this, "Tidak ada data " + type + " di server!", Toast.LENGTH_SHORT).show();
                             }
                         }
-                    }else{
-                        Toast.makeText(Dashboard.this, "TIdak ada data "+type+" di server!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Handle unsuccessful response
+                        Log.e("API Call", "Unsuccessful response: " + response.message());
                     }
                 }
+
                 @Override
-                public void onFailure(Call<List<DataCalon.DPRRI>> call, Throwable t) {
-                    Log.i("MENGAMBIL DATA "+type, "Error: "+t.getLocalizedMessage());;
+                public void onFailure(Call<RmRI> call, Throwable t) {
+                    Log.e("API Call", "Error: " + t.getLocalizedMessage());
                 }
             });
         }else if(type.equals("dpdri")){
@@ -309,76 +379,147 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
                 }
                 @Override
                 public void onFailure(Call<List<DataCalon.DPDRI>> call, Throwable t) {
-                    Log.i("MENGAMBIL DATA "+type, "Error: "+t.getLocalizedMessage());;
+                    Log.i("MENGAMBIL DATA "+type, "Error: "+t.getLocalizedMessage());
                 }
             });
         }else if(type.equals("dprdprov")){
-            Call<List<DataCalon.DPRDProv>> call = apiService.datadprdprov(id, type);
-            call.enqueue(new Callback<List<DataCalon.DPRDProv>>() {
-                @Override
-                public void onResponse(Call<List<DataCalon.DPRDProv>> call, Response<List<DataCalon.DPRDProv>> response) {
-                    List<DataCalon.DPRDProv> dprdprovList = databaseHelper.getAllDPRDprov(id);
-                    List<DataCalon.DPRDProv> dprdprovs = response.body();
+//            Call<List<DataCalon.DPRDProv>> call = apiService.datadprdprov(id, type);
+//            call.enqueue(new Callback<List<DataCalon.DPRDProv>>() {
+//                @Override
+//                public void onResponse(Call<List<DataCalon.DPRDProv>> call, Response<List<DataCalon.DPRDProv>> response) {
+//                    List<DataCalon.DPRDProv> dprdprovList = databaseHelper.getAllDPRDprov(id);
+//                    List<DataCalon.DPRDProv> dprdprovs = response.body();
+//
+//                    if(dprdprovs != null && !dprdprovs.isEmpty()){
+//                        if(dprdprovList.isEmpty()){
+//                            for(DataCalon.DPRDProv dprdprov : dprdprovs){
+//                                databaseHelper.insertDPRDProv(
+//                                        dprdprov.getId(), dprdprov.getId_calon(), dprdprov.getId_dapil(), dprdprov.getId_partai(), dprdprov.getNomorurut(), dprdprov.getNama(), dprdprov.getTahun(), dprdprov.getPeriode(), dprdprov.getCreated_at(), dprdprov.getUpdated_at(), id
+//                                );
+//                            }
+//                        }else{
+//                            if(dprdprovList.size() != dprdprovs.size()){
+//                                databaseHelper.resetDPRDProv();
+//                                for(DataCalon.DPRDProv dprdprov : dprdprovs){
+//                                    databaseHelper.insertDPRDProv(
+//                                            dprdprov.getId(), dprdprov.getId_calon(), dprdprov.getId_dapil(), dprdprov.getId_partai(), dprdprov.getNomorurut(), dprdprov.getNama(), dprdprov.getTahun(), dprdprov.getPeriode(), dprdprov.getCreated_at(), dprdprov.getUpdated_at(), id
+//                                    );
+//                                }
+//                            }
+//                        }
+//                    }else{
+//                        Toast.makeText(Dashboard.this, "TIdak ada data "+type+" di server!", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//                @Override
+//                public void onFailure(Call<List<DataCalon.DPRDProv>> call, Throwable t) {
+//                    Log.i("MENGAMBIL DATA "+type, "Error: "+t.getLocalizedMessage());
+//                }
+//            });
 
-                    if(dprdprovs != null && !dprdprovs.isEmpty()){
-                        if(dprdprovList.isEmpty()){
-                            for(DataCalon.DPRDProv dprdprov : dprdprovs){
-                                databaseHelper.insertDPRDProv(
-                                        dprdprov.getId(), dprdprov.getId_calon(), dprdprov.getId_dapil(), dprdprov.getId_partai(), dprdprov.getNomorurut(), dprdprov.getNama(), dprdprov.getTahun(), dprdprov.getPeriode(), dprdprov.getCreated_at(), dprdprov.getUpdated_at(), id
-                                );
-                            }
-                        }else{
-                            if(dprdprovList.size() != dprdprovs.size()){
-                                databaseHelper.resetDPRDProv();
-                                for(DataCalon.DPRDProv dprdprov : dprdprovs){
-                                    databaseHelper.insertDPRDProv(
-                                            dprdprov.getId(), dprdprov.getId_calon(), dprdprov.getId_dapil(), dprdprov.getId_partai(), dprdprov.getNomorurut(), dprdprov.getNama(), dprdprov.getTahun(), dprdprov.getPeriode(), dprdprov.getCreated_at(), dprdprov.getUpdated_at(), id
-                                    );
+            Call<RmProv> call = apiService.datadprdprov(id, type);
+            call.enqueue(new Callback<RmProv>() {
+                @Override
+                public void onResponse(Call<RmProv> call, Response<RmProv> response) {
+                    if (response.isSuccessful()) {
+                        RmProv responseData = response.body();
+                        if (responseData != null) {
+                            List<DataCalon.DPRDProv> dprdProvs = responseData.getCalon();
+//                            List<PartaiNas> partaiList = responseData.getPartai();
+
+                            if (!dprdProvs.isEmpty()) {
+                                List<DataCalon.DPRDProv> dprdProvList = databaseHelper.getAllDPRDprov(id);
+                                if (dprdProvList.isEmpty() || dprdProvList.size() != dprdProvs.size()) {
+                                    databaseHelper.resetDPRRI();
+                                    for (DataCalon.DPRDProv dprdProv : dprdProvs) {
+                                        databaseHelper.insertDPRRI(dprdProv.getId(), dprdProv.getId_calon(), dprdProv.getId_dapil(),
+                                                dprdProv.getId_partai(), dprdProv.getNomorurut(), dprdProv.getNama(), dprdProv.getTahun(),
+                                                dprdProv.getPeriode(), dprdProv.getCreated_at(), dprdProv.getUpdated_at(), id);
+                                    }
                                 }
+                            } else {
+                                Toast.makeText(Dashboard.this, "Tidak ada data " + type + " di server!", Toast.LENGTH_SHORT).show();
                             }
                         }
-                    }else{
-                        Toast.makeText(Dashboard.this, "TIdak ada data "+type+" di server!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Handle unsuccessful response
+                        Log.e("API Call", "Unsuccessful response: " + response.message());
                     }
                 }
+
                 @Override
-                public void onFailure(Call<List<DataCalon.DPRDProv>> call, Throwable t) {
-                    Log.i("MENGAMBIL DATA "+type, "Error: "+t.getLocalizedMessage());;
+                public void onFailure(Call<RmProv> call, Throwable t) {
+                    Log.e("API Call", "Error: " + t.getLocalizedMessage());
                 }
             });
         }else if(type.equals("dprdkab")){
-            Call<List<DataCalon.DPRDKab>> call = apiService.datadprdkab(id, type);
-            call.enqueue(new Callback<List<DataCalon.DPRDKab>>() {
+//            Call<List<DataCalon.DPRDKab>> call = apiService.datadprdkab(id, type);
+//            call.enqueue(new Callback<List<DataCalon.DPRDKab>>() {
+//                @Override
+//                public void onResponse(Call<List<DataCalon.DPRDKab>> call, Response<List<DataCalon.DPRDKab>> response) {
+//                    List<DataCalon.DPRDKab> dprdkabList = databaseHelper.getAllDPRDkab(id);
+//                    List<DataCalon.DPRDKab> dprdkabs = response.body();
+//
+//
+//                    if(dprdkabs != null && !dprdkabs.isEmpty()){
+//                        if(dprdkabList.isEmpty()){
+//                            for(DataCalon.DPRDKab dprdkab : dprdkabs){
+//                                databaseHelper.insertDPRDKab(
+//                                        dprdkab.getId(), dprdkab.getId_calon(), dprdkab.getId_dapil(), dprdkab.getId_partai(), dprdkab.getNomorurut(), dprdkab.getNama(), dprdkab.getTahun(), dprdkab.getPeriode(), dprdkab.getCreated_at(), dprdkab.getUpdated_at(), id
+//                                );
+//                            }
+//                        }else{
+//                            if(dprdkabList.size() != dprdkabs.size()){
+//                                databaseHelper.resetDPRDKab();
+//                                for(DataCalon.DPRDKab dprdkab : dprdkabs){
+//                                    databaseHelper.insertDPRDKab(
+//                                            dprdkab.getId(), dprdkab.getId_calon(), dprdkab.getId_dapil(), dprdkab.getId_partai(), dprdkab.getNomorurut(), dprdkab.getNama(), dprdkab.getTahun(), dprdkab.getPeriode(), dprdkab.getCreated_at(), dprdkab.getUpdated_at(), id
+//                                    );
+//                                }
+//                            }
+//                        }
+//                    }else{
+//                        Toast.makeText(Dashboard.this, "TIdak ada data "+type+" di server!", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//                @Override
+//                public void onFailure(Call<List<DataCalon.DPRDKab>> call, Throwable t) {
+//                    Log.i("MENGAMBIL DATA "+type, "Error: "+t.getLocalizedMessage());
+//                }
+//            });
+            Call<RmKab> call = apiService.datadprdkab(id, type);
+            call.enqueue(new Callback<RmKab>() {
                 @Override
-                public void onResponse(Call<List<DataCalon.DPRDKab>> call, Response<List<DataCalon.DPRDKab>> response) {
-                    List<DataCalon.DPRDKab> dprdkabList = databaseHelper.getAllDPRDkab(id);
-                    List<DataCalon.DPRDKab> dprdkabs = response.body();
+                public void onResponse(Call<RmKab> call, Response<RmKab> response) {
+                    if (response.isSuccessful()) {
+                        RmKab responseData = response.body();
+                        if (responseData != null) {
+                            List<DataCalon.DPRDKab> dprdKabs = responseData.getCalon();
+//                            List<PartaiNas> partaiList = responseData.getPartai();
 
-
-                    if(dprdkabs != null && !dprdkabs.isEmpty()){
-                        if(dprdkabList.isEmpty()){
-                            for(DataCalon.DPRDKab dprdkab : dprdkabs){
-                                databaseHelper.insertDPRDKab(
-                                        dprdkab.getId(), dprdkab.getId_calon(), dprdkab.getId_dapil(), dprdkab.getId_partai(), dprdkab.getNomorurut(), dprdkab.getNama(), dprdkab.getTahun(), dprdkab.getPeriode(), dprdkab.getCreated_at(), dprdkab.getUpdated_at(), id
-                                );
-                            }
-                        }else{
-                            if(dprdkabList.size() != dprdkabs.size()){
-                                databaseHelper.resetDPRDKab();
-                                for(DataCalon.DPRDKab dprdkab : dprdkabs){
-                                    databaseHelper.insertDPRDKab(
-                                            dprdkab.getId(), dprdkab.getId_calon(), dprdkab.getId_dapil(), dprdkab.getId_partai(), dprdkab.getNomorurut(), dprdkab.getNama(), dprdkab.getTahun(), dprdkab.getPeriode(), dprdkab.getCreated_at(), dprdkab.getUpdated_at(), id
-                                    );
+                            if (!dprdKabs.isEmpty()) {
+                                List<DataCalon.DPRDKab> dprdKabList = databaseHelper.getAllDPRDkab(id);
+                                if (dprdKabList.isEmpty() || dprdKabList.size() != dprdKabs.size()) {
+                                    databaseHelper.resetDPRRI();
+                                    for (DataCalon.DPRDKab dprdKab : dprdKabs) {
+                                        databaseHelper.insertDPRRI(dprdKab.getId(), dprdKab.getId_calon(), dprdKab.getId_dapil(),
+                                                dprdKab.getId_partai(), dprdKab.getNomorurut(), dprdKab.getNama(), dprdKab.getTahun(),
+                                                dprdKab.getPeriode(), dprdKab.getCreated_at(), dprdKab.getUpdated_at(), id);
+                                    }
                                 }
+                            } else {
+                                Toast.makeText(Dashboard.this, "Tidak ada data " + type + " di server!", Toast.LENGTH_SHORT).show();
                             }
                         }
-                    }else{
-                        Toast.makeText(Dashboard.this, "TIdak ada data "+type+" di server!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Handle unsuccessful response
+                        Log.e("API Call", "Unsuccessful response: " + response.message());
                     }
                 }
+
                 @Override
-                public void onFailure(Call<List<DataCalon.DPRDKab>> call, Throwable t) {
-                    Log.i("MENGAMBIL DATA "+type, "Error: "+t.getLocalizedMessage());;
+                public void onFailure(Call<RmKab> call, Throwable t) {
+                    Log.e("API Call", "Error: " + t.getLocalizedMessage());
                 }
             });
         }else if(type.equals("gubernur")){
@@ -413,7 +554,7 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
                 }
                 @Override
                 public void onFailure(Call<List<DataCalon.Gubernur>> call, Throwable t) {
-                    Log.i("MENGAMBIL DATA "+type, "Error: "+t.getLocalizedMessage());;
+                    Log.i("MENGAMBIL DATA "+type, "Error: "+t.getLocalizedMessage());
                 }
             });
         }else if(type.equals("bupati")){
@@ -448,7 +589,7 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
                 }
                 @Override
                 public void onFailure(Call<List<DataCalon.Bupati>> call, Throwable t) {
-                    Log.i("MENGAMBIL DATA "+type, "Error: "+t.getLocalizedMessage());;
+                    Log.i("MENGAMBIL DATA "+type, "Error: "+t.getLocalizedMessage());
                 }
             });
         }else if(type.equals("kades")){
@@ -483,7 +624,7 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
                 }
                 @Override
                 public void onFailure(Call<List<DataCalon.Kades>> call, Throwable t) {
-                    Log.i("MENGAMBIL DATA "+type, "Error: "+t.getLocalizedMessage());;
+                    Log.i("MENGAMBIL DATA "+type, "Error: "+t.getLocalizedMessage());
                 }
             });
         }
@@ -587,6 +728,7 @@ public class Dashboard extends AppCompatActivity implements TpsAdapter.OnItemCli
 
     private void notifikasi(String info, String s, Boolean cancel, Boolean close) {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(Dashboard.this);
+
         if(cancel){
             if(close){
                 builder.setTitle(info)

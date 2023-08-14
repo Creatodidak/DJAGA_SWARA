@@ -16,7 +16,7 @@ import id.creatodidak.djaga_swara.Dashboard.TugasForm.FormInputSuara;
 import id.creatodidak.djaga_swara.R;
 
 public class BupatiAdapter extends RecyclerView.Adapter<BupatiAdapter.ViewHolder> {
-    private List<Bupati> bupatiList;
+    private final List<Bupati> bupatiList;
 
     public BupatiAdapter(FormInputSuara formInputSuara, List<Bupati> bupatiList) {
         this.bupatiList = bupatiList;

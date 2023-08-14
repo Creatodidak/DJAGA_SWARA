@@ -7,11 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:elevation="5dp"
+        android:layout_margin="5dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,7 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/primary"
+            android:background="@color/black"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -51,7 +47,7 @@
                 android:fontFamily="@font/bold"
                 android:gravity="center"
                 android:text="NAMA"
-                android:textColor="@color/primary"
+                android:textColor="@color/black"
                 android:textSize="14sp" />
 
             <EditText
@@ -66,7 +62,7 @@
                 android:inputType="none|numberSigned|number"
                 android:padding="10dp"
                 android:textColor="@color/primary"
-                android:textSize="48sp" />
+                android:textSize="30sp" />
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

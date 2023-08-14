@@ -1,21 +1,17 @@
 package id.creatodidak.djaga_swara.Login;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import id.creatodidak.djaga_swara.Dashboard.Dashboard;
-import id.creatodidak.djaga_swara.Dashboard.First;
+import androidx.appcompat.app.AppCompatActivity;
+
 import id.creatodidak.djaga_swara.Dashboard.Sprin;
-import id.creatodidak.djaga_swara.Helper.MockDetector;
 import id.creatodidak.djaga_swara.R;
 
 public class SetLoginPin extends AppCompatActivity implements View.OnClickListener {

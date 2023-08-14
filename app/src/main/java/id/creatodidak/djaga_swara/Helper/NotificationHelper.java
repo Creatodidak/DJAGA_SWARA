@@ -15,8 +15,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import id.creatodidak.djaga_swara.Pembukaan;
 import id.creatodidak.djaga_swara.R;
-import id.creatodidak.djaga_swara.Splash;
 
 public class NotificationHelper {
 
@@ -28,7 +28,7 @@ public class NotificationHelper {
         createNotificationChannel(context);
 
         // Create intent for the full screen intent
-        Intent fullScreenIntent = new Intent(context, Splash.class);
+        Intent fullScreenIntent = new Intent(context, Pembukaan.class);
         PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(context, 0, fullScreenIntent, PendingIntent.FLAG_IMMUTABLE);
 
         // Create the expanded notification

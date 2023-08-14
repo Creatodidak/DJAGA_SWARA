@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -19,8 +18,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -189,16 +189,21 @@ public class First extends AppCompatActivity implements View.OnClickListener {
                                     .into(fpset);
                         } else {
                             Glide.with(First.this)
-                                    .load(foto) // Ganti dengan URL gambar yang sesuai
+                                    .load(foto)
                                     .circleCrop()
                                     .listener(new RequestListener<Drawable>() {
                                         @Override
                                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                            Toast.makeText(First.this, "GAGAL MEMUAT FOTO", Toast.LENGTH_SHORT).show();
-                                            Glide.with(First.this)
-                                                    .load(R.drawable.defaultfp)
-                                                    .circleCrop()
-                                                    .into(fpset);
+                                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Toast.makeText(First.this, "FOTO BELUM ADA!", Toast.LENGTH_SHORT).show();
+                                                    Glide.with(First.this)
+                                                            .load(R.drawable.defaultfp)
+                                                            .circleCrop()
+                                                            .into(fpset);
+                                                }
+                                            });
                                             return true;
                                         }
 

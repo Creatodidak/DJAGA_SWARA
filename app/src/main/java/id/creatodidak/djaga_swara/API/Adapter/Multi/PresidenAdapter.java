@@ -16,7 +16,7 @@ import id.creatodidak.djaga_swara.Dashboard.TugasForm.FormInputSuara;
 import id.creatodidak.djaga_swara.R;
 
 public class PresidenAdapter extends RecyclerView.Adapter<PresidenAdapter.ViewHolder> {
-    private List<Presiden> presidenList;
+    private final List<Presiden> presidenList;
 
     public PresidenAdapter(FormInputSuara formInputSuara, List<Presiden> presidenList) {
         this.presidenList = presidenList;

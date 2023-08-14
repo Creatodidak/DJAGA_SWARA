@@ -9,8 +9,8 @@ public class UpdateApp {
     @SerializedName("app_id")
     private String appId;
 
-    @SerializedName("ver_code")
-    private String versionCode;
+    @SerializedName("versionCode")
+    private int versionCode;
 
     @SerializedName("ver_name")
     private String versionName;
@@ -30,7 +30,7 @@ public class UpdateApp {
     @SerializedName("updated_at")
     private String updatedAt;
 
-    public UpdateApp(int id, String appId, String versionCode, String versionName, String description, String path, String link, String createdAt, String updatedAt) {
+    public UpdateApp(int id, String appId, int versionCode, String versionName, String description, String path, String link, String createdAt, String updatedAt) {
         this.id = id;
         this.appId = appId;
         this.versionCode = versionCode;
@@ -58,11 +58,11 @@ public class UpdateApp {
         this.appId = appId;
     }
 
-    public String getVersionCode() {
+    public int getVersionCode() {
         return versionCode;
     }
 
-    public void setVersionCode(String versionCode) {
+    public void setVersionCode(int versionCode) {
         this.versionCode = versionCode;
     }
 

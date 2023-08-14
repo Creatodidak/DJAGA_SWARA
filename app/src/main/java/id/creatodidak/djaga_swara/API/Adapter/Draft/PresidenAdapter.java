@@ -21,7 +21,6 @@ import id.creatodidak.djaga_swara.API.Models.Multi.Presiden;
 import id.creatodidak.djaga_swara.API.Models.Multi.SuaraData;
 import id.creatodidak.djaga_swara.API.Models.TpsList;
 import id.creatodidak.djaga_swara.API.Models.UpdResponse;
-import id.creatodidak.djaga_swara.Dashboard.Draft;
 import id.creatodidak.djaga_swara.Helper.DatabaseHelper;
 import id.creatodidak.djaga_swara.R;
 import retrofit2.Call;
