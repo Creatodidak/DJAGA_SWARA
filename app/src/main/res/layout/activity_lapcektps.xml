@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TUGASNEW.LAPCEKTPS">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/dataCekTps"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerPemilu">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:ignore="SpeakableTextPresentCheck">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvPreambule"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:justificationMode="inter_word"
+                        android:text="TextView" />
+
+                    <TextView
+                        android:id="@+id/textView22"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/osbold"
+                        android:text="A. Fakta - Fakta:" />
+
+                    <TextView
+                        android:id="@+id/tvFakta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:justificationMode="inter_word"
+                        android:text="TextView" />
+
+                    <TextView
+                        android:id="@+id/textView35"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/osbold"
+                        android:text="B. Analisa" />
+
+                    <TextView
+                        android:id="@+id/tvAnalisa"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:justificationMode="inter_word"
+                        android:text="TextView" />
+
+                    <TextView
+                        android:id="@+id/textView36"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/osbold"
+                        android:text="C. Prediksi" />
+
+                    <TextView
+                        android:id="@+id/tvPrediksi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:justificationMode="inter_word"
+                        android:text="TextView" />
+
+                    <TextView
+                        android:id="@+id/textView37"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/osbold"
+                        android:text="D. Rekomendasi" />
+
+                    <TextView
+                        android:id="@+id/tvRekomendasi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:justificationMode="inter_word"
+                        android:text="TextView" />
+
+                    <TextView
+                        android:id="@+id/textView38"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/osbold"
+                        android:text="E. Dokumentasi" />
+
+                    <LinearLayout
+                        android:id="@+id/listDokumentasiLocal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"></LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvClosing"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:justificationMode="inter_word"
+                        android:text="TextView" />
+
+                    <Button
+                        android:id="@+id/btKirimDraft"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="KIRIM DRAFT" />
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/formCekTps"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerPemilu">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/loadingLoc"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/radar" />
+
+            <TextView
+                android:id="@+id/tvLoadingKoordinat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/osbold"
+                android:gravity="center"
+                android:text="Mendapatkan Koordinat..." />
+
+            <ScrollView
+                android:id="@+id/itemFormCekTps"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView27"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Koordinat TPS" />
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/textView21"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Latitude" />
+
+                            <TextView
+                                android:id="@+id/textView20"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=" : " />
+
+                            <TextView
+                                android:id="@+id/tvLatitude"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="TextView" />
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/textView25"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Longitude" />
+
+                            <TextView
+                                android:id="@+id/textView24"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=" : " />
+
+                            <TextView
+                                android:id="@+id/tvLongitude"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="TextView" />
+                        </TableRow>
+                    </TableLayout>
+
+                    <TextView
+                        android:id="@+id/textView28"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/osbold"
+                        android:text="Fakta - Fakta" />
+
+                    <TextView
+                        android:id="@+id/textView43"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Apakah saat laporan ini dibuat, Kotak Suara sudah berada di TPS?" />
+
+                    <Spinner
+                        android:id="@+id/spFakta1"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/tvborder" />
+
+                    <TextView
+                        android:id="@+id/textView44"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Apakah menurut KPPS Sarana dan Prasarana untuk melaksanakan proses Pemilu sudah siap?" />
+
+                    <Spinner
+                        android:id="@+id/spFakta2"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/tvborder" />
+
+                    <TextView
+                        android:id="@+id/textView45"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Uraian Fakta Lainnya\nGunakan Double Break Line (Dua Kali Enter) untuk memisahkan item - item fakta dan tidak perlu diberi nomor\ncontoh:" />
+
+                    <TextView
+                        android:id="@+id/textView46"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Fakta 1 bla bla bla dst...\n\nFakta 2 bli bli bli dst..."
+                        android:textColor="@color/primary"
+                        android:textStyle="italic" />
+
+                    <EditText
+                        android:id="@+id/etFakta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/tvborder"
+                        android:ems="10"
+                        android:gravity="start|top"
+                        android:inputType="textMultiLine"
+                        android:lines="10"
+                        android:maxLines="10"
+                        android:padding="10dp"
+                        android:scrollbars="vertical"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <TextView
+                        android:id="@+id/textView29"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/osbold"
+                        android:text="Analisa" />
+
+                    <TextView
+                        android:id="@+id/textView47"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Menurut anda, berapa nilai kelayakan TPS tempat anda ditugaskan?" />
+
+                    <Spinner
+                        android:id="@+id/spAnalisa1"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/tvborder" />
+
+                    <TextView
+                        android:id="@+id/textView48"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Uraian Analisa Lainnya\nGunakan Double Break Line (Dua Kali Enter) untuk memisahkan item - item analisa anda dan tidak perlu diberi nomor\ncontoh:" />
+
+                    <TextView
+                        android:id="@+id/textView49"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Analisa 1 bla bla bla dst...\n\nAnalisa 2 bli bli bli dst..."
+                        android:textColor="@color/primary"
+                        android:textStyle="italic" />
+
+                    <EditText
+                        android:id="@+id/etAnalisa"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/tvborder"
+                        android:ems="10"
+                        android:gravity="start|top"
+                        android:inputType="textMultiLine"
+                        android:lines="10"
+                        android:maxLines="10"
+                        android:padding="10dp"
+                        android:scrollbars="vertical"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <TextView
+                        android:id="@+id/textView31"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/osbold"
+                        android:text="Prediksi" />
+
+                    <TextView
+                        android:id="@+id/textView50"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Apakah ada potensi terjadinya gangguan kamtibmas saat dilaksanakannya proses pemungutan suara di TPS ini?" />
+
+                    <Spinner
+                        android:id="@+id/spPrediksi1"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/tvborder" />
+
+                    <EditText
+                        android:id="@+id/etPrediksi1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/tvborder"
+                        android:ems="10"
+                        android:gravity="start|top"
+                        android:hint="jelaskan!"
+                        android:inputType="textMultiLine"
+                        android:lines="10"
+                        android:maxLines="10"
+                        android:padding="10dp"
+                        android:scrollbars="vertical"
+                        android:visibility="gone"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <TextView
+                        android:id="@+id/textView51"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Apakah ada potensi terjadinya gangguan kamtibmas saat dilaksanakannya proses penghitungan suara di TPS ini?" />
+
+                    <Spinner
+                        android:id="@+id/spPrediksi2"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/tvborder" />
+
+                    <EditText
+                        android:id="@+id/etPrediksi2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/tvborder"
+                        android:ems="10"
+                        android:gravity="start|top"
+                        android:hint="jelaskan!"
+                        android:inputType="textMultiLine"
+                        android:lines="10"
+                        android:maxLines="10"
+                        android:padding="10dp"
+                        android:scrollbars="vertical"
+                        android:visibility="gone"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <TextView
+                        android:id="@+id/textView52"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Apakah ada potensi kemungkinan terganggunya kelancaran dalam pelaksanaan rangkaian Pemilu (keseluruhan) di tps ini yang disebabkan oleh faktor - faktor lain? \nContoh: Cuaca, Hewan dll." />
+
+                    <Spinner
+                        android:id="@+id/spPrediksi3"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/tvborder" />
+
+                    <EditText
+                        android:id="@+id/etPrediksi3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/tvborder"
+                        android:ems="10"
+                        android:gravity="start|top"
+                        android:hint="jelaskan!"
+                        android:inputType="textMultiLine"
+                        android:lines="10"
+                        android:maxLines="10"
+                        android:padding="10dp"
+                        android:scrollbars="vertical"
+                        android:visibility="gone"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <TextView
+                        android:id="@+id/textView30"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/osbold"
+                        android:text="Rekomendasi" />
+
+                    <EditText
+                        android:id="@+id/etRekomendasi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/tvborder"
+                        android:ems="10"
+                        android:gravity="start|top"
+                        android:inputType="textMultiLine"
+                        android:lines="10"
+                        android:maxLines="10"
+                        android:padding="10dp"
+                        android:scrollbars="vertical"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <TextView
+                        android:id="@+id/textView32"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="Dokumentasi" />
+
+                    <LinearLayout
+                        android:id="@+id/listDokumentasi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btTambahDokumentasi"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/dashborder"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <ImageView
+                            android:id="@+id/imageView5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/baseline_photo_camera_24" />
+
+                        <TextView
+                            android:id="@+id/textView33"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="TAMBAH DOKUMENTASI"
+                            android:textSize="8sp" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btKirimData"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="KIRIM DATA" />
+
+                </LinearLayout>
+            </ScrollView>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/headerPemilu"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                app:srcCompat="@drawable/logosmall" />
+
+            <TextView
+                android:id="@+id/periodePemilu"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:paddingStart="10dp"
+                android:text="LAP. CEK TPS"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
