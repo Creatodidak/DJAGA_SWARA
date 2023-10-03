@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MFormC1;
@@ -801,5 +802,22 @@ public class DBHelper extends SQLiteOpenHelper {
 
         int rowsUpdated = db.update("formc1", values, whereClause, whereArgs);
         return rowsUpdated > 0;
+    }
+
+
+    public List<ListpresidenItem> getListCapres(String idtps, String type) {
+        List<ListpresidenItem> data = new ArrayList<>();
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM daftarpresiden WHERE id_tps = ?")
+        return data;
+    }
+
+    public List<ListgubernurItem> getListCagub(String idtps, String type) {
+    }
+
+    public List<ListbupatiItem> getListCabup(String idtps, String type) {
+    }
+
+    public List<ListkadesItem> getListCakades(String idtps, String type) {
     }
 }
