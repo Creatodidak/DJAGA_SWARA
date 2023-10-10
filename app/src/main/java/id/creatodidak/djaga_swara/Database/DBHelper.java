@@ -7,16 +7,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MFigur;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MFormC1;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MLapCekTPS;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MLapPamTPS;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MLapSerahTPS;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MLapWalTPS;
+import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MPartai;
 import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.ListbupatiItem;
 import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.ListdpdriItem;
 import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.ListdprdkabItem;
@@ -31,6 +33,9 @@ import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.ListpresidenItem;
 import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.ListsuaraItem;
 import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.ListsuarapartaiItem;
 import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.ListtpsItem;
+import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.MDataSuaraReguler;
+import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.MDptFinal;
+import id.creatodidak.djaga_swara.R;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "DATABASE.db";
@@ -60,6 +65,8 @@ public class DBHelper extends SQLiteOpenHelper {
     String TBLISTPARTAINAS = "CREATE TABLE IF NOT EXISTS daftarpartainas (id INTEGER PRIMARY KEY AUTOINCREMENT, id_partai TEXT, nomorurut TEXT, nama TEXT, periode TEXT NOT NULL)";
     String TBLISTPARTAIPROV = "CREATE TABLE IF NOT EXISTS daftarpartaiprov (id INTEGER PRIMARY KEY AUTOINCREMENT, id_partai TEXT, nomorurut TEXT, nama TEXT, periode TEXT NOT NULL)";
     String TBLISTPARTAIKAB = "CREATE TABLE IF NOT EXISTS daftarpartaikab (id INTEGER PRIMARY KEY AUTOINCREMENT, id_partai TEXT, nomorurut TEXT, nama TEXT, periode TEXT NOT NULL)";
+
+    String TBDPTFINAL = "CREATE TABLE IF NOT EXISTS dptfinal (id INTEGER PRIMARY KEY AUTOINCREMENT, id_tps TEXT, dptfinal TEXT, local INTEGER DEFAULT 1)";
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -112,6 +119,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(TBFORMC1);
         db.execSQL(TBLAPWAL);
         db.execSQL(TBLAPSERAH);
+        db.execSQL(TBDPTFINAL);
     }
 
     @Override
@@ -315,33 +323,39 @@ public class DBHelper extends SQLiteOpenHelper {
         ListtpsItem data = new ListtpsItem();
         Cursor cursor = db.rawQuery("SELECT * FROM tps WHERE id_tps = ?", new String[]{idtps});
         if (cursor != null && cursor.moveToFirst()) {
+            data.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex("id"))));
+            data.setIdTps(cursor.getString(cursor.getColumnIndex("id_tps")));
             data.setNomorTps(cursor.getString(cursor.getColumnIndex("nomor_tps")));
+            data.setDptSementara(cursor.getString(cursor.getColumnIndex("dpt_sementara")));
+            data.setDptFinal(cursor.getString(cursor.getColumnIndex("dpt_final")));
             cursor.close();
         }
         return data;
     }
 
     @SuppressLint("Range")
-    public String cektugastps(String idtps, List<String> type){
+    public String cektugastps(String idtps, List<String> type) {
         String status = "";
         List<String> liststatus = new ArrayList<>();
-        
+
         liststatus.add(cekLapcektps(idtps));
         liststatus.add(cekLappamtps(idtps));
         liststatus.add(ceksuaradone(idtps));
         liststatus.add(cekFormC1(idtps, type));
         liststatus.add(cekLapwal(idtps));
         liststatus.add(cekLapserah(idtps));
-        
-        if(liststatus.contains("BELUM ADA")){
+
+        if (liststatus.contains("BELUM ADA")) {
             status = "BELUM SELESAI";
-        }else if(liststatus.contains("LOCAL")){
+        } else if (liststatus.contains("LOCAL")) {
             status = "LOCAL";
         } else if (liststatus.contains("SERVER")) {
             status = "SELESAI";
         }
         return status;
-    };
+    }
+
+    ;
 
     @SuppressLint("Range")
     public String cekLapcektps(String idtps) {
@@ -397,9 +411,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return status;
     }
-    
+
     @SuppressLint("Range")
-    public String ceksuaradone(String idtps){
+    public String ceksuaradone(String idtps) {
         String status = "";
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM datasuarasah WHERE id_tps = ?", new String[]{idtps});
@@ -409,12 +423,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 if (suara == null || suara.isEmpty()) {
                     status = "BELUM ADA";
                     break;
-                }else{
+                } else {
                     int local = cursor.getInt(cursor.getColumnIndex("local"));
-                    if(local == 1){
+                    if (local == 1) {
                         status = "LOCAL";
                         break;
-                    }else{
+                    } else {
                         status = "SERVER";
                     }
                 }
@@ -426,7 +440,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public String ceksuarapertype(String idtps, String type){
+    public String ceksuarapertype(String idtps, String type) {
         String status = "";
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM datasuarasah WHERE id_tps = ? AND type = ?", new String[]{idtps, type.toLowerCase()});
@@ -436,12 +450,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 if (suara == null || suara.isEmpty()) {
                     status = "BELUM ADA";
                     break;
-                }else{
+                } else {
                     int local = cursor.getInt(cursor.getColumnIndex("local"));
-                    if(local == 1){
+                    if (local == 1) {
                         status = "LOCAL";
                         break;
-                    }else{
+                    } else {
                         status = "SERVER";
                     }
                 }
@@ -596,7 +610,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public MLapCekTPS getLapCekTPS(String idtps){
+    public MLapCekTPS getLapCekTPS(String idtps) {
         MLapCekTPS data = new MLapCekTPS();
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM lapcektps WHERE id_tps = ?", new String[]{idtps});
@@ -616,7 +630,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return data;
     }
 
-    public boolean updStatusCekTPS(String idtps){
+    public boolean updStatusCekTPS(String idtps) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("local", 0);
@@ -628,7 +642,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return rowsUpdated > 0;
     }
 
-    public boolean saveLapPamTPS(String idtps, String fakta, String analisa, String prediksi, String rekomendasi, String dokumentasi){
+    public boolean saveLapPamTPS(String idtps, String fakta, String analisa, String prediksi, String rekomendasi, String dokumentasi) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("id_tps", idtps);
@@ -661,7 +675,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return data;
     }
 
-    public boolean updStatusPamTPS(String idtps){
+    public boolean updStatusPamTPS(String idtps) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("local", 0);
@@ -706,7 +720,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return data;
     }
 
-    public boolean updStatusWalTPS(String idtps){
+    public boolean updStatusWalTPS(String idtps) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("local", 0);
@@ -751,7 +765,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return data;
     }
 
-    public boolean updStatusSerahTPS(String idtps){
+    public boolean updStatusSerahTPS(String idtps) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("local", 0);
@@ -774,7 +788,7 @@ public class DBHelper extends SQLiteOpenHelper {
             data.setDokumentasi(cursor.getString(cursor.getColumnIndex("dokumentasi")));
             data.setLocal(cursor.getInt(cursor.getColumnIndex("local")));
             cursor.close();
-        }else{
+        } else {
             return null;
         }
 
@@ -804,20 +818,425 @@ public class DBHelper extends SQLiteOpenHelper {
         return rowsUpdated > 0;
     }
 
-
-    public List<ListpresidenItem> getListCapres(String idtps, String type) {
+    @SuppressLint("Range")
+    public List<ListpresidenItem> getListCapres() {
         List<ListpresidenItem> data = new ArrayList<>();
         SQLiteDatabase db = getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM daftarpresiden WHERE id_tps = ?")
+        Cursor cursor = null;
+
+        try {
+            cursor = db.rawQuery("SELECT * FROM daftarpresiden", null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    ListpresidenItem item = new ListpresidenItem();
+                    item.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                    item.setIdCalon(cursor.getString(cursor.getColumnIndex("id_calon")));
+                    item.setNoUrut(cursor.getString(cursor.getColumnIndex("no_urut")));
+                    item.setCapres(cursor.getString(cursor.getColumnIndex("capres")));
+                    item.setCawapres(cursor.getString(cursor.getColumnIndex("cawapres")));
+                    item.setPeriode(cursor.getString(cursor.getColumnIndex("periode")));
+
+                    data.add(item);
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
         return data;
     }
 
-    public List<ListgubernurItem> getListCagub(String idtps, String type) {
+
+    @SuppressLint("Range")
+    public List<ListgubernurItem> getListCagub() {
+        List<ListgubernurItem> data = new ArrayList<>();
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM daftargubernur", null);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                ListgubernurItem item = new ListgubernurItem();
+                item.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex("id"))));
+                item.setIdCalon(cursor.getString(cursor.getColumnIndex("id_calon")));
+                item.setNoUrut(cursor.getString(cursor.getColumnIndex("no_urut")));
+                item.setCagub(cursor.getString(cursor.getColumnIndex("cagub")));
+                item.setCawagub(cursor.getString(cursor.getColumnIndex("cawagub")));
+                item.setPeriode(cursor.getString(cursor.getColumnIndex("periode")));
+
+                data.add(item);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        return data;
     }
 
-    public List<ListbupatiItem> getListCabup(String idtps, String type) {
+    @SuppressLint("Range")
+    public List<ListbupatiItem> getListCabup() {
+        List<ListbupatiItem> data = new ArrayList<>();
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM daftarbupati", null);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+
+                ListbupatiItem item = new ListbupatiItem();
+                item.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex("id"))));
+                item.setIdCalon(cursor.getString(cursor.getColumnIndex("id_calon")));
+                item.setNoUrut(cursor.getString(cursor.getColumnIndex("no_urut")));
+                item.setCabup(cursor.getString(cursor.getColumnIndex("cabup")));
+                item.setCawabup(cursor.getString(cursor.getColumnIndex("cawabup")));
+                item.setPeriode(cursor.getString(cursor.getColumnIndex("periode")));
+
+                data.add(item);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        return data;
     }
 
-    public List<ListkadesItem> getListCakades(String idtps, String type) {
+    @SuppressLint("Range")
+    public List<ListkadesItem> getListCakades() {
+        List<ListkadesItem> data = new ArrayList<>();
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM daftarkades", null);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                ListkadesItem item = new ListkadesItem();
+                item.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex("id"))));
+                item.setIdCalon(cursor.getString(cursor.getColumnIndex("id_calon")));
+                item.setNoUrut(cursor.getString(cursor.getColumnIndex("no_urut")));
+                item.setCakades(cursor.getString(cursor.getColumnIndex("cakades")));
+                item.setPeriode(cursor.getString(cursor.getColumnIndex("periode")));
+
+                data.add(item);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        return data;
+    }
+
+    @SuppressLint("Range")
+    public List<ListdpdriItem> getListDpdri() {
+        List<ListdpdriItem> data = new ArrayList<>();
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM daftardpdri", null);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                ListdpdriItem item = new ListdpdriItem();
+                item.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex("id"))));
+                item.setIdCalon(cursor.getString(cursor.getColumnIndex("id_calon")));
+                item.setNomorurut(cursor.getString(cursor.getColumnIndex("nomorurut")));
+                item.setNama(cursor.getString(cursor.getColumnIndex("nama")));
+                item.setPeriode(cursor.getString(cursor.getColumnIndex("periode")));
+
+                data.add(item);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        return data;
+    }
+
+    @SuppressLint("Range")
+    public MDptFinal getDptFinal(String idtps) {
+        MDptFinal data = new MDptFinal();
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM dptfinal WHERE id_tps = ?", new String[]{idtps});
+        if (cursor != null && cursor.moveToFirst()) {
+            data.setIdTps(cursor.getString(cursor.getColumnIndex("id_tps")));
+            data.setDptFinal(cursor.getString(cursor.getColumnIndex("dptfinal")));
+            data.setLocal(cursor.getInt(cursor.getColumnIndex("local")));
+        } else {
+            data = null;
+        }
+
+        return data;
+    }
+
+    public boolean saveDptFinal(String idtps, String dptFinal) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("id_tps", idtps);
+        contentValues.put("dptfinal", dptFinal);
+        long result = db.insert("dptfinal", null, contentValues);
+        return result != -1;
+    }
+
+    public boolean updDptFinal(String idtps) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("local", 0);
+
+        String whereClause = "id_tps = ?";
+        String[] whereArgs = {idtps};
+
+        int rowsUpdated = db.update("dptfinal", values, whereClause, whereArgs);
+        return rowsUpdated > 0;
+    }
+
+    public List<MDataSuaraReguler> getCalonReg(String type, String idtps) {
+        List<MDataSuaraReguler> lists = new ArrayList<>();
+        if (type.equals("presiden")) {
+            for (ListpresidenItem i : getListCapres()) {
+                ListsuaraItem suara = getSuaraPerCalon(type, idtps, i.getIdCalon());
+                MDataSuaraReguler d = new MDataSuaraReguler();
+                d.setIdcalon(i.getIdCalon());
+                d.setCalon1(i.getCapres());
+                d.setCalon2(i.getCawapres());
+                d.setNoUrut(i.getNoUrut());
+                d.setjSuara(suara.getSuara());
+                d.setLocal(suara.getLocal());
+                lists.add(d);
+            }
+        } else if (type.equals("gubernur")) {
+            for (ListgubernurItem i : getListCagub()) {
+                ListsuaraItem suara = getSuaraPerCalon(type, idtps, i.getIdCalon());
+                MDataSuaraReguler d = new MDataSuaraReguler();
+                d.setIdcalon(i.getIdCalon());
+                d.setCalon1(i.getCagub());
+                d.setCalon2(i.getCawagub());
+                d.setNoUrut(i.getNoUrut());
+                d.setjSuara(suara.getSuara());
+                d.setLocal(suara.getLocal());
+                lists.add(d);
+            }
+        } else if (type.equals("bupati")) {
+            for (ListbupatiItem i : getListCabup()) {
+                ListsuaraItem suara = getSuaraPerCalon(type, idtps, i.getIdCalon());
+                MDataSuaraReguler d = new MDataSuaraReguler();
+                d.setIdcalon(i.getIdCalon());
+                d.setCalon1(i.getCabup());
+                d.setCalon2(i.getCawabup());
+                d.setNoUrut(i.getNoUrut());
+                d.setjSuara(suara.getSuara());
+                d.setLocal(suara.getLocal());
+                lists.add(d);
+            }
+        } else if (type.equals("kades")) {
+            for (ListkadesItem i : getListCakades()) {
+                ListsuaraItem suara = getSuaraPerCalon(type, idtps, i.getIdCalon());
+                MDataSuaraReguler d = new MDataSuaraReguler();
+                d.setIdcalon(i.getIdCalon());
+                d.setCalon1(i.getCakades());
+                d.setjSuara(suara.getSuara());
+                d.setNoUrut(i.getNoUrut());
+                d.setLocal(suara.getLocal());
+                lists.add(d);
+            }
+        } else if (type.equals("dpdri")) {
+            for (ListdpdriItem i : getListDpdri()) {
+                ListsuaraItem suara = getSuaraPerCalon(type, idtps, i.getIdCalon());
+                MDataSuaraReguler d = new MDataSuaraReguler();
+                d.setIdcalon(i.getIdCalon());
+                d.setCalon1(i.getNama());
+                d.setjSuara(suara.getSuara());
+                d.setNoUrut(i.getNomorurut());
+                d.setLocal(suara.getLocal());
+                lists.add(d);
+            }
+        }
+
+        return lists;
+    }
+
+    @SuppressLint("Range")
+    public ListsuaraItem getSuaraPerCalon(String type, String idtps, String idCalon) {
+        SQLiteDatabase db = getReadableDatabase();
+        ListsuaraItem item = new ListsuaraItem();
+        Cursor cursor = db.rawQuery("SELECT * FROM datasuarasah WHERE id_tps = ? AND type = ? AND id_calon = ?", new String[]{idtps, type, idCalon});
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                item.setLocal(cursor.getInt(cursor.getColumnIndex("local")));
+                item.setSuara(cursor.getString(cursor.getColumnIndex("suara")));
+                item.setIdCalon(cursor.getString(cursor.getColumnIndex("id_calon")));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        return item;
+    }
+
+    public void saveSuara(String idtps, String idcalon, String suara) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("suara", suara);
+        String whereClause = "id_tps = ? AND id_calon = ?";
+        String[] whereArgs = {idtps, idcalon};
+
+        db.update("datasuarasah", values, whereClause, whereArgs);
+    }
+
+    public void saveSuaraTsah(String idtps, String type, String total) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("total", total);
+        values.put("id_tps", idtps);
+        values.put("type", type);
+
+        db.insert("datasuaratidaksah", null, values);
+    }
+
+    @SuppressLint("Range")
+    public String getSuaraTidakSah(String idtps, String type) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM datasuaratidaksah WHERE id_tps = ? AND type = ?", new String[]{idtps, type});
+        String data = "";
+        if (cursor != null && cursor.moveToFirst()) {
+            data = cursor.getString(cursor.getColumnIndex("total"));
+        }
+
+        return data;
+    }
+
+    public void updateStatusSuara(String kategori, String type, String idTps, String idCalon) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("local", 0);
+
+        String table = "";
+        String whereClause = "";
+        String[] whereArgs = {};
+
+        if (kategori.equals("SUARA SAH")) {
+            table = "datasuarasah";
+            whereClause = "id_tps = ? AND type = ? AND id_calon = ?";
+            whereArgs = new String[]{idTps, type, idCalon};
+        } else if (kategori.equals("SUARA TIDAK SAH")) {
+            table = "datasuaratidaksah";
+            whereClause = "id_tps = ? AND type = ?";
+            whereArgs = new String[]{idTps, type};
+        } else if (kategori.equals("SUARA PARTAI")) {
+            table = "datasuarapartai";
+            whereClause = "id_tps = ? AND type = ? AND id_partai = ?";
+            whereArgs = new String[]{idTps, type, idCalon};
+        }
+
+        // Mengonversi whereArgs menjadi string untuk ditampilkan di log
+        StringBuilder whereArgsString = new StringBuilder();
+        for (String arg : whereArgs) {
+            whereArgsString.append(arg).append(", ");
+        }
+        // Hapus koma dan spasi terakhir
+        if (whereArgsString.length() >= 2) {
+            whereArgsString.setLength(whereArgsString.length() - 2);
+        }
+
+        String sql = "UPDATE " + table + " SET local=0 WHERE " + whereClause;
+        db.execSQL(sql, whereArgs);
+
+        Log.d("UPDATE " + kategori, "SQL: " + sql);
+        Log.d("UPDATE " + kategori, "WHERE ARGS: " + whereArgsString.toString());
+    }
+
+
+    @SuppressLint("Range")
+    public List<MPartai> getPartai(String type) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        List<MPartai> data = new ArrayList<>();
+        Cursor cursor = null;
+
+        if (type.equals("DPRRI")) {
+            cursor = db.rawQuery("SELECT * FROM daftarpartainas", null);
+
+        } else if (type.equals("DPRDPROV")) {
+            cursor = db.rawQuery("SELECT * FROM daftarpartaiprov", null);
+        } else if (type.equals("DPRDKAB")) {
+            cursor = db.rawQuery("SELECT * FROM daftarpartaikab", null);
+        }
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                MPartai partai = new MPartai();
+                partai.setIdPartai(cursor.getString(cursor.getColumnIndex("id_partai")));
+                partai.setNomorurut(cursor.getString(cursor.getColumnIndex("nomorurut")));
+                partai.setNama(cursor.getString(cursor.getColumnIndex("nama")));
+                partai.setLogo(getLogoPartai(cursor.getString(cursor.getColumnIndex("nama"))));
+                data.add(partai);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        db.close();
+
+        return data;
+    }
+
+    private int getLogoPartai(String nama) {
+        if (nama.equals("PKB")) {
+            return R.drawable.pkb;
+        } else if (nama.equals("GERINDRA")) {
+            return R.drawable.gerindra;
+        } else if (nama.equals("PDI-P")) {
+            return R.drawable.pdip;
+        } else if (nama.equals("GOLKAR")) {
+            return R.drawable.golkar;
+        } else if (nama.equals("NASDEM")) {
+            return R.drawable.nasdem;
+        } else if (nama.equals("PARTAI BURUH")) {
+            return R.drawable.partaiburuh;
+        } else if (nama.equals("GELORA INDONESIA")) {
+            return R.drawable.geloraindonesia;
+        } else if (nama.equals("PKS")) {
+            return R.drawable.pks;
+        } else if (nama.equals("PKN")) {
+            return R.drawable.pkn;
+        } else if (nama.equals("HANURA")) {
+            return R.drawable.hanura;
+        } else if (nama.equals("GARUDA")) {
+            return R.drawable.garuda;
+        } else if (nama.equals("PAN")) {
+            return R.drawable.pan;
+        } else if (nama.equals("PBB")) {
+            return R.drawable.pbb;
+        } else if (nama.equals("DEMOKRAT")) {
+            return R.drawable.demokrat;
+        } else if (nama.equals("PSI")) {
+            return R.drawable.psi;
+        } else if (nama.equals("PERINDO")) {
+            return R.drawable.perindo;
+        } else if (nama.equals("PPP")) {
+            return R.drawable.ppp;
+        } else if (nama.equals("PARTAI UMMAT")) {
+            return R.drawable.partaiummat;
+        }else{
+            return 0;
+        }
+    }
+
+    public List<MFigur> getFigurList(String type, String idPartai) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        List<MFigur> data = new ArrayList<>();
+        Cursor cursor = null;
+
+        if (type.equals("DPRRI")) {
+            cursor = db.rawQuery("SELECT * FROM daftardprri WHERE id_partai = ?", new String[]{idPartai});
+
+        } else if (type.equals("DPRDPROV")) {
+            cursor = db.rawQuery("SELECT * FROM daftardprdprov WHERE id_partai = ?", new String[]{idPartai});
+        } else if (type.equals("DPRDKAB")) {
+            cursor = db.rawQuery("SELECT * FROM daftardprdkab WHERE id_partai = ?", new String[]{idPartai});
+        }
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                MFigur partai = new MFigur();
+                partai.setIdPartai(cursor.getString(cursor.getColumnIndex("id_partai")));
+                partai.setNomorurut(cursor.getString(cursor.getColumnIndex("nomorurut")));
+                partai.setNama(cursor.getString(cursor.getColumnIndex("nama")));
+                data.add(partai);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        db.close();
+
+        return data;
     }
 }

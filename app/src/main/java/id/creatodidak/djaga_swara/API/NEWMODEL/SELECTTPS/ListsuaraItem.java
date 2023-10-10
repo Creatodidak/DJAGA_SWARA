@@ -13,6 +13,26 @@ public class ListsuaraItem{
 	@SerializedName("id_calon")
 	private String idCalon;
 
+	private String suara;
+
+	private int local;
+
+	public void setLocal(int local) {
+		this.local = local;
+	}
+
+	public int getLocal() {
+		return local;
+	}
+
+	public void setSuara(String suara) {
+		this.suara = suara;
+	}
+
+	public String getSuara() {
+		return suara;
+	}
+
 	public void setIdTps(String idTps){
 		this.idTps = idTps;
 	}

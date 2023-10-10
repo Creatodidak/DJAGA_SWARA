@@ -4,10 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MFormC1;
 import id.creatodidak.djaga_swara.Database.DBHelper;
 import id.creatodidak.djaga_swara.R;
 import id.creatodidak.djaga_swara.TUGASNEW.LAPCEKTPS;
@@ -21,15 +27,21 @@ public class JobSelector extends AppCompatActivity {
     CardView lapcektps, lappamtps, lapsuara, lapformc1, lappengawalan, lappenyerahan;
     String IDTPS;
     DBHelper dbHelper;
+    String MERAH = "#e5342f";
+    String KUNING = "#eeba56";
+    String HIJAU = "#8cc24b";
+    List<String> type = new ArrayList<>();
+    SharedPreferences sh;
+    DBHelper db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_selector);
         Intent intent = getIntent();
         IDTPS = intent.getStringExtra("IDTPS");
-        String MERAH = "#e5342f";
-        String KUNING = "#eeba56";
-        String HIJAU = "#8cc24b";
+        sh = getSharedPreferences("DATAMANAGER", MODE_PRIVATE);
+        db = new DBHelper(this);
 
         dbHelper = new DBHelper(this);
         lapcektps = findViewById(R.id.lapcektps);
@@ -75,6 +87,31 @@ public class JobSelector extends AppCompatActivity {
             lappenyerahan.setCardBackgroundColor(Color.parseColor(KUNING));
         }else if(slappenyerahan.equals("SERVER")){
             lappenyerahan.setCardBackgroundColor(Color.parseColor(HIJAU));
+        }
+
+        if (sh.getBoolean("PRESIDEN", false)) {
+            type.add("PRESIDEN");
+        }
+        if (sh.getBoolean("GUBERNUR", false)) {
+            type.add("GUBERNUR");
+        }
+        if (sh.getBoolean("BUPATI", false)) {
+            type.add("BUPATI");
+        }
+        if (sh.getBoolean("KADES", false)) {
+            type.add("KADES");
+        }
+        if (sh.getBoolean("DPD-RI", false)) {
+            type.add("DPD-RI");
+        }
+        if (sh.getBoolean("DPR-RI", false)) {
+            type.add("DPR-RI");
+        }
+        if (sh.getBoolean("DPRD-PROV", false)) {
+            type.add("DPRD-PROV");
+        }
+        if (sh.getBoolean("DPRD-KAB", false)) {
+            type.add("DPRD-KAB");
         }
 
         lapcektps.setOnClickListener(new View.OnClickListener() {
@@ -131,5 +168,38 @@ public class JobSelector extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        loadStatusSuara();
+        loadStatusFormC1();
+    }
+
+    private void loadStatusFormC1() {
+        for(String ty : type){
+            MFormC1 lastData = dbHelper.getFormC1(IDTPS, ty);
+
+            if (lastData == null) {
+                lapformc1.setCardBackgroundColor(Color.parseColor(MERAH));
+                break;
+            } else if (lastData.getLocal() == 1) {
+                lapformc1.setCardBackgroundColor(Color.parseColor(KUNING));
+                break;
+            } else if (lastData.getLocal() == 0) {
+                lapformc1.setCardBackgroundColor(Color.parseColor(HIJAU));
+            }
+        }
+    }
+
+    private void loadStatusSuara() {
+        for(String t : type){
+            Log.d("STATUS SUARA", db.ceksuarapertype(IDTPS, t));
+            if (db.ceksuarapertype(IDTPS, t).equals("BELUM ADA") || db.ceksuarapertype(IDTPS, t).equals("")) {
+                lapsuara.setCardBackgroundColor(Color.parseColor(MERAH));
+                break;
+            } else if (db.ceksuarapertype(IDTPS, t).equals("LOCAL")) {
+                lapsuara.setCardBackgroundColor(Color.parseColor(KUNING));
+            } else if (db.ceksuarapertype(IDTPS, t).equals("SERVER")) {
+                lapsuara.setCardBackgroundColor(Color.parseColor(HIJAU));
+            }
+        }
     }
 }

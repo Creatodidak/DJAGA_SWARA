@@ -2,6 +2,7 @@ package id.creatodidak.djaga_swara.API.Interface;
 
 import java.util.List;
 
+import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MKoleksiSuara;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MResponseServer;
 import id.creatodidak.djaga_swara.API.NEWMODEL.Penugasan.MDesa;
 import id.creatodidak.djaga_swara.API.NEWMODEL.Penugasan.MKabupaten;
@@ -10,6 +11,7 @@ import id.creatodidak.djaga_swara.API.NEWMODEL.Penugasan.MTps;
 import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.RespSelectTps;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Multipart;
@@ -100,5 +102,17 @@ public interface Endpoint {
             @Part("idtps") String idtps,
             @Part("type") String type,
             @Part MultipartBody.Part imagePart
+    );
+
+    @FormUrlEncoded
+    @POST("laporan/upddpt")
+    Call<MResponseServer> uploadDpt(
+            @Field("idtps") String idtps,
+            @Field("dpt") String dptFinal
+    );
+
+    @POST("laporan/datasuara")
+    Call<MResponseServer> uploadSuara(
+            @Body List<MKoleksiSuara> data
     );
 }
