@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import id.creatodidak.djaga_swara.R;
 
 public class CSpinner extends BaseAdapter {
-    private Context context;
-    private ArrayList<String> itemList;
+    private final Context context;
+    private final ArrayList<String> itemList;
     private int selectedPosition = -1; // Untuk melacak elemen terpilih
 
     public CSpinner(Context context, ArrayList<String> itemList) {

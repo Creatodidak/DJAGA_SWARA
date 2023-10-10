@@ -1,8 +1,5 @@
 package id.creatodidak.djaga_swara.TUGASNEW;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,19 +9,19 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
 import id.creatodidak.djaga_swara.API.Interface.Endpoint;
-import id.creatodidak.djaga_swara.API.NEWADAPTER.GridSuaraAdapter;
-import id.creatodidak.djaga_swara.API.NEWMODEL.GridLayoutData;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MResponseServer;
 import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.MDptFinal;
+import id.creatodidak.djaga_swara.DASHBOARDNEW.JobSelector;
 import id.creatodidak.djaga_swara.Database.DBHelper;
 import id.creatodidak.djaga_swara.R;
 import id.creatodidak.djaga_swara.plugin.CDialog;
@@ -493,5 +490,13 @@ public class LAPSUARA extends AppCompatActivity {
                 statusDprdkab.setTextColor(Color.parseColor("#8cc24b"));
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+            Intent intent = new Intent(LAPSUARA.this, JobSelector.class);
+            intent.putExtra("IDTPS", IDTPS);
+            startActivity(intent);
+            finish();
     }
 }

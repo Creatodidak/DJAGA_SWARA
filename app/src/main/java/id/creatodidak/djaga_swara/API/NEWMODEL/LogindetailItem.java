@@ -2,8 +2,6 @@ package id.creatodidak.djaga_swara.API.NEWMODEL;
 
 import com.google.gson.annotations.SerializedName;
 
-import javax.xml.transform.sax.SAXResult;
-
 public class LogindetailItem{
 
 	@SerializedName("jabatan")

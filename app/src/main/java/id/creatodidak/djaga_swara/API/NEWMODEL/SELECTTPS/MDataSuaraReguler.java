@@ -1,7 +1,5 @@
 package id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS;
 
-import com.google.gson.annotations.SerializedName;
-
 public class MDataSuaraReguler {
 	private String idcalon;
 	private String noUrut;

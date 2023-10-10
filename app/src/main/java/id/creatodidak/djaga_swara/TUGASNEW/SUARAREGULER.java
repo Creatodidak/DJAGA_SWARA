@@ -1,9 +1,5 @@
 package id.creatodidak.djaga_swara.TUGASNEW;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -15,14 +11,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
 import id.creatodidak.djaga_swara.API.Interface.Endpoint;
-import id.creatodidak.djaga_swara.API.Models.TPS;
 import id.creatodidak.djaga_swara.API.NEWADAPTER.SuaraRegAdp;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MKoleksiSuara;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MResponseServer;
@@ -30,15 +28,11 @@ import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.ListbupatiItem;
 import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.ListgubernurItem;
 import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.ListkadesItem;
 import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.ListpresidenItem;
-import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.ListsuaraItem;
 import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.ListtpsItem;
 import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.MDataSuaraReguler;
 import id.creatodidak.djaga_swara.Database.DBHelper;
 import id.creatodidak.djaga_swara.R;
 import id.creatodidak.djaga_swara.plugin.CDialog;
-import id.creatodidak.djaga_swara.plugin.DATATYPEMANAGER;
-import id.creatodidak.djaga_swara.plugin.SessionData;
-import id.creatodidak.djaga_swara.plugin.TextHelper;
 import id.creatodidak.djaga_swara.plugin.UPDialog;
 import retrofit2.Call;
 import retrofit2.Callback;

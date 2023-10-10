@@ -1,7 +1,8 @@
 package id.creatodidak.djaga_swara.API.NEWMODEL;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class MLogin{
 

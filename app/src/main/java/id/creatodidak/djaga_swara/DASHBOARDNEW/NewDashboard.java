@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -172,7 +171,31 @@ public class NewDashboard extends AppCompatActivity {
         btnBatal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cvSetTugas.setVisibility(View.GONE);
+                CDialog.up(NewDashboard.this,
+                        "Konfirmasi",
+                        "Batal Memilih Tugas?",
+                        true, false, false,
+                        "TIDAK",
+                        "YA",
+                        "",
+                        new CDialog.AlertDialogListener() {
+                            @Override
+                            public void onOpt1(AlertDialog alert) {
+                                alert.dismiss();
+                                cvSetTugas.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onOpt2(AlertDialog alert) {
+
+                            }
+
+                            @Override
+                            public void onCancel(AlertDialog alert) {
+                                alert.dismiss();
+                            }
+                        }
+                ).show();
             }
         });
         lm = new NonScrollableLayoutManager(this);
@@ -650,7 +673,31 @@ public class NewDashboard extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<MKabupaten> call, Throwable t) {
+                CDialog.up(NewDashboard.this,
+                        "Informasi",
+                        "Sepertinya ada sistem failure, silahkan restart activity!",
+                        false, false, false,
+                        "",
+                        "RESTART",
+                        "",
+                        new CDialog.AlertDialogListener() {
+                            @Override
+                            public void onOpt1(AlertDialog alert) {
+                                alert.dismiss();
+                                NewDashboard.this.finish();
+                            }
 
+                            @Override
+                            public void onOpt2(AlertDialog alert) {
+
+                            }
+
+                            @Override
+                            public void onCancel(AlertDialog alert) {
+                                alert.dismiss();
+                            }
+                        }
+                ).show();
             }
         });
     }
@@ -705,7 +752,31 @@ public class NewDashboard extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<MKecamatan> call, Throwable t) {
+                CDialog.up(NewDashboard.this,
+                        "Informasi",
+                        "Sepertinya ada sistem failure, silahkan restart activity!",
+                        false, false, false,
+                        "",
+                        "RESTART",
+                        "",
+                        new CDialog.AlertDialogListener() {
+                            @Override
+                            public void onOpt1(AlertDialog alert) {
+                                alert.dismiss();
+                                NewDashboard.this.finish();
+                            }
 
+                            @Override
+                            public void onOpt2(AlertDialog alert) {
+
+                            }
+
+                            @Override
+                            public void onCancel(AlertDialog alert) {
+                                alert.dismiss();
+                            }
+                        }
+                ).show();
             }
         });
     }
@@ -759,7 +830,31 @@ public class NewDashboard extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<MDesa> call, Throwable t) {
+                CDialog.up(NewDashboard.this,
+                        "Informasi",
+                        "Sepertinya ada sistem failure, silahkan restart activity!",
+                        false, false, false,
+                        "",
+                        "RESTART",
+                        "",
+                        new CDialog.AlertDialogListener() {
+                            @Override
+                            public void onOpt1(AlertDialog alert) {
+                                alert.dismiss();
+                                NewDashboard.this.finish();
+                            }
 
+                            @Override
+                            public void onOpt2(AlertDialog alert) {
+
+                            }
+
+                            @Override
+                            public void onCancel(AlertDialog alert) {
+                                alert.dismiss();
+                            }
+                        }
+                ).show();
             }
         });
     }
@@ -779,10 +874,65 @@ public class NewDashboard extends AppCompatActivity {
             pbSaveData.setProgress(0);
             pbText.setText("0 / 0");
         } else {
-            int progress = (int) ((totals * 100) / total);
+            int progress = (totals * 100) / total;
             pbSaveData.setProgress(progress);
             pbText.setText(totals + " / " + total);
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (cvSetTugas.getVisibility() == View.VISIBLE) {
+            CDialog.up(this,
+                    "Konfirmasi",
+                    "Batal Memilih Tugas?",
+                    true, false, false,
+                    "TIDAK",
+                    "YA",
+                    "",
+                    new CDialog.AlertDialogListener() {
+                        @Override
+                        public void onOpt1(AlertDialog alert) {
+                            alert.dismiss();
+                            cvSetTugas.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onOpt2(AlertDialog alert) {
+
+                        }
+
+                        @Override
+                        public void onCancel(AlertDialog alert) {
+                            alert.dismiss();
+                        }
+                    }
+            ).show();
+        }else{
+            CDialog.up(this,
+                    "Konfirmasi",
+                    "Keluar dari aplikasi?",
+                    true, false, false,
+                    "TIDAK",
+                    "YA",
+                    "",
+                    new CDialog.AlertDialogListener() {
+                        @Override
+                        public void onOpt1(AlertDialog alert) {
+                            finishAffinity();
+                        }
+
+                        @Override
+                        public void onOpt2(AlertDialog alert) {
+
+                        }
+
+                        @Override
+                        public void onCancel(AlertDialog alert) {
+                            alert.dismiss();
+                        }
+                    }
+            ).show();
+        }
+    }
 }

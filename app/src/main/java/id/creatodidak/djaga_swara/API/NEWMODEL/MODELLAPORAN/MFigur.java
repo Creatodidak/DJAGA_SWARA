@@ -15,6 +15,17 @@ public class MFigur {
 	@SerializedName("nama")
 	private String nama;
 
+	@SerializedName("suara")
+	private String suara;
+
+	public String getSuara() {
+		return suara;
+	}
+
+	public void setSuara(String suara) {
+		this.suara = suara;
+	}
+
 	public String getIdCalon() {
 		return idCalon;
 	}

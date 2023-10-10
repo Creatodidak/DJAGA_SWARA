@@ -1,49 +1,39 @@
 package id.creatodidak.djaga_swara.TUGASNEW;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.core.content.FileProvider;
-
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
 import id.creatodidak.djaga_swara.API.Interface.Endpoint;
-import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MLapCekTPS;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MLapPamTPS;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MResponseServer;
+import id.creatodidak.djaga_swara.DASHBOARDNEW.JobSelector;
 import id.creatodidak.djaga_swara.Database.DBHelper;
 import id.creatodidak.djaga_swara.R;
 import id.creatodidak.djaga_swara.plugin.CDialog;
-import id.creatodidak.djaga_swara.plugin.GPSChecker;
 import id.creatodidak.djaga_swara.plugin.PhotoResult;
 import id.creatodidak.djaga_swara.plugin.ProgressUpload;
 import id.creatodidak.djaga_swara.plugin.RandomStringGenerator;
@@ -115,7 +105,7 @@ public class LAPPAMTPS extends AppCompatActivity {
                         if (listFoto.equals("")) {
                             listFoto = String.valueOf(uri);
                         } else {
-                            listFoto = listFoto + "," + String.valueOf(uri);
+                            listFoto = listFoto + "," + uri;
                         }
 
                         ImageView imageView = new ImageView(this);
@@ -445,5 +435,43 @@ public class LAPPAMTPS extends AppCompatActivity {
             listDokumentasiLocal.addView(imageView, layoutParams);
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (formPamTps.getVisibility() == View.VISIBLE) {
+            CDialog.up(this,
+                    "Konfirmasi",
+                    "Laporan belum anda kirim, jika anda kembali maka data yang sudah anda input akan hilang...\nLanjutkan?",
+                    true, false, false,
+                    "BATAL",
+                    "LANJUTKAN",
+                    "",
+                    new CDialog.AlertDialogListener() {
+                        @Override
+                        public void onOpt1(AlertDialog alert) {
+                            Intent intent = new Intent(LAPPAMTPS.this, JobSelector.class);
+                            intent.putExtra("IDTPS", IDTPS);
+                            startActivity(intent);
+                            finish();
+                        }
+
+                        @Override
+                        public void onOpt2(AlertDialog alert) {
+
+                        }
+
+                        @Override
+                        public void onCancel(AlertDialog alert) {
+                            alert.dismiss();
+                        }
+                    }
+            ).show();
+        }else{
+            Intent intent = new Intent(LAPPAMTPS.this, JobSelector.class);
+            intent.putExtra("IDTPS", IDTPS);
+            startActivity(intent);
+            finish();
+        }
     }
 }

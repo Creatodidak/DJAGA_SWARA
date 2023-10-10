@@ -1,7 +1,5 @@
 package id.creatodidak.djaga_swara.LOGINNEW;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,10 +10,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import id.creatodidak.djaga_swara.API.Adapter.Client;
 import id.creatodidak.djaga_swara.API.Interface.EndpointVRS;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MLogin;
-import id.creatodidak.djaga_swara.Login.SetLoginPin;
 import id.creatodidak.djaga_swara.R;
 import id.creatodidak.djaga_swara.plugin.CDialog;
 import id.creatodidak.djaga_swara.plugin.SessionData;

@@ -15,6 +15,17 @@ public class MPartai {
 
 	private int logo;
 
+	@SerializedName("suara")
+	private String suara;
+
+	public String getSuara() {
+		return suara;
+	}
+
+	public void setSuara(String suara) {
+		this.suara = suara;
+	}
+
 	public String getIdPartai() {
 		return idPartai;
 	}

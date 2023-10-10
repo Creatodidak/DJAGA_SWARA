@@ -1,13 +1,5 @@
 package id.creatodidak.djaga_swara.TUGASNEW;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,10 +7,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +25,7 @@ import id.creatodidak.djaga_swara.API.Interface.Endpoint;
 import id.creatodidak.djaga_swara.API.NEWADAPTER.FORMC1ADP;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MFormC1;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MResponseServer;
+import id.creatodidak.djaga_swara.DASHBOARDNEW.JobSelector;
 import id.creatodidak.djaga_swara.Database.DBHelper;
 import id.creatodidak.djaga_swara.R;
 import id.creatodidak.djaga_swara.plugin.CDialog;
@@ -274,5 +270,13 @@ public class LAPFORMC1 extends AppCompatActivity {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(this, this.getPackageName() + ".provider", imageFile));
         opencamera.launch(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+            Intent intent = new Intent(LAPFORMC1.this, JobSelector.class);
+            intent.putExtra("IDTPS", IDTPS);
+            startActivity(intent);
+            finish();
     }
 }

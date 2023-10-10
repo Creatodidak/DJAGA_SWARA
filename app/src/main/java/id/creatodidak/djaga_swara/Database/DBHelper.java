@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -355,8 +356,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return status;
     }
 
-    ;
-
     @SuppressLint("Range")
     public String cekLapcektps(String idtps) {
         SQLiteDatabase db = getReadableDatabase();
@@ -443,11 +442,11 @@ public class DBHelper extends SQLiteOpenHelper {
     public String ceksuarapertype(String idtps, String type) {
         String status = "";
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM datasuarasah WHERE id_tps = ? AND type = ?", new String[]{idtps, type.toLowerCase()});
+        Cursor cursor = db.rawQuery("SELECT * FROM datasuarasah WHERE id_tps = ? AND type = ?", new String[]{idtps, type.toLowerCase().replace("-", "")});
         if (cursor.moveToFirst()) {
             do {
                 String suara = cursor.getString(cursor.getColumnIndex("suara"));
-                if (suara == null || suara.isEmpty()) {
+                if (TextUtils.isEmpty(suara)) {
                     status = "BELUM ADA";
                     break;
                 } else {
@@ -462,7 +461,7 @@ public class DBHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
             cursor.close();
         }
-
+        Log.i("STATUS "+ type, status);
         return status;
     }
 
@@ -479,7 +478,7 @@ public class DBHelper extends SQLiteOpenHelper {
             }
         }
 
-        String sql = "SELECT * FROM formc1 WHERE id_tps = ? AND type IN (" + placeholders.toString() + ")";
+        String sql = "SELECT * FROM formc1 WHERE id_tps = ? AND type IN (" + placeholders + ")";
         Cursor cursor = db.rawQuery(sql, new String[]{idtps, String.join(",", type)});
 
         try {
@@ -1073,13 +1072,20 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void saveSuaraTsah(String idtps, String type, String total) {
         SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("total", total);
-        values.put("id_tps", idtps);
-        values.put("type", type);
 
-        db.insert("datasuaratidaksah", null, values);
+        Cursor cursor = db.rawQuery("SELECT * FROM datasuaratidaksah WHERE id_tps = ? AND type = ?", new String[]{idtps, type});
+
+        if (cursor.getCount() == 0) {
+            ContentValues values = new ContentValues();
+            values.put("total", total);
+            values.put("id_tps", idtps);
+            values.put("type", type);
+            db.insert("datasuaratidaksah", null, values);
+        }
+
+        cursor.close();
     }
+
 
     @SuppressLint("Range")
     public String getSuaraTidakSah(String idtps, String type) {
@@ -1130,12 +1136,12 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(sql, whereArgs);
 
         Log.d("UPDATE " + kategori, "SQL: " + sql);
-        Log.d("UPDATE " + kategori, "WHERE ARGS: " + whereArgsString.toString());
+        Log.d("UPDATE " + kategori, "WHERE ARGS: " + whereArgsString);
     }
 
 
     @SuppressLint("Range")
-    public List<MPartai> getPartai(String type) {
+    public List<MPartai> getPartai(String type, String IDTPS) {
         SQLiteDatabase db = getReadableDatabase();
 
         List<MPartai> data = new ArrayList<>();
@@ -1157,6 +1163,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 partai.setNomorurut(cursor.getString(cursor.getColumnIndex("nomorurut")));
                 partai.setNama(cursor.getString(cursor.getColumnIndex("nama")));
                 partai.setLogo(getLogoPartai(cursor.getString(cursor.getColumnIndex("nama"))));
+                partai.setSuara(getSuaraPartai(type, cursor.getString(cursor.getColumnIndex("id_partai")), IDTPS));
                 data.add(partai);
             } while (cursor.moveToNext());
             cursor.close();
@@ -1166,6 +1173,36 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return data;
     }
+
+    private String getSuaraPartai(String type, String idPartai, String IDTPS) {
+        SQLiteDatabase db = getReadableDatabase();
+        String lv = "";
+        if (type.equals("DPRRI")) {
+            lv = "nasional";
+        } else if (type.equals("DPRDPROV")) {
+            lv = "provinsi";
+        } else if (type.equals("DPRDKAB")) {
+            lv = "kabupaten";
+        }
+
+        Cursor cursor = db.rawQuery("SELECT * FROM datasuarapartai WHERE id_partai = ? AND type = ? AND id_tps = ?", new String[]{idPartai, lv, IDTPS});
+
+        if (cursor.moveToFirst()) {
+            // Pindahkan kursor ke baris pertama
+            String suara = cursor.getString(cursor.getColumnIndex("suara"));
+            cursor.close(); // Jangan lupa untuk menutup kursor setelah penggunaan
+            if (TextUtils.isEmpty(suara)) {
+                return "";
+            } else {
+                return suara;
+            }
+        } else {
+            // Tidak ada baris yang cocok, kembalikan nilai default
+            cursor.close(); // Tutup kursor jika tidak ada baris yang cocok
+            return "";
+        }
+    }
+
 
     private int getLogoPartai(String nama) {
         if (nama.equals("PKB")) {
@@ -1209,7 +1246,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<MFigur> getFigurList(String type, String idPartai) {
+    public List<MFigur> getFigurList(String type, String idPartai, String IDTPS) {
         SQLiteDatabase db = getReadableDatabase();
 
         List<MFigur> data = new ArrayList<>();
@@ -1226,11 +1263,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                MFigur partai = new MFigur();
-                partai.setIdPartai(cursor.getString(cursor.getColumnIndex("id_partai")));
-                partai.setNomorurut(cursor.getString(cursor.getColumnIndex("nomorurut")));
-                partai.setNama(cursor.getString(cursor.getColumnIndex("nama")));
-                data.add(partai);
+                MFigur figur = new MFigur();
+                figur.setIdCalon(cursor.getString(cursor.getColumnIndex("id_calon")));
+                figur.setIdPartai(cursor.getString(cursor.getColumnIndex("id_partai")));
+                figur.setNomorurut(cursor.getString(cursor.getColumnIndex("nomorurut")));
+                figur.setNama(cursor.getString(cursor.getColumnIndex("nama")));
+                figur.setSuara(getSuaraPerCalon(type.toLowerCase(), IDTPS, cursor.getString(cursor.getColumnIndex("id_calon"))).getSuara());
+                data.add(figur);
             } while (cursor.moveToNext());
             cursor.close();
         }
@@ -1238,5 +1277,84 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
 
         return data;
+    }
+
+    public void saveSuaraPartai(String idtps, String type, String idPartai, String suara) {
+        String types = "";
+
+        if (type.equals("DPRRI")) {
+            types = "nasional";
+        } else if (type.equals("DPRDPROV")) {
+            types = "provinsi";
+        } else if (type.equals("DPRDKAB")) {
+            types = "kabupaten";
+        }
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("suara", suara);
+
+        String whereClause = "id_tps = ? AND type = ? AND id_partai = ?";
+        String[] whereArgs = {idtps, types, idPartai};
+        db.update("datasuarapartai", values, whereClause, whereArgs);
+    }
+
+    public String statusLocalLegislatif(String idtps, String type) {
+        SQLiteDatabase db = getReadableDatabase();
+        String status = "";
+        Cursor cursor = db.rawQuery("SELECT * FROM datasuarasah WHERE id_tps = ? AND type = ?", new String[]{idtps, type});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            boolean hasLocal = false;
+            boolean isEmpty = false;
+            do {
+                if (TextUtils.isEmpty(cursor.getString(cursor.getColumnIndex("suara")))) {
+                    isEmpty = true;
+                    break;
+                }else {
+                    if (cursor.getInt(cursor.getColumnIndex("local")) == 1) {
+                        hasLocal = true;
+                        break;
+                    }
+                }
+            } while (cursor.moveToNext());
+            cursor.close();
+
+            if(isEmpty){
+                status = "BELUM ADA";
+            }else {
+                if (hasLocal) {
+                    status = "LOCAL";
+                } else {
+                    status = "SERVER";
+                }
+            }
+        } else {
+            status = "BELUM ADA";
+        }
+
+        return status;
+    }
+
+    public void updSuaraPartai(String idPartai, String type, String idtps) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("local", 0);
+
+        String whereClause = "id_tps = ? AND id_partai = ? AND type = ?";
+        String[] whereArgs = {idtps, idPartai, type};
+
+        db.update("datasuarapartai", values, whereClause, whereArgs);
+    }
+
+    public void updSuaraLegislatif(String type, String idtps, String idCalon) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("local", 0);
+
+        String whereClause = "id_tps = ? AND id_calon = ? AND type = ?";
+        String[] whereArgs = {idtps, idCalon, type};
+
+        db.update("datasuarasah", values, whereClause, whereArgs);
     }
 }

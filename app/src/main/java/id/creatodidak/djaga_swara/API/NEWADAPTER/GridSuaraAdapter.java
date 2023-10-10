@@ -20,11 +20,11 @@ import id.creatodidak.djaga_swara.Database.DBHelper;
 import id.creatodidak.djaga_swara.R;
 
 public class GridSuaraAdapter extends BaseAdapter {
-    private Context context;
-    private List<GridLayoutData> data;
-    private OnClickListener onClickListener;
-    private DBHelper dbHelper;
-    private SharedPreferences sh;
+    private final Context context;
+    private final List<GridLayoutData> data;
+    private final OnClickListener onClickListener;
+    private final DBHelper dbHelper;
+    private final SharedPreferences sh;
 
     public GridSuaraAdapter(Context context, List<GridLayoutData> data, OnClickListener onClickListener) {
         this.context = context;
@@ -92,6 +92,6 @@ public class GridSuaraAdapter extends BaseAdapter {
     }
 
     public interface OnClickListener{
-        public void onClick(String idTps);
+        void onClick(String idTps);
     }
 }

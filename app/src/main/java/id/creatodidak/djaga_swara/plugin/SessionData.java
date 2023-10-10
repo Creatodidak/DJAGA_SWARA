@@ -3,10 +3,7 @@ package id.creatodidak.djaga_swara.plugin;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.util.List;
-
 import id.creatodidak.djaga_swara.API.NEWMODEL.LogindetailItem;
-import id.creatodidak.djaga_swara.API.NEWMODEL.MLogin;
 
 public class SessionData {
     public static void saveuserdata(Context context, LogindetailItem logindata){

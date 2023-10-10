@@ -1,14 +1,13 @@
 package id.creatodidak.djaga_swara.DASHBOARDNEW;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,35 +56,35 @@ public class JobSelector extends AppCompatActivity {
         String slappengawalan = dbHelper.cekLapwal(IDTPS);
         String slappenyerahan = dbHelper.cekLapserah(IDTPS);
 
-        if(slapcektps.equals("BELUM ADA")){
+        if (slapcektps.equals("BELUM ADA")) {
             lapcektps.setCardBackgroundColor(Color.parseColor(MERAH));
-        }else if(slapcektps.equals("LOCAL")){
+        } else if (slapcektps.equals("LOCAL")) {
             lapcektps.setCardBackgroundColor(Color.parseColor(KUNING));
-        }else if(slapcektps.equals("SERVER")){
+        } else if (slapcektps.equals("SERVER")) {
             lapcektps.setCardBackgroundColor(Color.parseColor(HIJAU));
         }
 
-        if(slappamtps.equals("BELUM ADA")){
+        if (slappamtps.equals("BELUM ADA")) {
             lappamtps.setCardBackgroundColor(Color.parseColor(MERAH));
-        }else if(slappamtps.equals("LOCAL")){
+        } else if (slappamtps.equals("LOCAL")) {
             lappamtps.setCardBackgroundColor(Color.parseColor(KUNING));
-        }else if(slappamtps.equals("SERVER")){
+        } else if (slappamtps.equals("SERVER")) {
             lappamtps.setCardBackgroundColor(Color.parseColor(HIJAU));
         }
 
-        if(slappengawalan.equals("BELUM ADA")){
+        if (slappengawalan.equals("BELUM ADA")) {
             lappengawalan.setCardBackgroundColor(Color.parseColor(MERAH));
-        }else if(slappengawalan.equals("LOCAL")){
+        } else if (slappengawalan.equals("LOCAL")) {
             lappengawalan.setCardBackgroundColor(Color.parseColor(KUNING));
-        }else if(slappengawalan.equals("SERVER")){
+        } else if (slappengawalan.equals("SERVER")) {
             lappengawalan.setCardBackgroundColor(Color.parseColor(HIJAU));
         }
 
-        if(slappenyerahan.equals("BELUM ADA")){
+        if (slappenyerahan.equals("BELUM ADA")) {
             lappenyerahan.setCardBackgroundColor(Color.parseColor(MERAH));
-        }else if(slappenyerahan.equals("LOCAL")){
+        } else if (slappenyerahan.equals("LOCAL")) {
             lappenyerahan.setCardBackgroundColor(Color.parseColor(KUNING));
-        }else if(slappenyerahan.equals("SERVER")){
+        } else if (slappenyerahan.equals("SERVER")) {
             lappenyerahan.setCardBackgroundColor(Color.parseColor(HIJAU));
         }
 
@@ -120,6 +119,7 @@ public class JobSelector extends AppCompatActivity {
                 Intent intent = new Intent(JobSelector.this, LAPCEKTPS.class);
                 intent.putExtra("IDTPS", IDTPS);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -129,6 +129,7 @@ public class JobSelector extends AppCompatActivity {
                 Intent intent = new Intent(JobSelector.this, LAPPAMTPS.class);
                 intent.putExtra("IDTPS", IDTPS);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -138,6 +139,7 @@ public class JobSelector extends AppCompatActivity {
                 Intent intent = new Intent(JobSelector.this, LAPSUARA.class);
                 intent.putExtra("IDTPS", IDTPS);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -148,6 +150,7 @@ public class JobSelector extends AppCompatActivity {
                 Intent intent = new Intent(JobSelector.this, LAPFORMC1.class);
                 intent.putExtra("IDTPS", IDTPS);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -157,6 +160,7 @@ public class JobSelector extends AppCompatActivity {
                 Intent intent = new Intent(JobSelector.this, LAPPENGAWALAN.class);
                 intent.putExtra("IDTPS", IDTPS);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -166,6 +170,7 @@ public class JobSelector extends AppCompatActivity {
                 Intent intent = new Intent(JobSelector.this, LAPPENYERAHAN.class);
                 intent.putExtra("IDTPS", IDTPS);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -174,7 +179,7 @@ public class JobSelector extends AppCompatActivity {
     }
 
     private void loadStatusFormC1() {
-        for(String ty : type){
+        for (String ty : type) {
             MFormC1 lastData = dbHelper.getFormC1(IDTPS, ty);
 
             if (lastData == null) {
@@ -190,8 +195,7 @@ public class JobSelector extends AppCompatActivity {
     }
 
     private void loadStatusSuara() {
-        for(String t : type){
-            Log.d("STATUS SUARA", db.ceksuarapertype(IDTPS, t));
+        for (String t : type) {
             if (db.ceksuarapertype(IDTPS, t).equals("BELUM ADA") || db.ceksuarapertype(IDTPS, t).equals("")) {
                 lapsuara.setCardBackgroundColor(Color.parseColor(MERAH));
                 break;

@@ -1,7 +1,5 @@
 package id.creatodidak.djaga_swara.LOGINNEW;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,6 +17,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import id.creatodidak.djaga_swara.API.NEWMODEL.LogindetailItem;
 import id.creatodidak.djaga_swara.DASHBOARDNEW.NewDashboard;

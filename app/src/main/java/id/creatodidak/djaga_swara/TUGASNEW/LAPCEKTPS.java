@@ -1,13 +1,5 @@
 package id.creatodidak.djaga_swara.TUGASNEW;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -22,7 +14,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -33,7 +24,14 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
 
@@ -47,6 +45,7 @@ import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
 import id.creatodidak.djaga_swara.API.Interface.Endpoint;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MLapCekTPS;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MResponseServer;
+import id.creatodidak.djaga_swara.DASHBOARDNEW.JobSelector;
 import id.creatodidak.djaga_swara.Database.DBHelper;
 import id.creatodidak.djaga_swara.R;
 import id.creatodidak.djaga_swara.plugin.CDialog;
@@ -168,7 +167,7 @@ public class LAPCEKTPS extends AppCompatActivity implements LocationListener {
                         if (listFoto.equals("")) {
                             listFoto = String.valueOf(uri);
                         } else {
-                            listFoto = listFoto + "," + String.valueOf(uri);
+                            listFoto = listFoto + "," + uri;
                         }
 
                         ImageView imageView = new ImageView(this);
@@ -655,8 +654,6 @@ public class LAPCEKTPS extends AppCompatActivity implements LocationListener {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-
         if (formCekTps.getVisibility() == View.VISIBLE) {
             CDialog.up(this,
                     "Konfirmasi",
@@ -668,7 +665,10 @@ public class LAPCEKTPS extends AppCompatActivity implements LocationListener {
                     new CDialog.AlertDialogListener() {
                         @Override
                         public void onOpt1(AlertDialog alert) {
-                            LAPCEKTPS.this.finish();
+                            Intent intent = new Intent(LAPCEKTPS.this, JobSelector.class);
+                            intent.putExtra("IDTPS", IDTPS);
+                            startActivity(intent);
+                            finish();
                         }
 
                         @Override
@@ -682,6 +682,11 @@ public class LAPCEKTPS extends AppCompatActivity implements LocationListener {
                         }
                     }
             ).show();
+        }else{
+            Intent intent = new Intent(LAPCEKTPS.this, JobSelector.class);
+            intent.putExtra("IDTPS", IDTPS);
+            startActivity(intent);
+            finish();
         }
     }
 }

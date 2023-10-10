@@ -6,8 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.MDataSuaraReguler;
@@ -15,8 +17,8 @@ import id.creatodidak.djaga_swara.R;
 
 public class SuaraRegAdp extends RecyclerView.Adapter<SuaraRegAdp.ViewHolder> {
 
-    private List<MDataSuaraReguler> suaraList;
-    private Context context;
+    private final List<MDataSuaraReguler> suaraList;
+    private final Context context;
 
     public SuaraRegAdp(Context context, List<MDataSuaraReguler> suaraList) {
         this.context = context;
@@ -34,7 +36,6 @@ public class SuaraRegAdp extends RecyclerView.Adapter<SuaraRegAdp.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MDataSuaraReguler suara = suaraList.get(position);
         holder.itemView.setTag(suara.getIdcalon());
-
         holder.tvNoUrut.setText(suara.getNoUrut());
         if(suara.getCalon2() == null){
             holder.tvNama.setText(suara.getCalon1());

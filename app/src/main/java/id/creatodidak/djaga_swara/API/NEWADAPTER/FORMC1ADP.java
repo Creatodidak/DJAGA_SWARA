@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +12,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -25,16 +22,15 @@ import java.util.List;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MFormC1;
 import id.creatodidak.djaga_swara.Database.DBHelper;
 import id.creatodidak.djaga_swara.R;
-import id.creatodidak.djaga_swara.plugin.BitmapUtils;
 
 public class FORMC1ADP extends RecyclerView.Adapter<FORMC1ADP.ViewHolder> {
 
-    private List<MFormC1> dataList;
-    private Context context;
-    private String IDTPS;
+    private final List<MFormC1> dataList;
+    private final Context context;
+    private final String IDTPS;
     DBHelper dbHelper;
     SharedPreferences sh;
-    private FORMC1ADP.OnItemClickListener onItemClickListener;
+    private final FORMC1ADP.OnItemClickListener onItemClickListener;
 
     public FORMC1ADP(Context context, String idTps, List<MFormC1> dataList, FORMC1ADP.OnItemClickListener onItemClickListener) {
         this.context = context;

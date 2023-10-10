@@ -1,11 +1,5 @@
 package id.creatodidak.djaga_swara.TUGASNEW;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.core.content.FileProvider;
-
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,6 +15,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.FileProvider;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,9 +28,9 @@ import java.util.List;
 
 import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
 import id.creatodidak.djaga_swara.API.Interface.Endpoint;
-import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MLapPamTPS;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MODELLAPORAN.MLapWalTPS;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MResponseServer;
+import id.creatodidak.djaga_swara.DASHBOARDNEW.JobSelector;
 import id.creatodidak.djaga_swara.Database.DBHelper;
 import id.creatodidak.djaga_swara.R;
 import id.creatodidak.djaga_swara.plugin.CDialog;
@@ -103,7 +103,7 @@ public class LAPPENGAWALAN extends AppCompatActivity {
                         if (listFoto.equals("")) {
                             listFoto = String.valueOf(uri);
                         } else {
-                            listFoto = listFoto + "," + String.valueOf(uri);
+                            listFoto = listFoto + "," + uri;
                         }
 
                         ImageView imageView = new ImageView(this);
@@ -432,5 +432,43 @@ public class LAPPENGAWALAN extends AppCompatActivity {
             listDokumentasiLocal.addView(imageView, layoutParams);
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (formPamTps.getVisibility() == View.VISIBLE) {
+            CDialog.up(this,
+                    "Konfirmasi",
+                    "Laporan belum anda kirim, jika anda kembali maka data yang sudah anda input akan hilang...\nLanjutkan?",
+                    true, false, false,
+                    "BATAL",
+                    "LANJUTKAN",
+                    "",
+                    new CDialog.AlertDialogListener() {
+                        @Override
+                        public void onOpt1(AlertDialog alert) {
+                            Intent intent = new Intent(LAPPENGAWALAN.this, JobSelector.class);
+                            intent.putExtra("IDTPS", IDTPS);
+                            startActivity(intent);
+                            finish();
+                        }
+
+                        @Override
+                        public void onOpt2(AlertDialog alert) {
+
+                        }
+
+                        @Override
+                        public void onCancel(AlertDialog alert) {
+                            alert.dismiss();
+                        }
+                    }
+            ).show();
+        }else{
+            Intent intent = new Intent(LAPPENGAWALAN.this, JobSelector.class);
+            intent.putExtra("IDTPS", IDTPS);
+            startActivity(intent);
+            finish();
+        }
     }
 }
