@@ -115,4 +115,9 @@ public interface Endpoint {
     Call<MResponseServer> uploadSuara(
             @Body List<MKoleksiSuara> data
     );
+
+    @FormUrlEncoded
+    @POST("resetdata")
+    Call<MResponseServer> resetData(
+            @Field("tps") String tps);
 }

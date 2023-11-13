@@ -1,5 +1,6 @@
 package id.creatodidak.djaga_swara.DASHBOARDNEW;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -21,6 +22,7 @@ import id.creatodidak.djaga_swara.TUGASNEW.LAPPAMTPS;
 import id.creatodidak.djaga_swara.TUGASNEW.LAPPENGAWALAN;
 import id.creatodidak.djaga_swara.TUGASNEW.LAPPENYERAHAN;
 import id.creatodidak.djaga_swara.TUGASNEW.LAPSUARA;
+import id.creatodidak.djaga_swara.plugin.CDialog;
 
 public class JobSelector extends AppCompatActivity {
     CardView lapcektps, lappamtps, lapsuara, lapformc1, lappengawalan, lappenyerahan;

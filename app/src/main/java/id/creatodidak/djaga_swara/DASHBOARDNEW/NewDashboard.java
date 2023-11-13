@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,6 +29,7 @@ import java.util.List;
 import id.creatodidak.djaga_swara.API.Adapter.ApiClient;
 import id.creatodidak.djaga_swara.API.Interface.Endpoint;
 import id.creatodidak.djaga_swara.API.NEWADAPTER.TpsSelectAdapter;
+import id.creatodidak.djaga_swara.API.NEWMODEL.MResponseServer;
 import id.creatodidak.djaga_swara.API.NEWMODEL.Penugasan.DesaItem;
 import id.creatodidak.djaga_swara.API.NEWMODEL.Penugasan.KabItem;
 import id.creatodidak.djaga_swara.API.NEWMODEL.Penugasan.KecItem;
@@ -36,6 +38,7 @@ import id.creatodidak.djaga_swara.API.NEWMODEL.Penugasan.MKabupaten;
 import id.creatodidak.djaga_swara.API.NEWMODEL.Penugasan.MKecamatan;
 import id.creatodidak.djaga_swara.API.NEWMODEL.Penugasan.MTps;
 import id.creatodidak.djaga_swara.API.NEWMODEL.Penugasan.TpsavailableItem;
+import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.ListtpsItem;
 import id.creatodidak.djaga_swara.API.NEWMODEL.SELECTTPS.RespSelectTps;
 import id.creatodidak.djaga_swara.Database.DBHelper;
 import id.creatodidak.djaga_swara.R;
@@ -908,7 +911,7 @@ public class NewDashboard extends AppCompatActivity {
                         }
                     }
             ).show();
-        }else{
+        } else {
             CDialog.up(this,
                     "Konfirmasi",
                     "Keluar dari aplikasi?",
@@ -934,5 +937,164 @@ public class NewDashboard extends AppCompatActivity {
                     }
             ).show();
         }
+    }
+
+    public void resetdata(View view){
+        CDialog.up(this,
+                "Konfirmasi",
+                "Anda yakin untuk mereset data?",
+                true, false, false,
+                "TIDAK",
+                "YA",
+                "",
+                new CDialog.AlertDialogListener() {
+                    @Override
+                    public void onOpt1(AlertDialog alert) {
+                        alert.dismiss();
+                        doReset();
+                    }
+
+                    @Override
+                    public void onOpt2(AlertDialog alert) {
+
+                    }
+
+                    @Override
+                    public void onCancel(AlertDialog alert) {
+                        alert.dismiss();
+                    }
+                }
+        ).show();
+    }
+
+    private void doReset() {
+        AlertDialog alerts = CDialog.up(
+                this,
+                "Mereset data...",
+                "",
+                false, false, true,
+                "",
+                "",
+                "",
+                new CDialog.AlertDialogListener() {
+                    @Override
+                    public void onOpt1(AlertDialog alert) {
+
+                    }
+
+                    @Override
+                    public void onOpt2(AlertDialog alert) {
+
+                    }
+
+                    @Override
+                    public void onCancel(AlertDialog alert) {
+
+                    }
+                }
+        );
+        alerts.show();
+
+        String tps = "";
+        for(ListtpsItem i : dbHelper.getallTps()){
+            if(tps.isEmpty()){
+                tps = i.getIdTps();
+            }else{
+                tps = tps+","+i.getIdTps();
+            }
+        }
+
+        Call<MResponseServer> call = endpoint.resetData(tps);
+        call.enqueue(new Callback<MResponseServer>() {
+            @Override
+            public void onResponse(Call<MResponseServer> call, Response<MResponseServer> response) {
+                alerts.dismiss();
+                if(response.isSuccessful() && response.body() != null && response.body().isStatus()){
+                    dbHelper.reset();
+                    SharedPreferences.Editor ed = sh.edit();
+                    ed.clear();
+                    ed.apply();
+
+                    CDialog.up(NewDashboard.this,
+                            "Informasi",
+                            "Berhasil mereset data!",
+                            false, false, false,
+                            "TIDAK",
+                            "LANJUTKAN",
+                            "",
+                            new CDialog.AlertDialogListener() {
+                                @Override
+                                public void onOpt1(AlertDialog alert) {
+                                    alert.dismiss();
+                                }
+
+                                @Override
+                                public void onOpt2(AlertDialog alert) {
+
+                                }
+
+                                @Override
+                                public void onCancel(AlertDialog alert) {
+                                    alert.dismiss();
+                                }
+                            }
+                    ).show();
+                }else{
+                    CDialog.up(NewDashboard.this,
+                            "Informasi",
+                            "Gagal mereset data!",
+                            false, false, false,
+                            "TIDAK",
+                            "ULANGI",
+                            "",
+                            new CDialog.AlertDialogListener() {
+                                @Override
+                                public void onOpt1(AlertDialog alert) {
+                                    alert.dismiss();
+                                }
+
+                                @Override
+                                public void onOpt2(AlertDialog alert) {
+
+                                }
+
+                                @Override
+                                public void onCancel(AlertDialog alert) {
+                                    alert.dismiss();
+                                }
+                            }
+                    ).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MResponseServer> call, Throwable t) {
+                alerts.dismiss();
+                CDialog.up(NewDashboard.this,
+                        "Informasi",
+                        "Gagal mereset data!",
+                        false, false, false,
+                        "TIDAK",
+                        "ULANGI",
+                        "",
+                        new CDialog.AlertDialogListener() {
+                            @Override
+                            public void onOpt1(AlertDialog alert) {
+                                alert.dismiss();
+                            }
+
+                            @Override
+                            public void onOpt2(AlertDialog alert) {
+
+                            }
+
+                            @Override
+                            public void onCancel(AlertDialog alert) {
+                                alert.dismiss();
+                            }
+                        }
+                ).show();
+            }
+        });
     }
 }

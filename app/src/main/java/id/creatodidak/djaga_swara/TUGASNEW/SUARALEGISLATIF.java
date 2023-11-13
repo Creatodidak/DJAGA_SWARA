@@ -69,7 +69,7 @@ public class SUARALEGISLATIF extends AppCompatActivity {
 
         rvCalon.setHasFixedSize(true);
         rvCalon.setNestedScrollingEnabled(true);
-        rvCalon.setItemViewCacheSize(20);
+        rvCalon.setItemViewCacheSize(200);
         rvCalon.setDrawingCacheEnabled(true);
 
         if(!TextUtils.isEmpty(db.getSuaraTidakSah(IDTPS, TYPE.toLowerCase()))){
@@ -84,12 +84,13 @@ public class SUARALEGISLATIF extends AppCompatActivity {
                 public void onClick(View v) {
                     if(!TextUtils.isEmpty(etSuaraTidakSah.getText())){
                         db.saveSuaraTsah(IDTPS, TYPE.toLowerCase(), etSuaraTidakSah.getText().toString());
+                        int totaldata = 0;
                         for(MPartai i : data){
                             View vx = rvCalon.findViewWithTag(i.getIdPartai());
                             Button btn = vx.findViewById(R.id.btnSimpanDataPerPartai);
 
                             if(btn.getVisibility() == View.GONE){
-                                kirimDataKeServer();
+                                totaldata++;
                             }else{
                                 CDialog.up(
                                         SUARALEGISLATIF.this,
@@ -116,6 +117,10 @@ public class SUARALEGISLATIF extends AppCompatActivity {
                                 ).show();
                                 break;
                             }
+                        }
+
+                        if(totaldata == data.size()){
+                            kirimDataKeServer();
                         }
                     }else{
                         CDialog.up(

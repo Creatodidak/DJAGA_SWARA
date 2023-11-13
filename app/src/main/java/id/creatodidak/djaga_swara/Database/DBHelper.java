@@ -123,6 +123,37 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(TBDPTFINAL);
     }
 
+    public void reset() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("DROP TABLE IF EXISTS tps");
+        db.execSQL("DROP TABLE IF EXISTS lapcektps");
+        db.execSQL("DROP TABLE IF EXISTS lappamtps");
+        db.execSQL("DROP TABLE IF EXISTS formc1");
+        db.execSQL("DROP TABLE IF EXISTS lapwal");
+        db.execSQL("DROP TABLE IF EXISTS lapserah");
+        db.execSQL("DROP TABLE IF EXISTS datasuarasah");
+        db.execSQL("DROP TABLE IF EXISTS datasuaratidaksah");
+        db.execSQL("DROP TABLE IF EXISTS datasuarapartai");
+        db.execSQL("DROP TABLE IF EXISTS daftarpresiden");
+        db.execSQL("DROP TABLE IF EXISTS daftargubernur");
+        db.execSQL("DROP TABLE IF EXISTS daftarbupati");
+        db.execSQL("DROP TABLE IF EXISTS daftarkades");
+        db.execSQL("DROP TABLE IF EXISTS daftardpdri");
+        db.execSQL("DROP TABLE IF EXISTS daftardprri");
+        db.execSQL("DROP TABLE IF EXISTS daftardprdprov");
+        db.execSQL("DROP TABLE IF EXISTS daftardprdkab");
+        db.execSQL("DROP TABLE IF EXISTS daftarpartainas");
+        db.execSQL("DROP TABLE IF EXISTS daftarpartaiprov");
+        db.execSQL("DROP TABLE IF EXISTS daftarpartaikab");
+        db.execSQL("DROP TABLE IF EXISTS dptfinal");
+
+        init();
+
+        db.close();
+    }
+
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
@@ -311,6 +342,23 @@ public class DBHelper extends SQLiteOpenHelper {
                 ListtpsItem item = new ListtpsItem();
                 item.setIdTps(cursor.getString(cursor.getColumnIndex("id_tps")));
                 item.setNomorTps(cursor.getString(cursor.getColumnIndex("nomor_tps")));
+                data.add(item);
+            } while (cursor.moveToNext());
+            db.close();
+        }
+        return data;
+    }
+
+    @SuppressLint("Range")
+    public List<ListtpsItem> getallTps() {
+        SQLiteDatabase db = getReadableDatabase();
+        List<ListtpsItem> data = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM tps", null);
+        if (cursor != null & cursor.moveToFirst()) {
+            do {
+                ListtpsItem item = new ListtpsItem();
+                item.setIdTps(cursor.getString(cursor.getColumnIndex("id_tps")));
+                item.setPeriode(cursor.getString(cursor.getColumnIndex("periode")));
                 data.add(item);
             } while (cursor.moveToNext());
             db.close();
@@ -1189,7 +1237,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             // Pindahkan kursor ke baris pertama
-            String suara = cursor.getString(cursor.getColumnIndex("suara"));
+            @SuppressLint("Range") String suara = cursor.getString(cursor.getColumnIndex("suara"));
             cursor.close(); // Jangan lupa untuk menutup kursor setelah penggunaan
             if (TextUtils.isEmpty(suara)) {
                 return "";
@@ -1246,6 +1294,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
+    @SuppressLint("range")
     public List<MFigur> getFigurList(String type, String idPartai, String IDTPS) {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -1299,6 +1348,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.update("datasuarapartai", values, whereClause, whereArgs);
     }
 
+    @SuppressLint("range")
     public String statusLocalLegislatif(String idtps, String type) {
         SQLiteDatabase db = getReadableDatabase();
         String status = "";

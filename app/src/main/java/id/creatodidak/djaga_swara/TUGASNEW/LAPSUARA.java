@@ -185,17 +185,44 @@ public class LAPSUARA extends AppCompatActivity {
                 });
             }else if(dpt.getLocal() == 0){
                 cvDPT.setVisibility(View.GONE);
-                cvForm.setVisibility(View.VISIBLE);
             }
+            cvForm.setVisibility(View.VISIBLE);
 
             for (String t : type) {
                 checkData(t);
             }
         }
 
+        AlertDialog alerts = CDialog.up(
+                this,
+                "Memproses...",
+                "",
+                false, false, true,
+                "",
+                "",
+                "",
+                new CDialog.AlertDialogListener() {
+                    @Override
+                    public void onOpt1(AlertDialog alert) {
+
+                    }
+
+                    @Override
+                    public void onOpt2(AlertDialog alert) {
+
+                    }
+
+                    @Override
+                    public void onCancel(AlertDialog alert) {
+
+                    }
+                }
+        );
+
         PRESIDEN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                alerts.show();
                 String t = "PRESIDEN";
                 Intent i = new Intent(LAPSUARA.this, SUARAREGULER.class);
                 i.putExtra("IDTPS", IDTPS);
@@ -207,6 +234,7 @@ public class LAPSUARA extends AppCompatActivity {
         GUBERNUR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                alerts.show();
                 String t = "GUBERNUR";
                 Intent i = new Intent(LAPSUARA.this, SUARAREGULER.class);
                 i.putExtra("IDTPS", IDTPS);
@@ -218,6 +246,7 @@ public class LAPSUARA extends AppCompatActivity {
         BUPATI.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                alerts.show();
                 String t = "BUPATI";
                 Intent i = new Intent(LAPSUARA.this, SUARAREGULER.class);
                 i.putExtra("IDTPS", IDTPS);
@@ -229,6 +258,7 @@ public class LAPSUARA extends AppCompatActivity {
         KADES.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                alerts.show();
                 String t = "KADES";
                 Intent i = new Intent(LAPSUARA.this, SUARAREGULER.class);
                 i.putExtra("IDTPS", IDTPS);
@@ -240,6 +270,7 @@ public class LAPSUARA extends AppCompatActivity {
         DPDRI.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                alerts.show();
                 String t = "DPDRI";
                 Intent i = new Intent(LAPSUARA.this, SUARAREGULER.class);
                 i.putExtra("IDTPS", IDTPS);
@@ -251,6 +282,7 @@ public class LAPSUARA extends AppCompatActivity {
         DPRRI.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                alerts.show();
                 String t = "DPRRI";
                 Intent i = new Intent(LAPSUARA.this, SUARALEGISLATIF.class);
                 i.putExtra("IDTPS", IDTPS);
@@ -262,6 +294,7 @@ public class LAPSUARA extends AppCompatActivity {
         DPRDPROV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                alerts.show();
                 String t = "DPRDPROV";
                 Intent i = new Intent(LAPSUARA.this, SUARALEGISLATIF.class);
                 i.putExtra("IDTPS", IDTPS);
@@ -273,6 +306,7 @@ public class LAPSUARA extends AppCompatActivity {
         DPRDKAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                alerts.show();
                 String t = "DPRDKAB";
                 Intent i = new Intent(LAPSUARA.this, SUARALEGISLATIF.class);
                 i.putExtra("IDTPS", IDTPS);

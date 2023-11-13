@@ -76,6 +76,8 @@ public class SUARAREGULER extends AppCompatActivity {
 
         rv.setLayoutManager(lm);
         rv.setAdapter(adp);
+        rv.setItemViewCacheSize(200);
+        rv.setDrawingCacheEnabled(true);
         loadData(IDTPS, TYPE);
 
         for(MDataSuaraReguler x : db.getCalonReg(TYPE.toLowerCase(), IDTPS)){
