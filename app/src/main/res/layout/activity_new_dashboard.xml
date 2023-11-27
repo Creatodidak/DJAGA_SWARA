@@ -72,6 +72,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:elevation="10dp"
+        android:visibility="gone"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -131,14 +132,6 @@
                     app:srcCompat="@drawable/laporanpampemungutansuara" />
             </androidx.gridlayout.widget.GridLayout>
 
-            <Button
-                android:id="@+id/button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:onClick="resetdata"
-                android:text="RESET DATA" />
-
             <TextView
                 android:id="@+id/build"
                 android:layout_width="match_parent"
@@ -154,11 +147,10 @@
         android:id="@+id/cvSetTugas"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView">
+        app:layout_constraintTop_toBottomOf="@+id/imageView">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -167,7 +159,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -185,7 +177,8 @@
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:padding="10dp"
-                    android:src="@drawable/outline_cancel_24" />
+                    android:src="@drawable/outline_cancel_24"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <androidx.core.widget.NestedScrollView
@@ -304,6 +297,14 @@
                             app:iconGravity="textStart" />
 
                     </LinearLayout>
+
+                    <Button
+                        android:id="@+id/button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
+                        android:onClick="resetdata"
+                        android:text="RESET DATA" />
 
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>

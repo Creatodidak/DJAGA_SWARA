@@ -885,58 +885,31 @@ public class NewDashboard extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (cvSetTugas.getVisibility() == View.VISIBLE) {
-            CDialog.up(this,
-                    "Konfirmasi",
-                    "Batal Memilih Tugas?",
-                    true, false, false,
-                    "TIDAK",
-                    "YA",
-                    "",
-                    new CDialog.AlertDialogListener() {
-                        @Override
-                        public void onOpt1(AlertDialog alert) {
-                            alert.dismiss();
-                            cvSetTugas.setVisibility(View.GONE);
-                        }
-
-                        @Override
-                        public void onOpt2(AlertDialog alert) {
-
-                        }
-
-                        @Override
-                        public void onCancel(AlertDialog alert) {
-                            alert.dismiss();
-                        }
+        CDialog.up(this,
+                "Konfirmasi",
+                "Keluar dari aplikasi?",
+                true, false, false,
+                "TIDAK",
+                "YA",
+                "",
+                new CDialog.AlertDialogListener() {
+                    @Override
+                    public void onOpt1(AlertDialog alert) {
+                        NewDashboard.super.onBackPressed();
+                        finishAffinity();
                     }
-            ).show();
-        } else {
-            CDialog.up(this,
-                    "Konfirmasi",
-                    "Keluar dari aplikasi?",
-                    true, false, false,
-                    "TIDAK",
-                    "YA",
-                    "",
-                    new CDialog.AlertDialogListener() {
-                        @Override
-                        public void onOpt1(AlertDialog alert) {
-                            finishAffinity();
-                        }
 
-                        @Override
-                        public void onOpt2(AlertDialog alert) {
+                    @Override
+                    public void onOpt2(AlertDialog alert) {
 
-                        }
-
-                        @Override
-                        public void onCancel(AlertDialog alert) {
-                            alert.dismiss();
-                        }
                     }
-            ).show();
-        }
+
+                    @Override
+                    public void onCancel(AlertDialog alert) {
+                        alert.dismiss();
+                    }
+                }
+        ).show();
     }
 
     public void resetdata(View view){

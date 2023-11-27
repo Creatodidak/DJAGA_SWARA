@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import id.creatodidak.djaga_swara.API.Adapter.Client;
 import id.creatodidak.djaga_swara.API.Interface.EndpointVRS;
 import id.creatodidak.djaga_swara.API.NEWMODEL.MLogin;
+import id.creatodidak.djaga_swara.DASHBOARDNEW.NewDashboard;
 import id.creatodidak.djaga_swara.R;
 import id.creatodidak.djaga_swara.plugin.CDialog;
 import id.creatodidak.djaga_swara.plugin.SessionData;
@@ -80,11 +81,7 @@ public class LoginNew extends AppCompatActivity {
 
         if(SessionData.isUserLoggedIn(this)){
             Intent intent;
-            if(SessionData.isUserPinExist(this)){
-                intent = new Intent(this, Login2New.class);
-            }else{
-                intent = new Intent(this, SetLogin2New.class);
-            }
+            intent = new Intent(LoginNew.this, NewDashboard.class);
             startActivity(intent);
             finish();
         }
