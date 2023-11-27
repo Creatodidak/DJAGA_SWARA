@@ -289,7 +289,7 @@ public class LAPCEKTPS extends AppCompatActivity implements LocationListener {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        long mintime = 5000;
+        long mintime = 2000;
         float dist = 3;
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, mintime, dist, this);

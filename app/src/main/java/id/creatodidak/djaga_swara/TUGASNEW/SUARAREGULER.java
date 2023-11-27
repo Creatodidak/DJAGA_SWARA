@@ -98,46 +98,73 @@ public class SUARAREGULER extends AppCompatActivity {
         btnSendSuara.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkData()){
-                    if(btnSendSuara.getText().equals("KIRIM DATA")){
-                        CDialog.up(
-                                SUARAREGULER.this,
-                                "Konfirmasi",
-                                "Anda yakin akan mengirimkan data ini?",
-                                true, false, false,
-                                "BATAL", "KIRIM", "",
-                                new CDialog.AlertDialogListener() {
-                                    @Override
-                                    public void onOpt1(AlertDialog alert) {
-                                        alert.dismiss();
-                                        saveDataToDb();
-                                    }
+//                if(checkData()){
+//                    if(btnSendSuara.getText().equals("KIRIM DATA")){
+//                        CDialog.up(
+//                                SUARAREGULER.this,
+//                                "Konfirmasi",
+//                                "Anda yakin akan mengirimkan data ini?",
+//                                true, false, false,
+//                                "BATAL", "KIRIM", "",
+//                                new CDialog.AlertDialogListener() {
+//                                    @Override
+//                                    public void onOpt1(AlertDialog alert) {
+//                                        alert.dismiss();
+//                                        saveDataToDb();
+//                                    }
+//
+//                                    @Override
+//                                    public void onOpt2(AlertDialog alert) {
+//
+//                                    }
+//
+//                                    @Override
+//                                    public void onCancel(AlertDialog alert) {
+//                                        alert.dismiss();
+//                                    }
+//                                }
+//                        ).show();
+//                    }else if(btnSendSuara.getText().equals("KIRIM DRAFT")){
+//                        uploadToServer();
+//                    }
+//                }else{
+//                    CDialog.up(
+//                            SUARAREGULER.this,
+//                            "Peringatan",
+//                            "",
+//                            false, false, false,
+//                            "", "PERBAIKI", "",
+//                            new CDialog.AlertDialogListener() {
+//                                @Override
+//                                public void onOpt1(AlertDialog alert) {
+//                                    alert.dismiss();
+//                                }
+//
+//                                @Override
+//                                public void onOpt2(AlertDialog alert) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onCancel(AlertDialog alert) {
+//
+//                                }
+//                            }
+//                    ).show();
+//                }
 
-                                    @Override
-                                    public void onOpt2(AlertDialog alert) {
-
-                                    }
-
-                                    @Override
-                                    public void onCancel(AlertDialog alert) {
-                                        alert.dismiss();
-                                    }
-                                }
-                        ).show();
-                    }else if(btnSendSuara.getText().equals("KIRIM DRAFT")){
-                        uploadToServer();
-                    }
-                }else{
+                if(btnSendSuara.getText().equals("KIRIM DATA")){
                     CDialog.up(
                             SUARAREGULER.this,
-                            "Peringatan",
-                            "",
-                            false, false, false,
-                            "", "PERBAIKI", "",
+                            "Konfirmasi",
+                            "Anda yakin akan mengirimkan data ini?",
+                            true, false, false,
+                            "BATAL", "KIRIM", "",
                             new CDialog.AlertDialogListener() {
                                 @Override
                                 public void onOpt1(AlertDialog alert) {
                                     alert.dismiss();
+                                    saveDataToDb();
                                 }
 
                                 @Override
@@ -147,10 +174,12 @@ public class SUARAREGULER extends AppCompatActivity {
 
                                 @Override
                                 public void onCancel(AlertDialog alert) {
-
+                                    alert.dismiss();
                                 }
                             }
                     ).show();
+                }else if(btnSendSuara.getText().equals("KIRIM DRAFT")){
+                    uploadToServer();
                 }
             }
         });
@@ -179,6 +208,10 @@ public class SUARAREGULER extends AppCompatActivity {
 
         data.addAll(db.getCalonReg(type.toLowerCase(), IDTPS));
         adp.notifyDataSetChanged();
+
+        for (int i = 0; i < data.size(); i++){
+            Log.i("DATA => ", data.get(i).getIdcalon());
+        }
     }
 
     private void saveDataToDb(){

@@ -1,6 +1,7 @@
 package id.creatodidak.djaga_swara.API.NEWADAPTER;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +36,11 @@ public class SuaraRegAdp extends RecyclerView.Adapter<SuaraRegAdp.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MDataSuaraReguler suara = suaraList.get(position);
+        Log.i("DATA TAG => ", suara.getIdcalon());
         holder.itemView.setTag(suara.getIdcalon());
         holder.tvNoUrut.setText(suara.getNoUrut());
         if(suara.getCalon2() == null){
-            holder.tvNama.setText(suara.getCalon1());
+            holder.tvNama.setText(suara.getCalon1()+"\n"+suara.getIdcalon());
         }else{
             holder.tvNama.setText(suara.getCalon1()+"\n"+suara.getCalon2());
         }
