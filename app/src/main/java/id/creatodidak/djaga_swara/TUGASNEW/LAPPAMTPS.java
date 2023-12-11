@@ -1,8 +1,10 @@
 package id.creatodidak.djaga_swara.TUGASNEW;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -59,7 +61,7 @@ public class LAPPAMTPS extends AppCompatActivity {
     EditText etPrediksi;
     LinearLayout btTambahDokumentasi, listDokumentasi;
     Button btKirimData;
-    ActivityResultLauncher<Intent> opencamera, openresult;
+    ActivityResultLauncher<Intent> opencamera, openresult, opengaleri;
     File storageDir;
     String PHOTO_PATH;
     String listFoto = "";
@@ -90,6 +92,18 @@ public class LAPPAMTPS extends AppCompatActivity {
         opencamera = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK) {
                 showPreview(PHOTO_PATH);
+            }
+        });
+        opengaleri = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
+                if (data != null) {
+                    Uri selectedImageUri = data.getData();
+                    String imagePath = getRealPathFromUri(selectedImageUri);
+                    if (imagePath != null) {
+                        showPreview(imagePath);
+                    }
+                }
             }
         });
 
@@ -134,7 +148,30 @@ public class LAPPAMTPS extends AppCompatActivity {
         btTambahDokumentasi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showCamera();
+                CDialog.up(LAPPAMTPS.this,
+                        "Konfirmasi",
+                        "Pilih Sumber Dokumentasi",
+                        true, true, false,
+                        "BATAL",
+                        "KAMERA",
+                        "GALERI",
+                        new CDialog.AlertDialogListener() {
+                            @Override
+                            public void onOpt1(AlertDialog alert) {
+                                showCamera();
+                            }
+
+                            @Override
+                            public void onOpt2(AlertDialog alert) {
+                                showGaleri();
+                            }
+
+                            @Override
+                            public void onCancel(AlertDialog alert) {
+                                alert.dismiss();
+                            }
+                        }
+                ).show();
             }
         });
 
@@ -473,5 +510,25 @@ public class LAPPAMTPS extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    private String getRealPathFromUri(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String filePath = cursor.getString(columnIndex);
+            cursor.close();
+            return filePath;
+        } else {
+            return uri.getPath(); // Fallback if the cursor is null
+        }
+    }
+
+    private void showGaleri() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        opengaleri.launch(intent);
     }
 }

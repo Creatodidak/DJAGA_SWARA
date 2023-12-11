@@ -99,6 +99,7 @@ public class SUARAREGULER extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(checkData()){
+
                     if(btnSendSuara.getText().equals("KIRIM DATA")){
                         CDialog.up(
                                 SUARAREGULER.this,
@@ -127,11 +128,13 @@ public class SUARAREGULER extends AppCompatActivity {
                     }else if(btnSendSuara.getText().equals("KIRIM DRAFT")){
                         uploadToServer();
                     }
+
+
                 }else{
                     CDialog.up(
                             SUARAREGULER.this,
                             "Peringatan",
-                            "",
+                            "Invalid Data",
                             false, false, false,
                             "", "PERBAIKI", "",
                             new CDialog.AlertDialogListener() {
@@ -182,13 +185,16 @@ public class SUARAREGULER extends AppCompatActivity {
     }
 
     private void saveDataToDb(){
-        for (MDataSuaraReguler x : data){
-            View v = rv.findViewWithTag(x.getIdcalon());
-            EditText et = v.findViewById(R.id.etSuara);
 
-            db.saveSuara(IDTPS, x.getIdcalon(), et.getText().toString());
+        for (int i = 0; i < data.size(); i++){
+            View view = rv.getChildAt(i);
+            if(view != null) { //jika view tidak null select edittext
+                EditText reslt = (EditText) view.findViewById(R.id.etSuara);
 
-            Log.d(x.getIdcalon(), et.getText().toString());
+                db.saveSuara(IDTPS, data.get(i).getIdcalon(), reslt.getText().toString());
+
+                Log.d(data.get(i).getIdcalon(), reslt.getText().toString());
+            }
         }
 
         db.saveSuaraTsah(IDTPS, TYPE.toLowerCase(), etSuaratsah.getText().toString());
@@ -313,16 +319,43 @@ public class SUARAREGULER extends AppCompatActivity {
 
     private boolean checkData(){
         boolean result = false;
+
         for (int i = 0; i < data.size(); i++){
+            View view = rv.getChildAt(i);
+            if(view != null) { //jika view tidak null select edittext
+                EditText reslt = (EditText) view.findViewById(R.id.etSuara);
+
+                /**
+                 *
+                 * Jika editext tidak null dan tidak kosong maka true, dsb..
+                 */
+                if (reslt != null && !reslt.getText().toString().isEmpty()) {
+                    result = true;
+                } else {
+                    result = false;
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+
+    private boolean checkData_old(){
+        boolean result = false;
+        for (int i = 0; i < data.size(); i++){
+
             View v = rv.findViewWithTag(data.get(i).getIdcalon());
             EditText et = v.findViewById(R.id.etSuara);
 
-            if(!TextUtils.isEmpty(et.getText())){
+            if (et != null && !TextUtils.isEmpty(et.getText())) {
                 result = true;
-            }else{
+            } else {
                 result = false;
                 break;
             }
+
         }
 
         return result;

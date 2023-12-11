@@ -1,8 +1,10 @@
 package id.creatodidak.djaga_swara.TUGASNEW;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -50,7 +52,7 @@ public class LAPFORMC1 extends AppCompatActivity {
     List<MFormC1> data = new ArrayList<>();
     LinearLayoutManager lm;
     DBHelper dbHelper;
-    ActivityResultLauncher<Intent> opencamera, openresult;
+    ActivityResultLauncher<Intent> opencamera, openresult, opengaleri;
     String listFoto = "";
     String PHOTO_PATH = "";
     int typeOn;
@@ -86,7 +88,30 @@ public class LAPFORMC1 extends AppCompatActivity {
             @Override
             public void onClick(int Pos) {
                 typeOn = Pos;
-                showCamera();
+                CDialog.up(LAPFORMC1.this,
+                        "Konfirmasi",
+                        "Pilih Sumber Dokumentasi",
+                        true, true, false,
+                        "BATAL",
+                        "KAMERA",
+                        "GALERI",
+                        new CDialog.AlertDialogListener() {
+                            @Override
+                            public void onOpt1(AlertDialog alert) {
+                                showCamera();
+                            }
+
+                            @Override
+                            public void onOpt2(AlertDialog alert) {
+                                showGaleri();
+                            }
+
+                            @Override
+                            public void onCancel(AlertDialog alert) {
+                                alert.dismiss();
+                            }
+                        }
+                ).show();
             }
 
             @Override
@@ -113,6 +138,19 @@ public class LAPFORMC1 extends AppCompatActivity {
                         Uri uri = Uri.fromFile(imageFile);
                         listFoto = String.valueOf(uri);
                         renewImage(uri);
+                    }
+                }
+            }
+        });
+
+        opengaleri = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
+                if (data != null) {
+                    Uri selectedImageUri = data.getData();
+                    String imagePath = getRealPathFromUri(selectedImageUri);
+                    if (imagePath != null) {
+                        showPreview(imagePath);
                     }
                 }
             }
@@ -278,5 +316,25 @@ public class LAPFORMC1 extends AppCompatActivity {
             intent.putExtra("IDTPS", IDTPS);
             startActivity(intent);
             finish();
+    }
+
+    private String getRealPathFromUri(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String filePath = cursor.getString(columnIndex);
+            cursor.close();
+            return filePath;
+        } else {
+            return uri.getPath(); // Fallback if the cursor is null
+        }
+    }
+
+    private void showGaleri() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        opengaleri.launch(intent);
     }
 }

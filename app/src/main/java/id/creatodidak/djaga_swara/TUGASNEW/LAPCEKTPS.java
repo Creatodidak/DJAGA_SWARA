@@ -1,10 +1,12 @@
 package id.creatodidak.djaga_swara.TUGASNEW;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -14,6 +16,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -79,7 +82,7 @@ public class LAPCEKTPS extends AppCompatActivity implements LocationListener {
     EditText etRekomendasi;
     LinearLayout btTambahDokumentasi, listDokumentasi;
     Button btKirimData;
-    ActivityResultLauncher<Intent> aktifkanGPS, opencamera, openresult;
+    ActivityResultLauncher<Intent> aktifkanGPS, opencamera, openresult, opengaleri;
     LocationManager locationManager;
     File storageDir;
     String PHOTO_PATH;
@@ -152,6 +155,7 @@ public class LAPCEKTPS extends AppCompatActivity implements LocationListener {
         opencamera = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK) {
                 showPreview(PHOTO_PATH);
+
             }
         });
 
@@ -184,6 +188,19 @@ public class LAPCEKTPS extends AppCompatActivity implements LocationListener {
             }
         });
 
+        opengaleri = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
+                if (data != null) {
+                    Uri selectedImageUri = data.getData();
+                    String imagePath = getRealPathFromUri(selectedImageUri);
+                    if (imagePath != null) {
+                        showPreview(imagePath);
+                    }
+                }
+            }
+        });
+
         itemFormCekTps.setVisibility(View.GONE);
 
         Glide.with(this)
@@ -210,7 +227,30 @@ public class LAPCEKTPS extends AppCompatActivity implements LocationListener {
         btTambahDokumentasi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showCamera();
+                CDialog.up(LAPCEKTPS.this,
+                        "Konfirmasi",
+                        "Pilih Sumber Dokumentasi",
+                        true, true, false,
+                        "BATAL",
+                        "KAMERA",
+                        "GALERI",
+                        new CDialog.AlertDialogListener() {
+                            @Override
+                            public void onOpt1(AlertDialog alert) {
+                                showCamera();
+                            }
+
+                            @Override
+                            public void onOpt2(AlertDialog alert) {
+                                showGaleri();
+                            }
+
+                            @Override
+                            public void onCancel(AlertDialog alert) {
+                                alert.dismiss();
+                            }
+                        }
+                ).show();
             }
         });
 
@@ -278,6 +318,26 @@ public class LAPCEKTPS extends AppCompatActivity implements LocationListener {
         });
     }
 
+    private String getRealPathFromUri(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String filePath = cursor.getString(columnIndex);
+            cursor.close();
+            return filePath;
+        } else {
+            return uri.getPath(); // Fallback if the cursor is null
+        }
+    }
+
+    private void showGaleri() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        opengaleri.launch(intent);
+    }
+
     private void getKoordinat() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -289,8 +349,8 @@ public class LAPCEKTPS extends AppCompatActivity implements LocationListener {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        long mintime = 2000;
-        float dist = 3;
+        long mintime = 1000;
+        float dist = 10;
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, mintime, dist, this);
     }
